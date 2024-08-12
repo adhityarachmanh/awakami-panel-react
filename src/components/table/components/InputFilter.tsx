@@ -124,7 +124,8 @@ export function InputInterval(
     setIsApplying(true);
     filterTimeout.current = setTimeout(() => {
       setIsApplying(false);
-      applyValue({ ...item, value: newValue });
+      const formattedValue = type === "date" ? moment(newValue).format("YYYY-MM-DD") : newValue;
+      applyValue({ ...item, value: formattedValue });
     }, rootProps.filterDebounceMs);
   };
 
@@ -190,7 +191,11 @@ export function DynamicInputFields(
     filterTimeout.current = setTimeout(() => {
       setIsApplying(false);
 
-      applyValue({ ...item, value: newValues });
+      const formattedValues = newValues.map(value =>
+        type === "date" ? moment(value).format("YYYY-MM-DD") : value
+      );
+
+      applyValue({ ...item, value: formattedValues });
     }, rootProps.filterDebounceMs);
   };
 
