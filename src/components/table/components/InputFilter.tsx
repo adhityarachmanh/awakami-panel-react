@@ -58,7 +58,7 @@ export function InputBetweenInterval(
   };
 
   return (
-    <div className="wd-flex wd-flex-row">
+    <div className="wd-flex wd-flex-col wd-gap-4">
       <TextField
         fullWidth
         name="lower-bound-input"
