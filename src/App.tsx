@@ -1,35 +1,83 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import router from "@/router/Routes";
+import { Suspense } from "react";
+import { RouterProvider } from "react-router-dom";
+import { SnackbarProvider } from "./hooks/useSnackbar";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Provider } from "react-redux";
+import { rootStore, rootPersistor } from "../stores";
+import { PersistGate } from "redux-persist/integration/react";
+import { ThemeProvider } from "@emotion/react";
+import { createTheme } from "@mui/material";
+import {
+  primaryColor,
+  secondaryColor,
+  errorColor,
+  warningColor,
+  infoColor,
+  successColor,
+  backgroundColorDefault,
+  backgroundColorPaper,
+  fontFamily,
+} from "./constants/theme_constant";
 
-function App() {
-  const [count, setCount] = useState(0)
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
+const muiTheme = createTheme({
+  palette: {
+    primary: {
+      main: primaryColor,
+    },
+    secondary: {
+      main: secondaryColor,
+    },
+    error: {
+      main: errorColor,
+    },
+    warning: {
+      main: warningColor,
+    },
+    info: {
+      main: infoColor,
+    },
+    success: {
+      main: successColor,
+    },
+  
+    background: {
+      default: backgroundColorDefault,
+      paper: backgroundColorPaper,
+    },
+  },
+  typography: {
+    fontFamily: fontFamily,
+  },
+});
+
+const App = () => {
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <QueryClientProvider client={queryClient}>
+      <SnackbarProvider>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Provider store={rootStore}>
+            <PersistGate
+              loading={<div>Loading...</div>}
+              persistor={rootPersistor}
+            >
+              <ThemeProvider theme={muiTheme}>
+                <RouterProvider router={router} />
+              </ThemeProvider>
+            </PersistGate>
+          </Provider>
+        </Suspense>
+      </SnackbarProvider>
+    </QueryClientProvider>
+  );
+};
 
-export default App
+export default App;

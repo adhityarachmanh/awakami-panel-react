@@ -1,0 +1,9 @@
+export const primaryColor = "#1976d2";
+export const secondaryColor = "#dc004e";
+export const errorColor = "#f44336";
+export const warningColor = "#ff9800";
+export const infoColor = "#2196f3";
+export const successColor = "#4caf50";
+export const backgroundColorDefault = "#fafafa";
+export const backgroundColorPaper = "#ffffff";
+export const fontFamily = "Roboto, Arial, sans-serif";
