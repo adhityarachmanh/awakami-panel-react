@@ -7,11 +7,14 @@ import {
   MenuItem,
   Box,
   Divider,
-  ListItemText,
+  Breadcrumbs,
+  Link,
+  Typography,
 } from "@mui/material";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import { useRootDispatch, useRootSelector } from "stores";
+import { useLocation, Link as RouterLink } from "react-router-dom";
 
 import { toggleDrawer } from "stores/reducers/sidebarReducer";
 
@@ -21,6 +24,7 @@ import usePanel from "../usePanel";
 const AppBar = () => {
   const dispatch = useRootDispatch();
   const { desktopOpen } = useRootSelector((state) => state.sidebar);
+  const location = useLocation();
 
   const { logout, profileQuery } = usePanel();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -41,7 +45,7 @@ const AppBar = () => {
     () => profileQuery.data?.data,
     [profileQuery.data?.data]
   );
- 
+
   const stringAvatar = React.useMemo(() => {
     if (!user?.name) return {};
     return {
@@ -58,6 +62,12 @@ const AppBar = () => {
     };
   }, [user?.name, user?.imagePath]);
 
+  const pathnames = location.pathname.split('/').filter((x) => x);
+
+  const toPascalCase = (str: string) => {
+    return str.replace(/\w+/g, (word) => word[0].toUpperCase() + word.slice(1).toLowerCase());
+  };
+
   return (
     <StyledAppBar open={desktopOpen} position="fixed">
       <Toolbar>
@@ -71,9 +81,22 @@ const AppBar = () => {
           <MenuIcon />
         </IconButton>
 
-        <h3 className="wd-text-xl wd-font-semibold wd-whitespace-nowrap wd-flex-grow">
-          Responsive drawer
-        </h3>
+        <Breadcrumbs aria-label="breadcrumb" sx={{ flexGrow: 1, '& .MuiBreadcrumbs-separator': { color: 'white' } }}>
+     
+          {pathnames.map((value, index) => {
+            const to = `/${pathnames.slice(0, index + 1).join('/')}`;
+            const isLast = index === pathnames.length - 1;
+            return isLast ? (
+              <Typography color="white" sx={{ fontWeight: 'bold' }} key={to}>
+                {toPascalCase(value)}
+              </Typography>
+            ) : (
+              <Link underline="hover" color="white" component={RouterLink} to={to} key={to}>
+                {toPascalCase(value)}
+              </Link>
+            );
+          })}
+        </Breadcrumbs>
 
         <IconButton onClick={handleAvatarClick} color="inherit">
           <Avatar {...stringAvatar} />

@@ -18,21 +18,20 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import { useState } from "react";
 
 import { useRootDispatch, useRootSelector } from "stores";
-import { closeDrawer, transitionEnd } from "stores/reducers/sidebarReducer";
+import { closeDrawer, toggleNestedOpen, transitionEnd } from "stores/reducers/sidebarReducer";
 import usePanel from "../usePanel";
 import menu from "@/constants/menu_constant";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const drawerWidth = 240;
 
 const Sidebar = ({ container }: { container?: () => HTMLElement }) => {
   const dispatch = useRootDispatch();
-  const { desktopOpen, mobileOpen } = useRootSelector((state) => state.sidebar);
+  const { desktopOpen, mobileOpen, nestedOpen } = useRootSelector((state) => state.sidebar);
   const { brandName } = usePanel();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [open, setOpen] = useState(true);
-  const [nestedOpen, setNestedOpen] = useState<{ [key: string]: boolean }>({});
 
   const handleDrawerClose = () => {
     dispatch(closeDrawer());
@@ -43,16 +42,19 @@ const Sidebar = ({ container }: { container?: () => HTMLElement }) => {
   };
 
   const handleClick = (item: any) => {
-    if (item.nestedItems) {
-      setOpen(!open);
-      setNestedOpen((prev) => ({ ...prev, [item.text]: !prev[item.text] }));
-    } else if (item.route) {
+    if (item.route) {
       navigate(item.route);
+    } else {
+      dispatch(toggleNestedOpen(item.text));
     }
   };
 
-  const handleNestedClick = (key: string) => {
-    setNestedOpen((prev) => ({ ...prev, [key]: !prev[key] }));
+  const handleNestedClick = (key: string, route?: string) => {
+    if (route) {
+      navigate(route);
+    } else {
+      dispatch(toggleNestedOpen(key));
+    }
   };
 
   const renderNestedItems = (items: any, level = 1) => (
@@ -62,8 +64,11 @@ const Sidebar = ({ container }: { container?: () => HTMLElement }) => {
           <ListItemButton
             sx={{ pl: 4 * level }}
             onClick={() =>
-              nestedItem.nestedItems && handleNestedClick(nestedItem.text)
+              nestedItem.route
+                ? handleNestedClick(nestedItem.text, nestedItem.route)
+                : handleNestedClick(nestedItem.text)
             }
+            selected={location.pathname === nestedItem.route} // Highlight active item
           >
             <ListItemIcon>{nestedItem.icon}</ListItemIcon>
             <ListItemText primary={nestedItem.text} />
@@ -106,14 +111,17 @@ const Sidebar = ({ container }: { container?: () => HTMLElement }) => {
         {menu.map((item, index) => (
           <div key={index}>
             <ListItem disablePadding>
-              <ListItemButton onClick={() => handleClick(item)}>
+              <ListItemButton
+                onClick={() => handleClick(item)}
+                selected={location.pathname === item.route} // Highlight active item
+              >
                 <ListItemIcon>{item.icon}</ListItemIcon>
                 <ListItemText primary={item.text} />
-                {item.nestedItems && (open ? <ExpandLess /> : <ExpandMore />)}
+                {item.nestedItems && (nestedOpen[item.text] ? <ExpandLess /> : <ExpandMore />)}
               </ListItemButton>
             </ListItem>
             {item.nestedItems && (
-              <Collapse in={open} timeout="auto" unmountOnExit>
+              <Collapse in={nestedOpen[item.text]} timeout="auto" unmountOnExit>
                 {renderNestedItems(item.nestedItems)}
               </Collapse>
             )}
@@ -143,7 +151,7 @@ const Sidebar = ({ container }: { container?: () => HTMLElement }) => {
           display: { xs: "block", sm: "none" },
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
-            width: drawerWidth,
+            width: drawerWidth * 1.2, // Increase the width
           },
         }}
       >

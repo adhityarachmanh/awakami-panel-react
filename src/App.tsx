@@ -1,4 +1,4 @@
-import router from "@/router/Routes";
+
 import { Suspense } from "react";
 import { RouterProvider } from "react-router-dom";
 import { SnackbarProvider } from "./hooks/useSnackbar";
@@ -19,6 +19,7 @@ import {
   backgroundColorPaper,
   fontFamily,
 } from "./constants/theme_constant";
+import routes from "./router/routes";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -48,7 +49,7 @@ const muiTheme = createTheme({
     success: {
       main: successColor,
     },
-  
+
     background: {
       default: backgroundColorDefault,
       paper: backgroundColorPaper,
@@ -70,7 +71,7 @@ const App = () => {
               persistor={rootPersistor}
             >
               <ThemeProvider theme={muiTheme}>
-                <RouterProvider router={router} />
+                <RouterProvider router={routes} />
               </ThemeProvider>
             </PersistGate>
           </Provider>

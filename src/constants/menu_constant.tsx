@@ -1,6 +1,12 @@
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-import { DashboardOutlined } from "@mui/icons-material";
+import {
+  AddBoxOutlined,
+  AppRegistration,
+  CabinOutlined,
+  DashboardOutlined,
+  GroupOutlined,
+  ListAltOutlined,
+  NewReleasesOutlined,
+} from "@mui/icons-material";
 
 const menu = [
   {
@@ -9,24 +15,39 @@ const menu = [
     route: "/portal/home",
   },
   {
-    text: "Inbox",
-    icon: <InboxIcon />,
+    text: "Relawan",
+    icon: <GroupOutlined />,
     nestedItems: [
       {
-        text: "Starred",
-        icon: <MailIcon />,
-        nestedItems: [
-          { text: "Important", icon: <MailIcon /> },
-          { text: "Work", icon: <MailIcon /> },
-        ],
+        text: "List Relawan",
+        icon: <ListAltOutlined />,
+        route: "/portal/relawan",
       },
-      { text: "Send email", icon: <MailIcon /> },
-      { text: "Drafts", icon: <MailIcon /> },
+      {
+        text: "Tambah Relawan",
+        icon: <AddBoxOutlined />,
+        route: "/portal/relawan/tambah",
+      },
     ],
   },
-  { text: "All mail", icon: <InboxIcon /> },
-  { text: "Trash", icon: <MailIcon /> },
-  { text: "Spam", icon: <MailIcon /> },
+  { text: "TPS", icon: <AppRegistration /> },
+  { text: "POSKO", icon: <CabinOutlined /> },
+  {
+    text: "Berita",
+    icon: <NewReleasesOutlined />,
+    nestedItems: [
+      {
+        text: "List Berita",
+        icon: <ListAltOutlined />,
+        route: "/portal/berita",
+      },
+      {
+        text: "Tambah Berita",
+        icon: <AddBoxOutlined />,
+        route: "/portal/berita/tambah",
+      },
+    ],
+  },
 ];
 
 export default menu;

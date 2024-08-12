@@ -1,9 +1,17 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-const initialState = {
+interface SidebarState {
+  desktopOpen: boolean;
+  mobileOpen: boolean;
+  isClosing: boolean;
+  nestedOpen: { [key: string]: boolean };
+}
+
+const initialState: SidebarState = {
   desktopOpen: true,
   mobileOpen: false,
   isClosing: false,
+  nestedOpen: {},
 };
 
 const drawerSlice = createSlice({
@@ -24,8 +32,12 @@ const drawerSlice = createSlice({
     transitionEnd: (state) => {
       state.isClosing = false;
     },
+    toggleNestedOpen: (state, action: PayloadAction<string>) => {
+      const key = action.payload;
+      state.nestedOpen[key] = !state.nestedOpen[key];
+    },
   },
 });
 
-export const { toggleDrawer, closeDrawer, transitionEnd } = drawerSlice.actions;
+export const { toggleDrawer, closeDrawer, transitionEnd, toggleNestedOpen } = drawerSlice.actions;
 export default drawerSlice.reducer;

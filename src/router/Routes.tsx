@@ -4,6 +4,7 @@ import buildRoute from "./BuildRoute";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { Route } from "@/types/route";
 import HomePage from "@/pages/home";
+import relawanRoutes from "@/pages/relawan/routes";
 
 const routesConfig: Route[] = [
   {
@@ -23,10 +24,7 @@ const routesConfig: Route[] = [
         path: "home",
         element: <HomePage />,
       },
-      {
-        path: "users",
-        element: <div>Users</div>,
-      },
+      ...relawanRoutes,
     ],
   },
   {
