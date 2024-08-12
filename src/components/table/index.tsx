@@ -9,7 +9,11 @@ import {
 
 import { Button, TextField, Theme } from "@mui/material";
 import useTable from "./useTable";
-interface DataTableInterface {
+import { APIResponse } from "@/types/APIResponse";
+import { PostQuery } from "@/types/PostQuery";
+interface DataTableInterface<T> {
+  uniqKey: string;
+  service: (postQuery: PostQuery) => Promise<APIResponse<T>>;
   mode?: GridFeatureMode;
   columns: GridColDef[];
   disableColumnResize?: boolean;
@@ -18,14 +22,16 @@ interface DataTableInterface {
   handleAddButtonClick?: () => void;
 }
 
-const DataTable: React.FC<DataTableInterface> = ({
+const DataTable = <T,>({
   mode = "server",
   columns,
   disableColumnResize = true,
   height,
   showAddButton = true,
+  uniqKey,
+  service,
   handleAddButtonClick,
-}) => {
+}: DataTableInterface<T>) => {
   const {
     updatedColumns,
     postQuery,
@@ -39,7 +45,7 @@ const DataTable: React.FC<DataTableInterface> = ({
     handleSortChange,
     handleFilterChange,
     setPostQuery,
-  } = useTable(columns);
+  } = useTable(columns, uniqKey, service);
   return (
     <div
       className="w-full wd-flex-col wd-flex  "
@@ -120,7 +126,6 @@ const DataTable: React.FC<DataTableInterface> = ({
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "start",
-                
               },
               "& .MuiDataGrid-filterForm:nth-of-type(even)": {
                 backgroundColor: (theme: Theme) =>
@@ -137,11 +142,11 @@ const DataTable: React.FC<DataTableInterface> = ({
                 width: 200,
                 marginTop: 0,
               },
-              "& .MuiDataGrid-filterFormValueInput": {  width: 200, },
+              "& .MuiDataGrid-filterFormValueInput": { width: 200 },
             },
           },
         }}
-        rows={rows}
+        rows={rows as any}
         onRowSelectionModelChange={handleRowSelectionChange}
         columns={updatedColumns} // Use updatedColumns here
         loading={isLoading}

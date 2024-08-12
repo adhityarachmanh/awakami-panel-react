@@ -14,29 +14,44 @@ import {
 } from "@mui/x-data-grid";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { useState } from "react";
-import TestService from "./TestService";
-import { InputInterval, InputBetweenInterval, DynamicInputFields } from "./components/InputFilter";
+import {
+  InputInterval,
+  InputBetweenInterval,
+  DynamicInputFields,
+} from "./components/InputFilter";
+import { APIResponse } from "@/types/APIResponse";
 
-const useTable = (columns: GridColDef[]) => {
+const useTable = <T,>(
+  columns: GridColDef[],
+  uniqKey: string,
+  service: (postQuery: PostQuery) => Promise<APIResponse<T>>
+) => {
   const filterConfigs = [
     { label: "Equal", value: "EQUAL", component: InputInterval },
     { label: "Not Equal", value: "NOT_EQUAL", component: InputInterval },
     { label: "Between", value: "BETWEEN", component: InputBetweenInterval },
     { label: "Like", value: "ILIKE", component: InputInterval },
     { label: "Less Than", value: "LESS_THAN", component: InputInterval },
-    { label: "Less Than Or Equal", value: "LESS_THAN_OR_EQUAL", component: InputInterval },
+    {
+      label: "Less Than Or Equal",
+      value: "LESS_THAN_OR_EQUAL",
+      component: InputInterval,
+    },
     { label: "Greater Than", value: "GREATER_THAN", component: InputInterval },
-    { label: "Greater Than Or Equal", value: "GREATER_THAN_OR_EQUAL", component: InputInterval },
+    {
+      label: "Greater Than Or Equal",
+      value: "GREATER_THAN_OR_EQUAL",
+      component: InputInterval,
+    },
     { label: "In", value: "IN", component: DynamicInputFields },
     { label: "Not In", value: "NOT_IN", component: DynamicInputFields },
   ];
-  const testService = new TestService();
   const [postQuery, setPostQuery] = useState<PostQuery>({
     keywords: "",
     filters: [],
     sorts: [],
-    page: 1, // Adjust as needed
-    size: 5, // Adjust as needed
+    page: 1,
+    size: 5,
   });
 
   const {
@@ -51,14 +66,14 @@ const useTable = (columns: GridColDef[]) => {
     isFetching: isLoading,
   } = useQuery({
     queryKey: [
-      "data",
+      uniqKey,
       postQuery?.page,
       postQuery?.size,
       postQuery?.filters,
       postQuery?.sorts,
       postQuery?.keywords,
     ],
-    queryFn: () => testService.getPagination(postQuery),
+    queryFn: () => service(postQuery),
     placeholderData: keepPreviousData,
   });
 
@@ -127,7 +142,7 @@ const useTable = (columns: GridColDef[]) => {
           ...column,
           filterOperators: createFilterOperators("number"),
         };
-      } 
+      }
       return {
         ...column,
         filterOperators: createFilterOperators("string"),
