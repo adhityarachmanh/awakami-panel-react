@@ -4,15 +4,15 @@ import { PostQuery } from "@/types/PostQuery";
 import { ResponseHandler } from "@/utility/ResponseHandler";
 import axios from "axios";
 
-class TestService {
-  private authUrl = `${import.meta.env.VITE_BASE_URL}/api/v1/user`;
+class RelawanService {
+  private authUrl = `${import.meta.env.VITE_BASE_URL}/api/v1/relawan`;
   authService: AuthService;
 
   constructor() {
     this.authService = new AuthService();
   }
 
-  public async getPagination(postQuery: PostQuery): Promise<APIResponse<any>> {
+  public async all(postQuery: PostQuery): Promise<APIResponse<any>> {
     try {
       const auth = this.authService.getAuthenticated();
       if (!auth) {
@@ -35,5 +35,5 @@ class TestService {
   }
 }
 
-export default TestService;
+export default RelawanService;
 

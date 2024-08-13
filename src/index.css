@@ -2,3 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+
+.wd-bg-y-50 {
+  background-position: 0 50%;
+}
+.wd-bg-x-50 {
+  background-position: 50% 0;
+}

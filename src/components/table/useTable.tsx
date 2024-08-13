@@ -53,6 +53,7 @@ const useTable = <T,>(
     page: 1,
     size: 5,
   });
+  const [selectedRows, setSelectedRows] = useState<GridRowSelectionModel>([]);
 
   const {
     data: {
@@ -91,11 +92,7 @@ const useTable = <T,>(
   const handleFilterChange = (model: GridFilterModel) => {
     const filters: PostFilter[] = model.items
       .map((item) => {
-        if (
-          item.value === undefined ||
-          item.value === null ||
-          item.value === ""
-        ) {
+        if (!item.value || item.value.length === 0) {
           return null;
         }
         console.log(item.operator);
@@ -126,8 +123,11 @@ const useTable = <T,>(
     setPostQuery({ ...postQuery, page: model.page + 1, size: model.pageSize });
   };
 
-  const handleRowSelectionChange = (rowIds: GridRowSelectionModel) => {
-    console.log(rowIds);
+  const handleRowSelectionChange = (selectionData: GridRowSelectionModel) => {
+    setSelectedRows(selectionData);
+  };
+  const resetSelection = () => {
+    setSelectedRows([]);
   };
 
   const rebuildColumnsWithFilterOperator = (columns: GridColDef[]) => {
@@ -159,12 +159,15 @@ const useTable = <T,>(
     currentPage,
     pageSize,
     isLoading,
+    updatedColumns,
+    selectedRows,
     handleFilterChange,
     handleSortChange,
     handlePaginationChange,
     handleRowSelectionChange,
     setPostQuery,
-    updatedColumns,
+    setSelectedRows,
+    resetSelection,
   };
 };
 

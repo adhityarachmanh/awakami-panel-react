@@ -35,6 +35,7 @@ module.exports = {
       backgroundImage: {
         "login-left": "url('assets/images/login-left.png')",
         "login-right": "url('assets/images/login-right.png')",
+        "layout-header": "url('assets/images/layout-header.jpg')",
       },
     },
   },

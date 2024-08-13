@@ -1,5 +1,6 @@
-import { TextFieldProps, TextField, Button } from "@mui/material";
+import { TextFieldProps, TextField, Button, IconButton } from "@mui/material";
 import { GridFilterInputValueProps, useGridRootProps } from "@mui/x-data-grid";
+import CloseIcon from "@mui/icons-material/Close";
 import moment from "moment";
 import React from "react";
 
@@ -212,33 +213,43 @@ export function DynamicInputFields(
     setFilterValues([...filterValues, ""]);
   };
 
+  const deleteField = (index: number) => {
+    const newValues = filterValues.filter((_, i) => i !== index);
+    updateFilterValues(newValues);
+  };
+
   return (
-    <div className="wd-flex wd-flex-col wd-w-full">
+    <div className="wd-flex wd-flex-col wd-w-full wd-gap-4 ">
       {filterValues.map((value, index) => (
-        <TextField
-          key={index}
-          name={`${type}-input-${index}`}
-          placeholder={`Enter ${type.charAt(0).toUpperCase() + type.slice(1)}`}
-          fullWidth
-          label={`${type.charAt(0).toUpperCase() + type.slice(1)} ${index + 1}`}
-          variant="outlined"
-          size="small"
-          value={value}
-          onChange={handleFilterChange(index)}
-          type={type === "string" ? "text" : type}
-          inputRef={index === 0 ? focusElementRef : undefined}
-          InputProps={
-            applying
-              ? { endAdornment: <SyncIcon className="wd-animate-spin" /> }
-              : {}
-          }
-          InputLabelProps={{ shrink: true }}
-          sx={{ mb: 2 }}
-        />
+        <div key={index} className="wd-flex wd-flex-row wd-items-center  wd-gap-2 ">
+          <TextField
+            name={`${type}-input-${index}`}
+            placeholder={`Enter ${type.charAt(0).toUpperCase() + type.slice(1)}`}
+            fullWidth
+            label={`${type.charAt(0).toUpperCase() + type.slice(1)} ${index + 1}`}
+            variant="outlined"
+            size="small"
+            value={value}
+            className="wd-mb-0"
+            onChange={handleFilterChange(index)}
+            type={type === "string" ? "text" : type}
+            inputRef={index === 0 ? focusElementRef : undefined}
+            InputProps={
+              applying
+                ? { endAdornment: <SyncIcon className="wd-animate-spin" /> }
+                : {}
+            }
+            InputLabelProps={{ shrink: true }}
+            sx={{ mb: 2 }}
+          />
+          <IconButton size="small" color="error" onClick={() => deleteField(index)}>
+            <CloseIcon />
+          </IconButton>
+        </div>
       ))}
 
       <Button variant="contained" onClick={addField}>
-        Add Field
+        Tambah Field
       </Button>
     </div>
   );

@@ -1,4 +1,3 @@
-
 import { Suspense } from "react";
 import { RouterProvider } from "react-router-dom";
 import { SnackbarProvider } from "./hooks/useSnackbar";
@@ -20,6 +19,7 @@ import {
   fontFamily,
 } from "./constants/theme_constant";
 import routes from "./router/routes";
+import InjectAllProvider from "./hooks/hooks";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -49,7 +49,6 @@ const muiTheme = createTheme({
     success: {
       main: successColor,
     },
-
     background: {
       default: backgroundColorDefault,
       paper: backgroundColorPaper,
@@ -63,20 +62,17 @@ const muiTheme = createTheme({
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <SnackbarProvider>
-        <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<div>Loading...</div>}>
+        <PersistGate loading={<div>Loading...</div>} persistor={rootPersistor}>
           <Provider store={rootStore}>
-            <PersistGate
-              loading={<div>Loading...</div>}
-              persistor={rootPersistor}
-            >
-              <ThemeProvider theme={muiTheme}>
+            <ThemeProvider theme={muiTheme}>
+              <InjectAllProvider>
                 <RouterProvider router={routes} />
-              </ThemeProvider>
-            </PersistGate>
+              </InjectAllProvider>
+            </ThemeProvider>
           </Provider>
-        </Suspense>
-      </SnackbarProvider>
+        </PersistGate>
+      </Suspense>
     </QueryClientProvider>
   );
 };

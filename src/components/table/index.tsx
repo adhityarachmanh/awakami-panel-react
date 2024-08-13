@@ -7,10 +7,11 @@ import {
   GridToolbar,
 } from "@mui/x-data-grid";
 
-import { Button, TextField, Theme } from "@mui/material";
+import { Button, Menu, MenuItem, TextField, Theme } from "@mui/material";
 import useTable from "./useTable";
 import { APIResponse } from "@/types/APIResponse";
 import { PostQuery } from "@/types/PostQuery";
+import SelectionModal from "./components/SelectionModal";
 interface DataTableInterface<T> {
   uniqKey: string;
   service: (postQuery: PostQuery) => Promise<APIResponse<T>>;
@@ -40,6 +41,7 @@ const DataTable = <T,>({
     currentPage,
     pageSize,
     isLoading,
+    selectedRows,
     handleRowSelectionChange,
     handlePaginationChange,
     handleSortChange,
@@ -52,15 +54,25 @@ const DataTable = <T,>({
       style={{ height: height ? height : "auto" }}
     >
       <div className=" wd-flex wd-justify-between wd-items-center">
-        {showAddButton && (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleAddButtonClick}
-          >
-            Tambah
-          </Button>
-        )}
+        <div className="wd-flex wd-items-center wd-gap-2">
+          {showAddButton && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleAddButtonClick}
+            >
+              Tambah
+            </Button>
+          )}
+          {selectedRows.length > 0 && (
+            <SelectionModal<T>
+              selected={selectedRows}
+              columns={columns}
+              uniqKey={uniqKey}
+              service={service}
+            />
+          )}
+        </div>
         <TextField
           id="search-bar"
           className="text"
@@ -120,6 +132,10 @@ const DataTable = <T,>({
             },
             sx: {
               // Customize inputs using css selectors
+              "& .MuiDataGrid-filterFormDeleteIcon": {
+                marginTop: "0.3rem",
+                marginRight: "1rem",
+              },
               "& .MuiDataGrid-filterForm": {
                 p: 2,
                 height: "auto",
@@ -131,6 +147,7 @@ const DataTable = <T,>({
                 backgroundColor: (theme: Theme) =>
                   theme.palette.mode === "dark" ? "#444" : "#f5f5f5",
               },
+              
               "& .MuiDataGrid-filterFormLogicOperatorInput": { mr: 2 },
               "& .MuiDataGrid-filterFormColumnInput": {
                 mr: 2,
@@ -142,10 +159,13 @@ const DataTable = <T,>({
                 width: 200,
                 marginTop: 0,
               },
-              "& .MuiDataGrid-filterFormValueInput": { width: 200 },
+              "& .MuiDataGrid-filterFormValueInput": { width: 240 },
             },
           },
         }}
+        // isRowSelectable={() => {
+        //   return selectedRows.length === 0;
+        // }}
         rows={rows as any}
         onRowSelectionModelChange={handleRowSelectionChange}
         columns={updatedColumns} // Use updatedColumns here
@@ -163,6 +183,8 @@ const DataTable = <T,>({
         onFilterModelChange={handleFilterChange}
         disableColumnResize={disableColumnResize}
         autoHeight={height ? false : true}
+        hideFooterSelectedRowCount
+
         // scrollbarSize={100}
       />
     </div>

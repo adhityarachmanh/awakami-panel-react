@@ -1,17 +1,20 @@
 import { Button } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import moment from "moment";
-import React from "react";
-import TestService from "../../services/TestService";
+import RelawanService from "../../services/RelawanService";
+import { useConfirmationDialog } from "@/hooks/useConfirmationDialog";
+import { useDialog } from "@/hooks/useDialog";
 
 const useListRelawan = () => {
-  const testService = new TestService();
+  const testService = new RelawanService();
+  const { showConfirmationDialog } = useConfirmationDialog();
+  const { showDialog } = useDialog();
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", flex: 1, type: "number" },
+    { field: "id", headerName: "ID", width: 100, type: "number" },
+    { field: "nama", headerName: "Nama", flex: 1 },
+    { field: "noKTP", headerName: "No KTP", flex: 1 },
+    { field: "jabatan", headerName: "Jabatan", flex: 1 },
 
-    { field: "name", headerName: "Name", flex: 1 },
-
-    { field: "email", headerName: "Email", flex: 1 },
     {
       field: "createdDate",
       headerName: "Created Date",
@@ -52,7 +55,25 @@ const useListRelawan = () => {
               variant="contained"
               color="secondary"
               fullWidth
-              onClick={() => {}}
+              onClick={() => {
+                showConfirmationDialog(
+                  "Apakah Anda yakin ingin menghapus item ini?",
+                  "Apakah Anda yakin ingin menghapus relawan ini? Tindakan ini tidak dapat dibatalkan.",
+
+                  () => {
+                    console.log("delete button clicked");
+                  },
+                  () => {
+                    console.log("cancel button clicked");
+                  },
+                  {
+                    acceptLabel: "Ya, Hapus",
+                    acceptColor: "secondary",
+                    rejectLabel: "Tidak, Batal",
+                    rejectColor: "primary",
+                  }
+                );
+              }}
             >
               {" "}
               <span className="wd-font-sans   wd-text-white">Delete</span>
@@ -63,7 +84,12 @@ const useListRelawan = () => {
     },
   ];
   const handleAddButtonClick = () => {
-    console.log("add button clicked");
+    showDialog("Add Relawan", (close) => (
+      <div className="wd-flex wd-flex-col wd-gap-2 wd-w-[500px]">
+        <p>Content Relawan</p>
+        <Button onClick={close}>Close</Button>
+      </div>
+    ));
   };
   return {
     columns,

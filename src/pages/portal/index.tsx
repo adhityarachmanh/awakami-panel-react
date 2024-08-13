@@ -39,8 +39,12 @@ export default function ResponsiveDrawer(props: Props) {
       <AppBar />
       <Sidebar container={container} />
       <StyledMain open={desktopOpen}>
+      <div className="wd-fixed wd-bg-y-50 -wd-z-50 wd-w-full wd-top-0 wd-bg-content wd-bg-layout-header wd-min-h-[18.75rem]">
+          <span className="wd-absolute wd-top-0 wd-left-0 wd-w-full wd-h-full wd-bg-blue-500 wd-opacity-60"></span>
+        </div>
         <Toolbar />
         <Outlet />
+       
       </StyledMain>
     </Box>
   );

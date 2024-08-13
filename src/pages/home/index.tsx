@@ -6,7 +6,7 @@ import PieChart from "@/components/charts/PieChart";
 
 const HomePage = () => {
   return (
-    <div className="wd-flex wd-flex-col wd-gap-4">
+    <div className="wd-flex wd-flex-col wd-gap-4 wd-mt-[10rem] wd-px-4">
       <div className="wd-grid xl:wd-grid-cols-3  2xl:wd-grid-cols-6 wd-gap-4 wd-mt-4">
         {[...Array(6)].map((_, index) => (
           <Card key={index} sx={{ p: 2, borderRadius: 1, boxShadow: 1 }}>
