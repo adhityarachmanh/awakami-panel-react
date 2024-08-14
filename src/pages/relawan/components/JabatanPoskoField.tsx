@@ -21,7 +21,7 @@ const JabatanPoskoField = () => {
           value={
             jabatanPosko.find((option) => option.value === field.value) || null
           }
-          onChange={(event, value) =>
+          onChange={(_event, value) =>
             form.setFieldValue(field.name, value ? value.value : "")
           }
           isOptionEqualToValue={(option, value) => option.value === value.value}
@@ -36,7 +36,8 @@ const JabatanPoskoField = () => {
               InputLabelProps={{
                 shrink: true,
               }}
-             
+              error={form.touched.jabatanPosko && Boolean(form.errors.jabatanPosko)}
+              helperText={form.touched.jabatanPosko && form.errors.jabatanPosko}
             />
           )}
         />

@@ -93,9 +93,10 @@ const AppBar = () => {
           {pathnames.map((value, index) => {
             const to = `/${pathnames.slice(0, index + 1).join("/")}`;
             const isLast = index === pathnames.length - 1;
+            const formattedValue = value.replace(/-/g, ' ');
             return isLast ? (
               <Typography color="white" sx={{ fontWeight: "bold" }} key={to}>
-                {toPascalCase(value)}
+                {toPascalCase(formattedValue)}
               </Typography>
             ) : (
               <Link
@@ -105,7 +106,7 @@ const AppBar = () => {
                 to={to}
                 key={to}
               >
-                {toPascalCase(value)}
+                {toPascalCase(formattedValue)}
               </Link>
             );
           })}

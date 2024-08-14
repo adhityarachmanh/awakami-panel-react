@@ -3,6 +3,7 @@ import { Button, TextField } from "@mui/material";
 import { PostQuery } from "@/types/PostQuery";
 
 interface DefaultHeaderTableProps {
+  paginable: boolean;
   showAddButton: boolean;
   handleAddButtonClick?: () => void;
   postQuery: PostQuery;
@@ -10,6 +11,7 @@ interface DefaultHeaderTableProps {
 }
 
 const DefaultHeaderTable: React.FC<DefaultHeaderTableProps> = ({
+  paginable,
   showAddButton,
   handleAddButtonClick,
   postQuery,
@@ -28,20 +30,22 @@ const DefaultHeaderTable: React.FC<DefaultHeaderTableProps> = ({
           </Button>
         )}
       </div>
-      <TextField
-        id="search-bar"
-        className="text"
-        onInput={(e) => {
-          setPostQuery({
-            ...postQuery,
-            keywords: (e.target as HTMLInputElement).value,
-          });
-        }}
-        label="Pencarian"
-        variant="outlined"
-        placeholder="Cari..."
-        size="small"
-      />
+      {paginable && (
+        <TextField
+          id="search-bar"
+          className="text"
+          onInput={(e) => {
+            setPostQuery({
+              ...postQuery,
+              keywords: (e.target as HTMLInputElement).value,
+            });
+          }}
+          label="Pencarian"
+          variant="outlined"
+          placeholder="Cari..."
+          size="small"
+        />
+      )}
     </div>
   );
 };

@@ -1,9 +1,7 @@
 import React from "react";
 import { Field } from "formik";
 import { Autocomplete, TextField } from "@mui/material";
-import {
-  JENIS_KELAMIN_OPTIONS,
-} from "@/constants/app_constant";
+import { JENIS_KELAMIN_OPTIONS } from "@/constants/app_constant";
 
 const JenisKelaminField = () => {
   const jenisKelamin = React.useMemo(
@@ -23,7 +21,7 @@ const JenisKelaminField = () => {
           value={
             jenisKelamin.find((option) => option.value === field.value) || null
           }
-          onChange={(event, value) =>
+          onChange={(_event, value) =>
             form.setFieldValue(field.name, value ? value.value : "")
           }
           isOptionEqualToValue={(option, value) => option.value === value.value}
@@ -37,6 +35,10 @@ const JenisKelaminField = () => {
               InputLabelProps={{
                 shrink: true,
               }}
+              error={
+                form.touched.jenisKelamin && Boolean(form.errors.jenisKelamin)
+              }
+              helperText={form.touched.jenisKelamin && form.errors.jenisKelamin}
             />
           )}
         />

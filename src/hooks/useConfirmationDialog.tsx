@@ -4,6 +4,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
+import { Breakpoint } from "@mui/material";
 
 type ConfirmationDialogColor =
   | "inherit"
@@ -21,6 +22,8 @@ type ConfirmationDialogContextType = {
     onAccept: () => void,
     onReject?: () => void,
     options?: {
+      maxWidth?: Breakpoint | false;
+      fullWidth?: boolean;
       acceptLabel?: string;
       acceptColor?: ConfirmationDialogColor;
       rejectLabel?: string;
@@ -63,17 +66,20 @@ export const ConfirmationDialogProvider = ({
     useState<ConfirmationDialogColor>("primary");
   const [rejectColor, setRejectColor] =
     useState<ConfirmationDialogColor>("secondary");
-
+  const [maxWidth, setMaxWidth] = useState<Breakpoint | false>(false);
+  const [fullWidth, setFullWidth] = useState<boolean>(false);
   const showConfirmationDialog = (
     title: string,
     content: ReactNode,
     onAccept: () => void,
     onReject?: () => void,
     options?: {
+      maxWidth?: Breakpoint | false;
       acceptLabel?: string;
       acceptColor?: ConfirmationDialogColor;
       rejectLabel?: string;
       rejectColor?: ConfirmationDialogColor;
+      fullWidth?: boolean;
     }
   ) => {
     setDialogTitle(title);
@@ -85,6 +91,8 @@ export const ConfirmationDialogProvider = ({
     setAcceptColor(options?.acceptColor || "primary");
     setRejectColor(options?.rejectColor || "secondary");
     setDialogOpen(true);
+    setMaxWidth(options?.maxWidth || "xs");
+    setFullWidth(options?.fullWidth || false);
   };
 
   const handleAccept = () => {
@@ -98,9 +106,14 @@ export const ConfirmationDialogProvider = ({
   };
 
   return (
-    <ConfirmationDialogContext.Provider  value={{ showConfirmationDialog }}>
+    <ConfirmationDialogContext.Provider value={{ showConfirmationDialog }}>
       {children}
-      <Dialog open={dialogOpen} onClose={handleReject}>
+      <Dialog
+        open={dialogOpen}
+        onClose={handleReject}
+        maxWidth={maxWidth}
+        fullWidth={fullWidth}
+      >
         <DialogTitle>{dialogTitle}</DialogTitle>
         <DialogContent>{dialogContent}</DialogContent>
         <DialogActions>

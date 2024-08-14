@@ -13,18 +13,6 @@ const ListRelawan = () => {
         <CardContent>
           <DataTable
             height="500px"
-            // filterConfigsCustom={[
-            //   ...defaultFilterConfigs, 
-            //   {
-            //     label: "Custom",
-            //     value: "custom",
-            //     component: InputFilterField,
-            //   },
-              
-            // ]}
-            onSelectionChange={(selectedRows) => {
-              // console.log(selectedRows);
-            }}
             uniqKey={uniqKey}
             handleAddButtonClick={handleAddButtonClick}
             columns={columns}

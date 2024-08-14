@@ -39,7 +39,7 @@ const ProvinsiField = () => {
           value={
             provinsi.find((option) => option.value === field.value) || null
           }
-          onChange={(event, value) =>
+          onChange={(_event, value) =>
             form.setFieldValue(field.name, value ? value.value : "")
           }
           isOptionEqualToValue={(option, value) => option.value === value.value}
@@ -53,6 +53,8 @@ const ProvinsiField = () => {
               InputLabelProps={{
                 shrink: true,
               }}
+              error={form.touched.provinsiId && Boolean(form.errors.provinsiId)}
+              helperText={form.touched.provinsiId && form.errors.provinsiId}
             />
           )}
         />

@@ -1,13 +1,12 @@
 import {
   Card,
   CardContent,
-  TextField,
   Button,
   CardHeader,
   IconButton,
   CircularProgress,
 } from "@mui/material";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form } from "formik";
 import { ArrowCircleLeftOutlined } from "@mui/icons-material";
 import { RelawanFormModel } from "../../types/RelawanModel";
 import JabatanPoskoField from "../../components/JabatanPoskoField";
@@ -18,6 +17,11 @@ import KotaField from "../../components/KotaField";
 import KecamatanField from "../../components/KecamatanField";
 import KelurahanField from "../../components/KelurahanField";
 import useTambahRelawan from "./useTambahRelawan";
+import NamaField from "../../components/NamaField";
+import NoKTPField from "../../components/NoKTPField";
+import EmailField from "../../components/EmailField";
+import JabatanField from "../../components/JabatanField";
+import AlamatField from "../../components/AlamatField";
 
 const TambahRelawan = () => {
   const { validationCreateSchema, navigate, mutation } = useTambahRelawan();
@@ -64,115 +68,26 @@ const TambahRelawan = () => {
               mutation.mutate(values);
             }}
           >
-            {({ values, handleSubmit, errors, touched }) => (
+            {({ handleSubmit }) => (
               <Form
                 className="wd-grid lg:wd-grid-cols-2 wd-gap-4"
                 onSubmit={handleSubmit}
               >
                 <div className="wd-flex wd-flex-col ">
-                  <div>
-                    <Field
-                      name="nama"
-                      as={TextField}
-                      label="Nama"
-                      variant="outlined"
-                      fullWidth
-                      margin="normal"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      error={touched.nama && Boolean(errors.nama)}
-                      helperText={touched.nama && errors.nama}
-                    />
-                  </div>
-                  <div>
-                    <Field
-                      name="email"
-                      as={TextField}
-                      label="Email"
-                      variant="outlined"
-                      fullWidth
-                      margin="normal"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      error={touched.email && Boolean(errors.email)}
-                      helperText={touched.email && errors.email}
-                    />
-                  </div>
-
-                  <div>
-                    <Field
-                      name="noKTP"
-                      as={TextField}
-                      label="No KTP"
-                      variant="outlined"
-                      fullWidth
-                      margin="normal"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      error={touched.noKTP && Boolean(errors.noKTP)}
-                      helperText={touched.noKTP && errors.noKTP}
-                      inputProps={{
-                        maxLength: 16,
-                        onKeyPress: (
-                          event: React.KeyboardEvent<HTMLInputElement>
-                        ) => {
-                          if (!/[0-9]/.test(event.key)) {
-                            event.preventDefault();
-                          }
-                        },
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <JenisKelaminField />
-                  </div>
-                  <div>
-                    <Field
-                      name="jabatan"
-                      as={TextField}
-                      label="Jabatan"
-                      variant="outlined"
-                      fullWidth
-                      margin="normal"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      error={touched.jabatan && Boolean(errors.jabatan)}
-                      helperText={touched.jabatan && errors.jabatan}
-                    />
-                  </div>
-
-                  <div>
-                    <JabatanPoskoField />
-                  </div>
-                  <div>
-                    <PoskoField />
-                  </div>
+                  <NamaField />
+                  <EmailField />
+                  <NoKTPField />
+                  <JenisKelaminField />
+                  <JabatanField />
+                  <JabatanPoskoField />
+                  <PoskoField />
                 </div>
                 <div className="wd-flex wd-flex-col">
                   <ProvinsiField />
-
                   <KotaField />
                   <KecamatanField />
                   <KelurahanField />
-                  <div>
-                    <Field
-                      name="alamat"
-                      as={TextField}
-                      label="Alamat"
-                      variant="outlined"
-                      fullWidth
-                      margin="normal"
-                      multiline
-                      rows={4}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                    />
-                  </div>
+                  <AlamatField />
                 </div>
                 <Button
                   disabled={mutation.isPending}

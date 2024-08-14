@@ -7,10 +7,15 @@ import {
   RelawanEditFormModel,
   RelawanFormModel,
   RelawanModel,
+  TPSRelawanModel,
 } from "../types/RelawanModel";
+import { TPSRelawanFormModel } from "../types/TPSRelawanModel";
 
 class RelawanService {
   private baseURL = `${import.meta.env.VITE_BASE_URL}/api/v1/relawan`;
+  private baseURLTPSRelawan = `${
+    import.meta.env.VITE_BASE_URL
+  }/api/v1/tps_relawan`;
   authService: AuthService;
 
   constructor() {
@@ -31,18 +36,18 @@ class RelawanService {
         );
         return response.data.data;
       }
-      throw new Error("Token refresh failed");
+      throw new Error("User not authenticated");
     } catch (error) {
       ResponseHandler.handleErrorResponse(error);
     }
   }
-  public async all(postQuery: PostQuery): Promise<APIResponse<any>> {
+  public async all(postQuery: PostQuery): Promise<APIResponse<RelawanModel[]>> {
     try {
       const auth = this.authService.getAuthenticated();
       if (!auth) {
         throw new Error("Auth is not authenticated");
       }
-      const response = await axios.post<APIResponse<any>>(
+      const response = await axios.post<APIResponse<RelawanModel[]>>(
         `${this.baseURL}/all`,
         postQuery,
         {
@@ -71,7 +76,7 @@ class RelawanService {
         );
         return response.data.data;
       }
-      throw new Error("Token refresh failed");
+      throw new Error("User not authenticated");
     } catch (error) {
       ResponseHandler.handleErrorResponse(error);
     }
@@ -83,6 +88,109 @@ class RelawanService {
         const response = await axios.put<APIResponse<RelawanModel>>(
           `${this.baseURL}/update/${id}`,
           data,
+          {
+            headers: {
+              Authorization: `Bearer ${auth.accessToken}`,
+            },
+          }
+        );
+        return response.data.data;
+      }
+      throw new Error("User not authenticated");
+    } catch (error) {
+      ResponseHandler.handleErrorResponse(error);
+    }
+  }
+  async delete(ids: string[]): Promise<APIResponse<any>> {
+    const auth = this.authService.getAuthenticated();
+    if (!auth) {
+      throw new Error("User not authenticated");
+    }
+    try {
+      const response = await axios.post<APIResponse<any>>(
+        `${this.baseURL}/delete`,
+        {
+          ids: ids,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${auth.accessToken}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      ResponseHandler.handleErrorResponse(error);
+    }
+  }
+  async getTPSRelawan(id: number): Promise<APIResponse<TPSRelawanModel[]>> {
+    try {
+      const auth = this.authService.getAuthenticated();
+      if (auth !== null) {
+        const response = await axios.get<APIResponse<TPSRelawanModel[]>>(
+          `${this.baseURLTPSRelawan}/list-by-relawan-id/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${auth.accessToken}`,
+            },
+          }
+        );
+        return response.data;
+      }
+      throw new Error("User not authenticated");
+    } catch (error) {
+      ResponseHandler.handleErrorResponse(error);
+    }
+  }
+  async createTPSRelawan(data: TPSRelawanFormModel) {
+    try {
+      const auth = this.authService.getAuthenticated();
+      if (auth !== null) {
+        const response = await axios.post<APIResponse<TPSRelawanModel>>(
+          `${this.baseURLTPSRelawan}/create`,
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${auth.accessToken}`,
+            },
+          }
+        );
+        return response.data.data;
+      }
+      throw new Error("Token refresh failed");
+    } catch (error) {
+      ResponseHandler.handleErrorResponse(error);
+    }
+  }
+  async updateTPSRelawan(tpsId: number, data: TPSRelawanFormModel) {
+    try {
+      const auth = this.authService.getAuthenticated();
+      if (auth !== null) {
+        const response = await axios.put<APIResponse<TPSRelawanModel>>(
+          `${this.baseURLTPSRelawan}/update/${tpsId}`,
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${auth.accessToken}`,
+            },
+          }
+        );
+        return response.data.data;
+      }
+      throw new Error("Token refresh failed");
+    } catch (error) {
+      ResponseHandler.handleErrorResponse(error);
+    }
+  }
+  async deleteTPSRelawan(ids: string[]) {
+    try {
+      const auth = this.authService.getAuthenticated();
+      if (auth !== null) {
+        const response = await axios.post<APIResponse<TPSRelawanModel>>(
+          `${this.baseURLTPSRelawan}/delete`,
+          {
+            ids,
+          },
           {
             headers: {
               Authorization: `Bearer ${auth.accessToken}`,

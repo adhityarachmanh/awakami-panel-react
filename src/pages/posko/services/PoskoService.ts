@@ -3,6 +3,7 @@ import { APIResponse } from "@/types/APIResponse";
 import { ResponseHandler } from "@/utility/ResponseHandler";
 import axios from "axios";
 import { PoskoModel } from "../types/PoskoModel";
+import { PostQuery } from "@/types/PostQuery";
 
 class PoskoService {
   private poskoUrl = `${import.meta.env.VITE_BASE_URL}/api/v1/posko`;
@@ -20,6 +21,27 @@ class PoskoService {
       }
       const response = await axios.get<APIResponse<PoskoModel[]>>(
         `${this.poskoUrl}/list`,
+        {
+          headers: {
+            Authorization: `Bearer ${auth.accessToken}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      ResponseHandler.handleErrorResponse(error);
+    }
+  }
+
+  async all(postQuery: PostQuery): Promise<APIResponse<PoskoModel[]>> {
+    try {
+      const auth = this.authService.getAuthenticated();
+      if (!auth) {
+        throw new Error("Auth is not authenticated");
+      }
+      const response = await axios.post<APIResponse<PoskoModel[]>>(
+        `${this.poskoUrl}/all`,
+        postQuery,
         {
           headers: {
             Authorization: `Bearer ${auth.accessToken}`,

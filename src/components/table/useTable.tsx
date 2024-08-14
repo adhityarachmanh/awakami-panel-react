@@ -8,7 +8,7 @@ import defaultFilterConfigs from "./constants/filterConfig";
 
 const useTable = <T,>(
   uniqKey: string,
-  service: (postQuery: PostQuery) => Promise<APIResponse<T>>,
+  service: (postQuery: PostQuery) => Promise<APIResponse<T[]>>,
   postQueryValue?: PostQuery,
   onSelectionChange?: (selectedRows: T[]) => void,
   filterConfigsCustom?: FilterType[]
@@ -63,14 +63,7 @@ const useTable = <T,>(
     }
   }, [selectedRows]);
   const {
-    data: {
-      data: rows = [],
-      page: {
-        total: totalRows = 0,
-        current: currentPage = 1,
-        size: pageSize = 5,
-      } = {},
-    } = {},
+    data:query,
     isFetching: isLoading,
   } = useQuery({
     queryKey: [
@@ -84,7 +77,12 @@ const useTable = <T,>(
     queryFn: () => service(postQuery),
     placeholderData: keepPreviousData,
   });
-
+  // const rows = data ?? [];
+  // const totalRows = total ?? 0;
+  // const currentPage = current ?? 1;
+  // const pageSize = size ?? 5;
+  
+  
   const getInitialFilter = (field: string) => {
     return (
       postQuery?.filters?.find((filter) => filter.key === field) || {
@@ -176,10 +174,7 @@ const useTable = <T,>(
   return {
     filterConfigs,
     postQuery,
-    rows,
-    totalRows,
-    currentPage,
-    pageSize,
+    query,
     isLoading,
     selectedRows,
     isActiveSort,

@@ -26,11 +26,7 @@ const useEditRelawan = (id: number) => {
     alamat: Yup.string().required("Alamat is required"),
   });
 
-  const {
-    data,
-    isFetching: isLoading,
-    error,
-  } = useQuery({
+  const { data, isFetching: isLoading } = useQuery({
     queryKey: ["relawan-detail", id],
     queryFn: () => relawanService.getDetail(id),
   });
@@ -38,7 +34,7 @@ const useEditRelawan = (id: number) => {
     mutationFn: (data: RelawanEditFormModel) => relawanService.update(id, data),
     onSuccess: () => {
       showSnackbar("Relawan berhasil diubah", "success");
-      navigate("/portal/relawan");
+      navigate(`/portal/relawan/detail/${id}`);
     },
     onError: (error) => {
       showSnackbar(error.message, "error");

@@ -2,31 +2,29 @@ import React from "react";
 import { Field } from "formik";
 import { Autocomplete, TextField } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import PoskoService from "@/pages/posko/services/PoskoService";
+import TPSService from "@/pages/tps/services/TPSService";
 
-const PoskoField = () => {
-  const poskoService = new PoskoService();
-  const { data: poskoData } = useQuery({
-    queryKey: ["posko"],
-    queryFn: () => poskoService.list(),
+const TPSField = () => {
+  const tpsService = new TPSService();
+  const { data: tpsData } = useQuery({
+    queryKey: ["tps"],
+    queryFn: () => tpsService.list(),
   });
-  const posko = React.useMemo(
+  const tps = React.useMemo(
     () =>
-      poskoData?.data.map((posko) => ({
-        label: posko.nama,
-        value: posko.id,
+      tpsData?.data.map((tps) => ({
+        label: tps.nomor,
+        value: tps.id,
       })) ?? [],
-    [poskoData]
+    [tpsData]
   );
   return (
-    <Field name="poskoId">
+    <Field name="tpsId">
       {({ field, form }: { field: any; form: any }) => (
         <Autocomplete
-          options={posko}
+          options={tps}
           getOptionLabel={(option) => option.label ?? ""}
-          value={
-            posko.find((option) => option.value === field.value) || null
-          }
+          value={tps.find((option) => option.value === field.value) || null}
           onChange={(_, value) =>
             form.setFieldValue(field.name, value ? value.value : "")
           }
@@ -34,15 +32,15 @@ const PoskoField = () => {
           renderInput={(params) => (
             <TextField
               {...params}
-              label="Posko"
+              label="TPS"
               variant="outlined"
               fullWidth
               margin="normal"
               InputLabelProps={{
                 shrink: true,
               }}
-              error={form.touched.poskoId && Boolean(form.errors.poskoId)}
-              helperText={form.touched.poskoId && form.errors.poskoId}
+              error={form.touched.tpsId && Boolean(form.errors.tpsId)}
+              helperText={form.touched.tpsId && form.errors.tpsId}
             />
           )}
         />
@@ -51,4 +49,4 @@ const PoskoField = () => {
   );
 };
 
-export default PoskoField;
+export default TPSField;

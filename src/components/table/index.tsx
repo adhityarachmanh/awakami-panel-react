@@ -1,5 +1,4 @@
-import React from "react";
-import { GridFeatureMode } from "@mui/x-data-grid";
+import React, { useMemo } from "react";
 
 import {
   Checkbox,
@@ -22,13 +21,13 @@ import SortingComponent from "./components/Sorting";
 import { FilterType } from "./types/FilterModel";
 import DefaultHeaderTable from "./components/DefaultHeaderTable";
 interface DataTableInterface<T> {
-  selectable?: boolean;
   uniqKey: string;
+  selectable?: boolean;
+  paginable?: boolean;
   filterConfigsCustom?: FilterType[];
   onSelectionChange?: (selectedRows: T[]) => void;
-  service: (postQuery: PostQuery) => Promise<APIResponse<T>>;
+  service: (postQuery: PostQuery) => Promise<APIResponse<T[]>>;
   postQueryValue?: PostQuery;
-  mode?: GridFeatureMode;
   columns: ColumnType<T>[];
   disableColumnResize?: boolean;
   height?: string;
@@ -50,6 +49,7 @@ const DataTable = <T,>({
   rowsPerPageOptions = [5, 10, 20, 30, 40, 50],
   height,
   showAddButton = true,
+  paginable = true,
   uniqKey,
   service,
   handleAddButtonClick,
@@ -61,10 +61,7 @@ const DataTable = <T,>({
   const {
     filterConfigs,
     postQuery,
-    rows,
-    totalRows,
-    currentPage,
-    pageSize,
+    query,
     isLoading,
     selectedRows,
     allRowsSelected,
@@ -85,7 +82,10 @@ const DataTable = <T,>({
     onSelectionChange,
     filterConfigsCustom
   );
-
+  const rows = useMemo(() => query?.data ?? [], [query]);
+  const totalRows = useMemo(() => query?.page?.total ?? 0, [query]);
+  const currentPage = useMemo(() => query?.page?.current ?? 1, [query]);
+  const pageSize = useMemo(() => query?.page?.size ?? 5, [query]);
   return (
     <div className="w-full wd-flex-col wd-flex">
       {renderHeader ? (
@@ -98,6 +98,7 @@ const DataTable = <T,>({
         })
       ) : (
         <DefaultHeaderTable
+          paginable={paginable}
           showAddButton={showAddButton}
           handleAddButtonClick={handleAddButtonClick}
           postQuery={postQuery}
@@ -164,23 +165,31 @@ const DataTable = <T,>({
                     </span>
                     {column.type !== "actions" && (
                       <div className="wd-flex wd-flex-row wd-items-center">
-                        <SortingComponent
-                          isActiveSort={isActiveSort(column.field)}
-                          currentOrder={currentOrder(column.field)}
-                          handleSortChange={() =>
-                            handleSortChange(column.field)
-                          }
-                        />
-                        <FilterDropdown
-                          field={column.field}
-                          type={column.type}
-                          isActiveFilter={isActiveFilter(column.field)}
-                          initialFilter={getInitialFilter(column.field)}
-                          headerName={column.headerName}
-                          filterConfigs={filterConfigs}
-                          onApply={handleFilterChange}
-                          resetFilter={resetFilter}
-                        />
+                        {paginable ? (
+                          <SortingComponent
+                            isActiveSort={isActiveSort(column.field)}
+                            currentOrder={currentOrder(column.field)}
+                            handleSortChange={() =>
+                              handleSortChange(column.field)
+                            }
+                          />
+                        ) : (
+                          <></>
+                        )}
+                        {paginable ? (
+                          <FilterDropdown
+                            field={column.field}
+                            type={column.type}
+                            isActiveFilter={isActiveFilter(column.field)}
+                            initialFilter={getInitialFilter(column.field)}
+                            headerName={column.headerName}
+                            filterConfigs={filterConfigs}
+                            onApply={handleFilterChange}
+                            resetFilter={resetFilter}
+                          />
+                        ) : (
+                          <></>
+                        )}
                       </div>
                     )}
                   </div>
@@ -230,25 +239,29 @@ const DataTable = <T,>({
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-        component="div"
-        count={totalRows}
-        page={currentPage - 1}
-        onPageChange={(_, newPage: number) =>
-          handlePaginationChange({
-            page: newPage,
-            pageSize: pageSize,
-          })
-        }
-        rowsPerPage={pageSize}
-        rowsPerPageOptions={rowsPerPageOptions}
-        onRowsPerPageChange={(event: any) =>
-          handlePaginationChange({
-            page: 0,
-            pageSize: parseInt(event.target.value),
-          })
-        }
-      />
+      {paginable ? (
+        <TablePagination
+          component="div"
+          count={totalRows}
+          page={currentPage - 1}
+          onPageChange={(_, newPage: number) =>
+            handlePaginationChange({
+              page: newPage,
+              pageSize: pageSize,
+            })
+          }
+          rowsPerPage={pageSize}
+          rowsPerPageOptions={rowsPerPageOptions}
+          onRowsPerPageChange={(event: any) =>
+            handlePaginationChange({
+              page: 0,
+              pageSize: parseInt(event.target.value),
+            })
+          }
+        />
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

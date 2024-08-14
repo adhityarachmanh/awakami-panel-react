@@ -1,19 +1,16 @@
-import { Button } from "@mui/material";
 import moment from "moment";
 import RelawanService from "../../services/RelawanService";
-import { useDialog } from "@/hooks/useDialog";
 // import { useQueryClient } from "@tanstack/react-query";
-import TableAction from "./components/TableAction";
 import { RelawanModel } from "../../types/RelawanModel";
 import { ColumnType } from "@/components/table/types/ColumnModel";
 import { PostQuery } from "@/types/PostQuery";
 import { useNavigate } from "react-router-dom";
+import TableRelawanAction from "../../components/TableRelawanAction";
 
 const useListRelawan = () => {
   const uniqKey = "relawan";
   const testService = new RelawanService();
   // const queryClient = useQueryClient();
-  const { showDialog } = useDialog();
   const navigate = useNavigate();
   const columns: ColumnType<RelawanModel>[] = [
     { field: "id", headerName: "ID", width: 100, type: "number" },
@@ -46,36 +43,14 @@ const useListRelawan = () => {
       type: "actions",
       headerName: "Action",
       renderCell: (data: RelawanModel) => {
-        return (
-          <TableAction
-            handleEditButtonClick={handleEditButtonClick}
-            data={data}
-          />
-        );
+        return <TableRelawanAction data={data} />;
       },
     },
   ];
   const handleAddButtonClick = () => {
-    // showDialog("Tambah Relawan", (close) => (
-    //   <div className="wd-flex wd-flex-col wd-gap-2 wd-w-[500px]">
-    //     <p>Content Relawan</p>
-    //     <Button onClick={close}>Close</Button>
-    //   </div>
-    // ));
     navigate("/portal/relawan/tambah");
   };
-  const handleEditButtonClick = (data: RelawanModel) => {
-    navigate(`/portal/relawan/edit/${data.id}`);
-    // showDialog("Edit Relawan", (close) => (
-    //   <div className="wd-flex wd-flex-col wd-gap-2 wd-w-[500px]">
-    //     <p>Content Relawan</p>
-    //     <p>Nama : {data.nama}</p>
-    //     <p>No KTP : {data.noKTP}</p>
-    //     <p>Jabatan : {data.jabatan}</p>
-    //     <Button onClick={close}>Close</Button>
-    //   </div>
-    // ));
-  };
+
   const service = (postQuery: PostQuery) => {
     return testService.all(postQuery);
   };

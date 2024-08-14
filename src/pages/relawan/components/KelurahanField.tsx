@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Field, useFormikContext } from "formik";
 import { Autocomplete, TextField } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
@@ -6,7 +6,7 @@ import WilayahService from "@/services/WilayahService";
 import { RelawanFormModel } from "@/pages/relawan/types/RelawanModel";
 
 const KelurahanField = () => {
-  const { values, setFieldValue } = useFormikContext<RelawanFormModel>();
+  const { values } = useFormikContext<RelawanFormModel>();
   const wilayahService = new WilayahService();
   const { data: kelurahanData } = useQuery({
     queryKey: ["kelurahan", values.kecamatanId],
@@ -32,7 +32,7 @@ const KelurahanField = () => {
           options={kelurahan}
           getOptionLabel={(option) => option.label ?? ""}
           value={kelurahan.find((option) => option.value === field.value) || null}
-          onChange={(event, value) =>
+          onChange={(_event, value) =>
             form.setFieldValue(field.name, value ? value.value : "")
           }
           isOptionEqualToValue={(option, value) => option.value === value.value}
@@ -46,6 +46,8 @@ const KelurahanField = () => {
               InputLabelProps={{
                 shrink: true,
               }}
+              error={form.touched.kelurahanId && Boolean(form.errors.kelurahanId)}
+              helperText={form.touched.kelurahanId && form.errors.kelurahanId}
             />
           )}
         />
