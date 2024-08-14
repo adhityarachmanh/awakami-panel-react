@@ -1,40 +1,65 @@
 import React from "react";
-import {
-  DataGrid,
-  GridColDef,
-  GridFeatureMode,
-  GridLogicOperator,
-  GridToolbar,
-} from "@mui/x-data-grid";
+import { GridFeatureMode } from "@mui/x-data-grid";
 
-import { Button, Menu, MenuItem, TextField, Theme } from "@mui/material";
+import {
+  Checkbox,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import useTable from "./useTable";
 import { APIResponse } from "@/types/APIResponse";
 import { PostQuery } from "@/types/PostQuery";
-import SelectionModal from "./components/SelectionModal";
+import { ColumnType } from "./types/ColumnModel";
+import FilterDropdown from "./components/FilterDropdown";
+import SortingComponent from "./components/Sorting";
+import { FilterType } from "./types/FilterModel";
+import DefaultHeaderTable from "./components/DefaultHeaderTable";
 interface DataTableInterface<T> {
+  selectable?: boolean;
   uniqKey: string;
+  filterConfigsCustom?: FilterType[];
+  onSelectionChange?: (selectedRows: T[]) => void;
   service: (postQuery: PostQuery) => Promise<APIResponse<T>>;
+  postQueryValue?: PostQuery;
   mode?: GridFeatureMode;
-  columns: GridColDef[];
+  columns: ColumnType<T>[];
   disableColumnResize?: boolean;
   height?: string;
   showAddButton?: boolean;
+  rowsPerPageOptions?: number[];
   handleAddButtonClick?: () => void;
+  renderHeader?: (options: {
+    isLoading: boolean;
+    selectedRows: T[];
+    rows: T[];
+    postQuery: PostQuery;
+    setPostQuery: (postQuery: PostQuery) => void;
+  }) => React.ReactNode;
 }
 
 const DataTable = <T,>({
-  mode = "server",
+  selectable = true,
   columns,
-  disableColumnResize = true,
+  rowsPerPageOptions = [5, 10, 20, 30, 40, 50],
   height,
   showAddButton = true,
   uniqKey,
   service,
   handleAddButtonClick,
+  renderHeader,
+  postQueryValue,
+  filterConfigsCustom,
+  onSelectionChange,
 }: DataTableInterface<T>) => {
   const {
-    updatedColumns,
+    filterConfigs,
     postQuery,
     rows,
     totalRows,
@@ -42,150 +67,187 @@ const DataTable = <T,>({
     pageSize,
     isLoading,
     selectedRows,
-    handleRowSelectionChange,
+    allRowsSelected,
+    oneRowSelected,
     handlePaginationChange,
     handleSortChange,
     handleFilterChange,
     setPostQuery,
-  } = useTable(columns, uniqKey, service);
+    isActiveSort,
+    currentOrder,
+    getInitialFilter,
+    resetFilter,
+    isActiveFilter,
+  } = useTable(
+    uniqKey,
+    service,
+    postQueryValue,
+    onSelectionChange,
+    filterConfigsCustom
+  );
+
   return (
-    <div
-      className="w-full wd-flex-col wd-flex  "
-      style={{ height: height ? height : "auto" }}
-    >
-      <div className=" wd-flex wd-justify-between wd-items-center">
-        <div className="wd-flex wd-items-center wd-gap-2">
-          {showAddButton && (
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleAddButtonClick}
-            >
-              Tambah
-            </Button>
-          )}
-          {selectedRows.length > 0 && (
-            <SelectionModal<T>
-              selected={selectedRows}
-              columns={columns}
-              uniqKey={uniqKey}
-              service={service}
-            />
-          )}
-        </div>
-        <TextField
-          id="search-bar"
-          className="text"
-          onInput={(e) => {
-            setPostQuery({
-              ...postQuery,
-              keywords: (e.target as HTMLInputElement).value,
-            });
-          }}
-          label="Pencarian"
-          variant="outlined"
-          placeholder="Cari..."
-          size="small"
+    <div className="w-full wd-flex-col wd-flex">
+      {renderHeader ? (
+        renderHeader({
+          isLoading,
+          selectedRows: selectedRows as T[],
+          rows: rows as T[],
+          postQuery,
+          setPostQuery,
+        })
+      ) : (
+        <DefaultHeaderTable
+          showAddButton={showAddButton}
+          handleAddButtonClick={handleAddButtonClick}
+          postQuery={postQuery}
+          setPostQuery={setPostQuery}
         />
-      </div>
-      <DataGrid
-        className="wd-mt-4 "
-        // slots={{
-        //   toolbar: GridToolbar,
-        //   // Use custom FilterPanel only for deep modification
-        //   // FilterPanel: MyCustomFilterPanel,
-        // }}
-        slotProps={{
-          filterPanel: {
-            // Force usage of "And" operator
+      )}
+      <TableContainer
+        elevation={0}
+        component={Paper}
+        className="wd-mt-4"
+        style={{ height: height ? height : "auto" }}
+      >
+        <Table>
+          <TableHead>
+            <TableRow>
+              {selectable && (
+                <TableCell
+                  padding="checkbox"
+                  style={{
+                    position: "sticky",
+                    top: 0,
+                    background: "#fff",
+                    zIndex: 1,
+                  }}
+                >
+                  <Checkbox
+                    indeterminate={
+                      selectedRows.length > 0 &&
+                      selectedRows.length < (rows as T[]).length
+                    }
+                    checked={
+                      (rows as T[]).length > 0 &&
+                      selectedRows.length === (rows as T[]).length
+                    }
+                    onChange={(event) => {
+                      if (event.target.checked) {
+                        allRowsSelected(rows as T[]);
+                      } else {
+                        allRowsSelected([]);
+                      }
+                    }}
+                  />
+                </TableCell>
+              )}
+              {columns.map((column, i) => (
+                <TableCell
+                  width={column.width}
+                  className={column.cellClassName}
+                  key={i}
+                  colSpan={column.fullWidth ? columns.length : undefined}
+                  style={{
+                    position: "sticky",
+                    top: 0,
+                    background: "#fff",
+                    zIndex: 1,
+                  }}
+                >
+                  <div className="wd-flex wd-flex-row wd-items-center wd-justify-between wd-w-full">
+                    <span className="wd-flex wd-flex-row wd-items-center">
+                      <Typography variant="body1" fontWeight="bold">
+                        {" "}
+                        {column.headerName}
+                      </Typography>
+                    </span>
+                    {column.type !== "actions" && (
+                      <div className="wd-flex wd-flex-row wd-items-center">
+                        <SortingComponent
+                          isActiveSort={isActiveSort(column.field)}
+                          currentOrder={currentOrder(column.field)}
+                          handleSortChange={() =>
+                            handleSortChange(column.field)
+                          }
+                        />
+                        <FilterDropdown
+                          field={column.field}
+                          type={column.type}
+                          isActiveFilter={isActiveFilter(column.field)}
+                          initialFilter={getInitialFilter(column.field)}
+                          headerName={column.headerName}
+                          filterConfigs={filterConfigs}
+                          onApply={handleFilterChange}
+                          resetFilter={resetFilter}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
 
-            logicOperators: [GridLogicOperator.And],
-            // Display columns by ascending alphabetical order
-            columnsSort: "asc",
-            filterFormProps: {
-              // Customize inputs by passing props
-              logicOperatorInputProps: {
-                variant: "outlined",
-                size: "small",
-              },
-              columnInputProps: {
-                variant: "outlined",
-                size: "small",
-                sx: { mt: "auto" },
-              },
-              operatorInputProps: {
-                variant: "outlined",
-                size: "small",
-                sx: { mt: "auto" },
-              },
-              valueInputProps: {
-                InputComponentProps: {
-                  variant: "outlined",
-                  size: "small",
-                },
-              },
-              deleteIconProps: {
-                sx: {
-                  "& .MuiSvgIcon-root": { color: "#d32f2f" },
-                },
-              },
-            },
-            sx: {
-              // Customize inputs using css selectors
-              "& .MuiDataGrid-filterFormDeleteIcon": {
-                marginTop: "0.3rem",
-                marginRight: "1rem",
-              },
-              "& .MuiDataGrid-filterForm": {
-                p: 2,
-                height: "auto",
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "start",
-              },
-              "& .MuiDataGrid-filterForm:nth-of-type(even)": {
-                backgroundColor: (theme: Theme) =>
-                  theme.palette.mode === "dark" ? "#444" : "#f5f5f5",
-              },
-              
-              "& .MuiDataGrid-filterFormLogicOperatorInput": { mr: 2 },
-              "& .MuiDataGrid-filterFormColumnInput": {
-                mr: 2,
-                width: 200,
-                marginTop: 0,
-              },
-              "& .MuiDataGrid-filterFormOperatorInput": {
-                mr: 2,
-                width: 200,
-                marginTop: 0,
-              },
-              "& .MuiDataGrid-filterFormValueInput": { width: 240 },
-            },
-          },
-        }}
-        // isRowSelectable={() => {
-        //   return selectedRows.length === 0;
-        // }}
-        rows={rows as any}
-        onRowSelectionModelChange={handleRowSelectionChange}
-        columns={updatedColumns} // Use updatedColumns here
-        loading={isLoading}
-        filterDebounceMs={1000}
-        filterMode={mode}
-        sortingMode={mode}
-        paginationMode={mode}
-        rowCount={totalRows}
-        pageSizeOptions={[5, 10]}
-        paginationModel={{ page: currentPage - 1, pageSize: pageSize }}
-        checkboxSelection
-        onPaginationModelChange={handlePaginationChange}
-        onSortModelChange={handleSortChange}
-        onFilterModelChange={handleFilterChange}
-        disableColumnResize={disableColumnResize}
-        autoHeight={height ? false : true}
-        hideFooterSelectedRowCount
-
-        // scrollbarSize={100}
+          <TableBody>
+            {Array.isArray(rows) && rows.length > 0 ? (
+              rows.map((row: any, i) => (
+                <TableRow key={i}>
+                  {selectable && (
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        checked={selectedRows.includes(row)}
+                        onChange={() => oneRowSelected(row)}
+                      />
+                    </TableCell>
+                  )}
+                  {columns.map((column, i) => (
+                    <TableCell
+                      key={i}
+                      width={column.width}
+                      className={column.cellClassName}
+                      colSpan={column.fullWidth ? columns.length : undefined}
+                    >
+                      {column.renderCell
+                        ? column.renderCell(row)
+                        : column.valueFormatter
+                        ? column.valueFormatter(row)
+                        : row[column.field]}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={selectable ? columns.length + 1 : columns.length}
+                  align="center"
+                >
+                  No data available
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        component="div"
+        count={totalRows}
+        page={currentPage - 1}
+        onPageChange={(_, newPage: number) =>
+          handlePaginationChange({
+            page: newPage,
+            pageSize: pageSize,
+          })
+        }
+        rowsPerPage={pageSize}
+        rowsPerPageOptions={rowsPerPageOptions}
+        onRowsPerPageChange={(event: any) =>
+          handlePaginationChange({
+            page: 0,
+            pageSize: parseInt(event.target.value),
+          })
+        }
       />
     </div>
   );

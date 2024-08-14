@@ -8,7 +8,19 @@ export const decryptData = (encryptedData: string): any => {
     const decryptedData = bytes.toString(CryptoJS.enc.Utf8);
     return JSON.parse(decryptedData);
   } catch (error: any) {
-    console.error("Decryption error:", error.message);
+    return null;
+  }
+};
+
+export const encryptData = (data: any): string | null => {
+  try {
+    const stringData = JSON.stringify(data);
+    const encryptedData = CryptoJS.AES.encrypt(
+      stringData,
+      secretKey
+    ).toString();
+    return encryptedData;
+  } catch (error: any) {
     return null;
   }
 };

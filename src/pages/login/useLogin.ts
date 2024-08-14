@@ -2,6 +2,7 @@ import { useSnackbar } from "@/hooks/useSnackbar";
 import AuthService from "@/services/AuthService";
 import { LoginRequest } from "@/types/AuthModel";
 import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
 import { useRootDispatch } from "stores";
 import { authenticate } from "stores/reducers/authReducer";
 import * as Yup from "yup";
@@ -10,6 +11,7 @@ const useLogin = () => {
   const authService = new AuthService();
   const dispatch = useRootDispatch();
   const { showSnackbar } = useSnackbar();
+  const [showPassword, setShowPassword] = useState(false);
   const brandName = import.meta.env.VITE_BRAND_NAME;
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -34,6 +36,12 @@ const useLogin = () => {
       showSnackbar("Login failed", "error");
     },
   });
-  return { mutation, validationSchema, brandName };
+  return {
+    showPassword,
+    mutation,
+    validationSchema,
+    brandName,
+    setShowPassword,
+  };
 };
 export default useLogin;

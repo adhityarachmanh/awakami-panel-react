@@ -5,9 +5,12 @@ const drawerWidth = 240;
 const StyledMain = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   open?: boolean;
 }>(({ theme, open }) => ({
-  flexGrow: 1,
+  flexGrow: 1, 
   position: "relative",
+  height: "100vh",
+  overflowY: "auto", // Enable vertical scrolling
   // padding: theme.spacing(3),
+
   transition: theme.transitions.create("margin", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,

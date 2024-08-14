@@ -1,52 +1,38 @@
-import { TextFieldProps, TextField, Button, IconButton } from "@mui/material";
-import { GridFilterInputValueProps, useGridRootProps } from "@mui/x-data-grid";
+import { TextFieldProps, TextField, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import moment from "moment";
 import React from "react";
 
-import SyncIcon from "@mui/icons-material/Sync";
+import { QueryOperator } from "@/types/PostQuery";
+import { AddCircleOutlineOutlined } from "@mui/icons-material";
 
-type InputType = "date" | "number" | "string";
+export type InputType = "date" | "number" | "string" | "actions";
 
-export function InputBetweenInterval(
-  props: GridFilterInputValueProps & { type: InputType }
-) {
-  const rootProps = useGridRootProps();
-  const { item, applyValue, focusElementRef = null, type } = props;
+export function InputBetweenFilterField(props: {
+  onApply: (value: [string, string]) => void;
+  type: InputType;
+  defaultValue: [string, string];
+  operator: QueryOperator;
+}) {
+  const { type, defaultValue, onApply, operator } = props;
 
-  const filterTimeout = React.useRef<any>();
   const [filterValueState, setFilterValueState] = React.useState<
     [string, string]
-  >(item.value ?? ["", ""]);
-  const [applying, setIsApplying] = React.useState(false);
+  >(defaultValue ?? ["", ""]);
 
   React.useEffect(() => {
-    return () => {
-      clearTimeout(filterTimeout.current);
-    };
-  }, []);
-
-  React.useEffect(() => {
-    const itemValue = item.value ?? ["", ""];
+    const itemValue = defaultValue ?? ["", ""];
     setFilterValueState(itemValue);
-  }, [item.value]);
+  }, [defaultValue, operator]);
 
   const updateFilterValue = (lowerBound: string, upperBound: string) => {
-    clearTimeout(filterTimeout.current);
     setFilterValueState([lowerBound, upperBound]);
 
-    setIsApplying(true);
-    filterTimeout.current = setTimeout(() => {
-      setIsApplying(false);
-      const formattedLowerBound =
-        type === "date" ? moment(lowerBound).format("YYYY-MM-DD") : lowerBound;
-      const formattedUpperBound =
-        type === "date" ? moment(upperBound).format("YYYY-MM-DD") : upperBound;
-      applyValue({
-        ...item,
-        value: [formattedLowerBound, formattedUpperBound],
-      });
-    }, rootProps.filterDebounceMs);
+    const formattedLowerBound =
+      type === "date" ? moment(lowerBound).format("YYYY-MM-DD") : lowerBound;
+    const formattedUpperBound =
+      type === "date" ? moment(upperBound).format("YYYY-MM-DD") : upperBound;
+    onApply([formattedLowerBound, formattedUpperBound]);
   };
 
   const handleUpperFilterChange: TextFieldProps["onChange"] = (event) => {
@@ -66,11 +52,9 @@ export function InputBetweenInterval(
         placeholder="From"
         label="From"
         variant="outlined"
-        size="small"
-        value={filterValueState[0]}
+        value={filterValueState[0] || ""}
         onChange={handleLowerFilterChange}
         type={type === "string" ? "text" : type}
-        inputRef={focusElementRef}
         sx={{ mr: 2 }}
         InputLabelProps={{ shrink: true }}
       />
@@ -80,54 +64,39 @@ export function InputBetweenInterval(
         placeholder="To"
         label="To"
         variant="outlined"
-        size="small"
-        value={filterValueState[1]}
+        value={filterValueState[1] || ""}
         onChange={handleUpperFilterChange}
         type={type === "string" ? "text" : type}
-        InputProps={
-          applying
-            ? { endAdornment: <SyncIcon className="wd-animate-spin" /> }
-            : {}
-        }
         InputLabelProps={{ shrink: true }}
       />
     </div>
   );
 }
 
-export function InputInterval(
-  props: GridFilterInputValueProps & { type: InputType }
-) {
-  const rootProps = useGridRootProps();
-  const { item, applyValue, focusElementRef = null, type } = props;
+export function InputFilterField(props: {
+  onApply: (value: any[]) => void;
+  type: InputType;
+  defaultValue: any[];
+  operator: QueryOperator;
+}) {
+  const { type, defaultValue, onApply, operator } = props;
 
-  const filterTimeout = React.useRef<any>();
-  const [filterValueState, setFilterValueState] = React.useState<string>(
-    item.value ?? ""
+  const [filterValueState, setFilterValueState] = React.useState<any>(
+    defaultValue ?? ""
   );
-  const [applying, setIsApplying] = React.useState(false);
 
   React.useEffect(() => {
-    return () => {
-      clearTimeout(filterTimeout.current);
-    };
-  }, []);
+    setFilterValueState(defaultValue.length > 0 ? defaultValue : [""]);
+  }, [defaultValue, operator]);
 
-  React.useEffect(() => {
-    const itemValue = item.value ?? "";
-    setFilterValueState(itemValue);
-  }, [item.value]);
-
-  const updateFilterValue = (newValue: string) => {
-    clearTimeout(filterTimeout.current);
+  const updateFilterValue = (newValue: any) => {
     setFilterValueState(newValue);
 
-    setIsApplying(true);
-    filterTimeout.current = setTimeout(() => {
-      setIsApplying(false);
-      const formattedValue = type === "date" ? moment(newValue).format("YYYY-MM-DD") : newValue;
-      applyValue({ ...item, value: formattedValue });
-    }, rootProps.filterDebounceMs);
+    const formattedValue =
+      type === "date"
+        ? moment(newValue).format("YYYY-MM-DD")
+        : newValue;
+    onApply([formattedValue]);
   };
 
   const handleFilterChange: TextFieldProps["onChange"] = (event) => {
@@ -142,62 +111,40 @@ export function InputInterval(
       fullWidth
       label={type.charAt(0).toUpperCase() + type.slice(1)}
       variant="outlined"
-      size="small"
       value={filterValueState}
       onChange={handleFilterChange}
       type={type === "string" ? "text" : type}
-      inputRef={focusElementRef}
-      InputProps={
-        applying
-          ? { endAdornment: <SyncIcon className="wd-animate-spin" /> }
-          : {}
-      }
       InputLabelProps={{ shrink: true }}
     />
   );
 }
 
-export function DynamicInputFields(
-  props: GridFilterInputValueProps & { type: InputType }
-) {
-  const rootProps = useGridRootProps();
-
-  const { item, applyValue, focusElementRef = null, type } = props;
-
-  const filterTimeout = React.useRef<any>();
+export function DynamicInputFilterFields(props: {
+  onApply: (value: string[]) => void;
+  type: InputType;
+  defaultValue: string[];
+  operator: QueryOperator;
+}) {
+  const { type, defaultValue, onApply, operator } = props;
 
   const [filterValues, setFilterValues] = React.useState<string[]>(
-    item.value ?? [""]
+    defaultValue ?? [""]
   );
-  const [applying, setIsApplying] = React.useState(false);
 
   React.useEffect(() => {
-    return () => {
-      clearTimeout(filterTimeout.current);
-    };
-  }, []);
-
-  React.useEffect(() => {
-    const itemValue = item.value ?? [""];
+    const itemValue = defaultValue ?? [""];
 
     setFilterValues(itemValue);
-  }, [item.value]);
+  }, [defaultValue, operator]);
 
   const updateFilterValues = (newValues: string[]) => {
-    clearTimeout(filterTimeout.current);
-
     setFilterValues(newValues);
 
-    setIsApplying(true);
-    filterTimeout.current = setTimeout(() => {
-      setIsApplying(false);
+    const formattedValues = newValues.map((value) =>
+      type === "date" ? moment(value).format("YYYY-MM-DD") : value
+    );
 
-      const formattedValues = newValues.map(value =>
-        type === "date" ? moment(value).format("YYYY-MM-DD") : value
-      );
-
-      applyValue({ ...item, value: formattedValues });
-    }, rootProps.filterDebounceMs);
+    onApply(formattedValues);
   };
 
   const handleFilterChange =
@@ -219,38 +166,38 @@ export function DynamicInputFields(
   };
 
   return (
-    <div className="wd-flex wd-flex-col wd-w-full wd-gap-4 ">
+    <div className="wd-flex wd-flex-col wd-items-center wd-w-full wd-gap-4 ">
       {filterValues.map((value, index) => (
-        <div key={index} className="wd-flex wd-flex-row wd-items-center  wd-gap-2 ">
+        <div
+          key={index}
+          className="wd-flex wd-flex-row wd-items-center wd-w-full  wd-gap-2 "
+        >
           <TextField
             name={`${type}-input-${index}`}
-            placeholder={`Enter ${type.charAt(0).toUpperCase() + type.slice(1)}`}
+            placeholder={`Enter ${
+              type.charAt(0).toUpperCase() + type.slice(1)
+            }`}
             fullWidth
-            label={`${type.charAt(0).toUpperCase() + type.slice(1)} ${index + 1}`}
+            label={`${type.charAt(0).toUpperCase() + type.slice(1)} ${
+              index + 1
+            }`}
             variant="outlined"
-            size="small"
             value={value}
-            className="wd-mb-0"
+            style={{ marginBottom: 0 }}
             onChange={handleFilterChange(index)}
             type={type === "string" ? "text" : type}
-            inputRef={index === 0 ? focusElementRef : undefined}
-            InputProps={
-              applying
-                ? { endAdornment: <SyncIcon className="wd-animate-spin" /> }
-                : {}
-            }
             InputLabelProps={{ shrink: true }}
             sx={{ mb: 2 }}
           />
-          <IconButton size="small" color="error" onClick={() => deleteField(index)}>
+          <IconButton color="error" onClick={() => deleteField(index)}>
             <CloseIcon />
           </IconButton>
         </div>
       ))}
 
-      <Button variant="contained" onClick={addField}>
-        Tambah Field
-      </Button>
+      <IconButton color="primary" onClick={addField}>
+        <AddCircleOutlineOutlined />
+      </IconButton>
     </div>
   );
 }

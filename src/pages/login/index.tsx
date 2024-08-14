@@ -13,8 +13,13 @@ import { useState } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const LoginPage = () => {
-  const { mutation, validationSchema, brandName } = useLogin();
-  const [showPassword, setShowPassword] = useState(false);
+  const {
+    mutation,
+    validationSchema,
+    brandName,
+    showPassword,
+    setShowPassword,
+  } = useLogin();
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
@@ -26,7 +31,7 @@ const LoginPage = () => {
       </div>
       <div className="wd-w-full md:wd-w-1/2 wd-flex wd-justify-center wd-items-center">
         <div className="wd-w-full wd-max-w-sm  wd-bg-white wd-p-4 wd-rounded-md wd-shadow-md">
-        <h5 className="wd-text-3xl wd-font-bold wd-text-gray-900 dark:wd-text-white">
+          <h5 className="wd-text-3xl wd-font-bold wd-text-gray-900 dark:wd-text-white">
             Masuk
           </h5>
           <p className="wd-text-gray-600">

@@ -98,7 +98,7 @@ export const ConfirmationDialogProvider = ({
   };
 
   return (
-    <ConfirmationDialogContext.Provider value={{ showConfirmationDialog }}>
+    <ConfirmationDialogContext.Provider  value={{ showConfirmationDialog }}>
       {children}
       <Dialog open={dialogOpen} onClose={handleReject}>
         <DialogTitle>{dialogTitle}</DialogTitle>

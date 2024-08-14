@@ -1,27 +1,31 @@
 import { Button } from "@mui/material";
-import { GridColDef } from "@mui/x-data-grid";
 import moment from "moment";
 import RelawanService from "../../services/RelawanService";
-import { useConfirmationDialog } from "@/hooks/useConfirmationDialog";
 import { useDialog } from "@/hooks/useDialog";
+// import { useQueryClient } from "@tanstack/react-query";
+import TableAction from "./components/TableAction";
+import { RelawanModel } from "../../types/RelawanModel";
+import { ColumnType } from "@/components/table/types/ColumnModel";
+import { PostQuery } from "@/types/PostQuery";
+import { useNavigate } from "react-router-dom";
 
 const useListRelawan = () => {
+  const uniqKey = "relawan";
   const testService = new RelawanService();
-  const { showConfirmationDialog } = useConfirmationDialog();
+  // const queryClient = useQueryClient();
   const { showDialog } = useDialog();
-  const columns: GridColDef[] = [
+  const navigate = useNavigate();
+  const columns: ColumnType<RelawanModel>[] = [
     { field: "id", headerName: "ID", width: 100, type: "number" },
-    { field: "nama", headerName: "Nama", flex: 1 },
-    { field: "noKTP", headerName: "No KTP", flex: 1 },
-    { field: "jabatan", headerName: "Jabatan", flex: 1 },
-
+    { field: "nama", headerName: "Nama" },
+    { field: "noKTP", headerName: "No KTP" },
+    { field: "jabatan", headerName: "Jabatan" },
     {
       field: "createdDate",
       headerName: "Created Date",
       type: "date",
-      flex: 1,
-      valueFormatter: (params: any) => {
-        const formattedDate = moment(params).format("DD/MM/YYYY");
+      valueFormatter: (data: RelawanModel) => {
+        const formattedDate = moment(data.createdDate).format("DD/MM/YYYY");
         return formattedDate;
       },
     },
@@ -32,69 +36,55 @@ const useListRelawan = () => {
       headerName: "Updated Date",
       type: "date",
 
-      flex: 1,
-      valueFormatter: (params: any) => {
-        const formattedDate = moment(params).format("DD/MM/YYYY");
+      valueFormatter: (data: RelawanModel) => {
+        const formattedDate = moment(data.updatedDate).format("DD/MM/YYYY");
         return formattedDate;
       },
     },
-
     {
       field: "action",
       type: "actions",
       headerName: "Action",
-      cellClassName: "wd-flex wd-flex-row wd-items-center",
-      flex: 1,
-      renderCell: (params: any) => {
+      renderCell: (data: RelawanModel) => {
         return (
-          <div className="wd-flex wd-flex-row wd-gap-2 ">
-            <Button variant="contained" color="warning" onClick={() => {}}>
-              <span className="wd-font-sans   wd-text-white">Edit</span>
-            </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              fullWidth
-              onClick={() => {
-                showConfirmationDialog(
-                  "Apakah Anda yakin ingin menghapus item ini?",
-                  "Apakah Anda yakin ingin menghapus relawan ini? Tindakan ini tidak dapat dibatalkan.",
-
-                  () => {
-                    console.log("delete button clicked");
-                  },
-                  () => {
-                    console.log("cancel button clicked");
-                  },
-                  {
-                    acceptLabel: "Ya, Hapus",
-                    acceptColor: "secondary",
-                    rejectLabel: "Tidak, Batal",
-                    rejectColor: "primary",
-                  }
-                );
-              }}
-            >
-              {" "}
-              <span className="wd-font-sans   wd-text-white">Delete</span>
-            </Button>
-          </div>
+          <TableAction
+            handleEditButtonClick={handleEditButtonClick}
+            data={data}
+          />
         );
       },
     },
   ];
   const handleAddButtonClick = () => {
-    showDialog("Add Relawan", (close) => (
-      <div className="wd-flex wd-flex-col wd-gap-2 wd-w-[500px]">
-        <p>Content Relawan</p>
-        <Button onClick={close}>Close</Button>
-      </div>
-    ));
+    // showDialog("Tambah Relawan", (close) => (
+    //   <div className="wd-flex wd-flex-col wd-gap-2 wd-w-[500px]">
+    //     <p>Content Relawan</p>
+    //     <Button onClick={close}>Close</Button>
+    //   </div>
+    // ));
+    navigate("/portal/relawan/tambah");
+  };
+  const handleEditButtonClick = (data: RelawanModel) => {
+    navigate(`/portal/relawan/edit/${data.id}`);
+    // showDialog("Edit Relawan", (close) => (
+    //   <div className="wd-flex wd-flex-col wd-gap-2 wd-w-[500px]">
+    //     <p>Content Relawan</p>
+    //     <p>Nama : {data.nama}</p>
+    //     <p>No KTP : {data.noKTP}</p>
+    //     <p>Jabatan : {data.jabatan}</p>
+    //     <Button onClick={close}>Close</Button>
+    //   </div>
+    // ));
+  };
+  const service = (postQuery: PostQuery) => {
+    return testService.all(postQuery);
   };
   return {
     columns,
     testService,
     handleAddButtonClick,
+    service,
+    uniqKey,
   };
 };
 

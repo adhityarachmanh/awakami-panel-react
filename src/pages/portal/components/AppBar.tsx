@@ -49,23 +49,25 @@ const AppBar = () => {
   const stringAvatar = React.useMemo(() => {
     if (!user?.name) return {};
     return {
-      sx: {
-        mr: 2,
-      },
       alt: "User Avatar",
-      src: user.imagePath ? `${import.meta.env.VITE_API_URL}/${user.imagePath}` : undefined,
+      src: user.imagePath
+        ? `${import.meta.env.VITE_API_URL}/${user.imagePath}`
+        : undefined,
       children: user.imagePath ? undefined : (
-        <p className="wd-text-base wd-font-medium">
+        <span className="wd-text-base wd-font-medium ">
           {`${user.name.split(" ")[0][0]}${user.name.split(" ")[1][0]}`}
-        </p>
+        </span>
       ),
     };
   }, [user?.name, user?.imagePath]);
 
-  const pathnames = location.pathname.split('/').filter((x) => x);
+  const pathnames = location.pathname.split("/").filter((x) => x);
 
   const toPascalCase = (str: string) => {
-    return str.replace(/\w+/g, (word) => word[0].toUpperCase() + word.slice(1).toLowerCase());
+    return str.replace(
+      /\w+/g,
+      (word) => word[0].toUpperCase() + word.slice(1).toLowerCase()
+    );
   };
 
   return (
@@ -81,17 +83,28 @@ const AppBar = () => {
           <MenuIcon />
         </IconButton>
 
-        <Breadcrumbs aria-label="breadcrumb" sx={{ flexGrow: 1, '& .MuiBreadcrumbs-separator': { color: 'white' } }}>
-     
+        <Breadcrumbs
+          aria-label="breadcrumb"
+          sx={{
+            flexGrow: 1,
+            "& .MuiBreadcrumbs-separator": { color: "white" },
+          }}
+        >
           {pathnames.map((value, index) => {
-            const to = `/${pathnames.slice(0, index + 1).join('/')}`;
+            const to = `/${pathnames.slice(0, index + 1).join("/")}`;
             const isLast = index === pathnames.length - 1;
             return isLast ? (
-              <Typography color="white" sx={{ fontWeight: 'bold' }} key={to}>
+              <Typography color="white" sx={{ fontWeight: "bold" }} key={to}>
                 {toPascalCase(value)}
               </Typography>
             ) : (
-              <Link underline="hover" color="white" component={RouterLink} to={to} key={to}>
+              <Link
+                underline="hover"
+                color="white"
+                component={RouterLink}
+                to={to}
+                key={to}
+              >
                 {toPascalCase(value)}
               </Link>
             );
@@ -108,9 +121,13 @@ const AppBar = () => {
           onClose={handleMenuClose}
         >
           <Box sx={{ p: 2, display: "flex", alignItems: "center" }}>
-            <Avatar {...stringAvatar} />
+            <Avatar  {...stringAvatar} />
 
-            <Box>
+            <Box
+              sx={{
+                ml: 2,
+              }}
+            >
               <p className="wd-text-base wd-font-medium">{user?.name ?? "-"}</p>
 
               <p className="wd-text-sm wd-text-gray-500">

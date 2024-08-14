@@ -20,7 +20,7 @@ export const encryptor = encryptTransform({
 const persistConfig = (key: string) => ({
   key,
   storage,
-  version: parseInt(import.meta.env.VITE_REDUX_PERSIST_VERSION, 10),
+  version: parseFloat(import.meta.env.VITE_REDUX_PERSIST_VERSION),
   migrate: (state: PersistedState, version: number) => {
     if (state && state._persist && state._persist.version !== version) {
       storage.removeItem(`persist:${key}`);

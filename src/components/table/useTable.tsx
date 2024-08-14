@@ -1,51 +1,21 @@
-import {
-  PostQuery,
-  PostFilter,
-  QueryOperator,
-  PostSort,
-} from "@/types/PostQuery";
-import {
-  GridFilterModel,
-  GridSortModel,
-  GridPaginationModel,
-  GridRowSelectionModel,
-  GridColDef,
-  GridFilterOperator,
-} from "@mui/x-data-grid";
+import { PostQuery, PostFilter, PostSort } from "@/types/PostQuery";
+import { GridPaginationModel } from "@mui/x-data-grid";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
-import { useState } from "react";
-import {
-  InputInterval,
-  InputBetweenInterval,
-  DynamicInputFields,
-} from "./components/InputFilter";
+import { useEffect, useState } from "react";
 import { APIResponse } from "@/types/APIResponse";
+import { FilterType } from "./types/FilterModel";
+import defaultFilterConfigs from "./constants/filterConfig";
 
 const useTable = <T,>(
-  columns: GridColDef[],
   uniqKey: string,
-  service: (postQuery: PostQuery) => Promise<APIResponse<T>>
+  service: (postQuery: PostQuery) => Promise<APIResponse<T>>,
+  postQueryValue?: PostQuery,
+  onSelectionChange?: (selectedRows: T[]) => void,
+  filterConfigsCustom?: FilterType[]
 ) => {
-  const filterConfigs = [
-    { label: "Equal", value: "EQUAL", component: InputInterval },
-    { label: "Not Equal", value: "NOT_EQUAL", component: InputInterval },
-    { label: "Between", value: "BETWEEN", component: InputBetweenInterval },
-    { label: "Like", value: "ILIKE", component: InputInterval },
-    { label: "Less Than", value: "LESS_THAN", component: InputInterval },
-    {
-      label: "Less Than Or Equal",
-      value: "LESS_THAN_OR_EQUAL",
-      component: InputInterval,
-    },
-    { label: "Greater Than", value: "GREATER_THAN", component: InputInterval },
-    {
-      label: "Greater Than Or Equal",
-      value: "GREATER_THAN_OR_EQUAL",
-      component: InputInterval,
-    },
-    { label: "In", value: "IN", component: DynamicInputFields },
-    { label: "Not In", value: "NOT_IN", component: DynamicInputFields },
-  ];
+  const [filterConfigs, _] = useState<FilterType[]>(
+    filterConfigsCustom || defaultFilterConfigs
+  );
   const [postQuery, setPostQuery] = useState<PostQuery>({
     keywords: "",
     filters: [],
@@ -53,8 +23,45 @@ const useTable = <T,>(
     page: 1,
     size: 5,
   });
-  const [selectedRows, setSelectedRows] = useState<GridRowSelectionModel>([]);
 
+  const [selectedRows, setSelectedRows] = useState<T[]>([]);
+  useEffect(() => {
+    if (postQueryValue) {
+      setPostQuery((prevQuery) => {
+        const mergedFilters = [
+          ...(prevQuery.filters || []),
+          ...(postQueryValue.filters?.filter(
+            (newFilter) =>
+              !prevQuery.filters?.some(
+                (existingFilter) => existingFilter.key === newFilter.key
+              )
+          ) || []),
+        ];
+
+        const mergedSorts = [
+          ...(prevQuery.sorts || []),
+          ...(postQueryValue.sorts?.filter(
+            (newSort) =>
+              !prevQuery.sorts?.some(
+                (existingSort) => existingSort.key === newSort.key
+              )
+          ) || []),
+        ];
+
+        return {
+          ...prevQuery,
+          ...postQueryValue,
+          filters: mergedFilters,
+          sorts: mergedSorts,
+        };
+      });
+    }
+  }, [postQueryValue]);
+  useEffect(() => {
+    if (onSelectionChange) {
+      onSelectionChange(selectedRows);
+    }
+  }, [selectedRows]);
   const {
     data: {
       data: rows = [],
@@ -78,96 +85,116 @@ const useTable = <T,>(
     placeholderData: keepPreviousData,
   });
 
-  const createFilterOperators = (
-    type: string
-  ): GridFilterOperator<any, number>[] =>
-    filterConfigs.map((config) => ({
-      label: config.label,
-      value: config.value,
-      getApplyFilterFn: () => null,
-      InputComponent: (props) => <config.component {...props} type={type} />,
-      InputComponentProps: { type },
-    }));
+  const getInitialFilter = (field: string) => {
+    return (
+      postQuery?.filters?.find((filter) => filter.key === field) || {
+        key: field,
+        operator: "EQUAL",
+        values: [],
+      }
+    );
+  };
+  const isActiveFilter = (field: string) => {
+    return postQuery.filters?.some((filter) => filter.key === field) ?? false;
+  };
+  const resetFilter = (field: string) => {
+    const filters = [...(postQuery.filters || [])];
+    const existingFilterIndex = filters.findIndex(
+      (filter) => filter.key === field
+    );
+    if (existingFilterIndex >= 0) {
+      filters.splice(existingFilterIndex, 1);
+    }
+    setPostQuery({ ...postQuery, filters });
+  };
+  const handleFilterChange = (postFilter: PostFilter) => {
+    console.log(postFilter);
+    const filters = [...(postQuery.filters || [])];
+    const existingFilterIndex = filters.findIndex(
+      (filter) => filter.key === postFilter.key
+    );
 
-  const handleFilterChange = (model: GridFilterModel) => {
-    const filters: PostFilter[] = model.items
-      .map((item) => {
-        if (!item.value || item.value.length === 0) {
-          return null;
-        }
-        console.log(item.operator);
-
-        const postFilter: PostFilter = {
-          key: item.field,
-          operator: item.operator as QueryOperator,
-          values: Array.isArray(item.value) ? item.value : [item.value],
-        };
-
-        return postFilter;
-      })
-      .filter((filter) => filter !== null);
+    if (existingFilterIndex >= 0) {
+      filters[existingFilterIndex] = postFilter;
+    } else {
+      filters.push(postFilter);
+    }
 
     setPostQuery({ ...postQuery, filters });
   };
 
-  const handleSortChange = (model: GridSortModel) => {
-    const sorts: PostSort[] = model.map((item) => ({
-      key: item.field,
-      order: item.sort === "asc" ? "ASC" : "DESC",
-    }));
+  function isActiveSort(field: string) {
+    return postQuery.sorts?.some((e) => e.key === field) ?? false;
+  }
+  function currentOrder(field: string) {
+    const sort = postQuery.sorts?.find((e) => e.key === field);
+    return sort?.order === "ASC"
+      ? "asc"
+      : sort?.order === "DESC"
+      ? "desc"
+      : "asc";
+  }
 
-    setPostQuery({ ...postQuery, sorts });
+  const handleSortChange = (field: string) => {
+    let sorts: PostSort[] = [...(postQuery.sorts || [])];
+    const currentSort = sorts.find((sort) => sort.key === field);
+
+    if (currentSort) {
+      if (currentSort.order === "ASC") {
+        currentSort.order = "DESC";
+      } else if (currentSort.order === "DESC") {
+        sorts = sorts.filter((sort) => sort.key !== field);
+      }
+    } else {
+      sorts.push({ key: field, order: "ASC" } as PostSort);
+    }
+
+    setPostQuery({ ...postQuery, sorts: sorts });
   };
 
   const handlePaginationChange = (model: GridPaginationModel) => {
     setPostQuery({ ...postQuery, page: model.page + 1, size: model.pageSize });
   };
 
-  const handleRowSelectionChange = (selectionData: GridRowSelectionModel) => {
-    setSelectedRows(selectionData);
-  };
   const resetSelection = () => {
     setSelectedRows([]);
   };
-
-  const rebuildColumnsWithFilterOperator = (columns: GridColDef[]) => {
-    return columns.map((column) => {
-      if (column.type === "date") {
-        return {
-          ...column,
-          filterOperators: createFilterOperators("date"),
-        };
-      } else if (column.type === "number") {
-        return {
-          ...column,
-          filterOperators: createFilterOperators("number"),
-        };
-      }
-      return {
-        ...column,
-        filterOperators: createFilterOperators("string"),
-      };
-    });
+  const allRowsSelected = (rows: any[]) => {
+    setSelectedRows(rows);
+  };
+  const oneRowSelected = (row: any) => {
+    const isSelected = selectedRows.includes(row);
+    if (isSelected) {
+      setSelectedRows(
+        selectedRows.filter((selectedRow) => selectedRow !== row)
+      );
+    } else {
+      setSelectedRows([...selectedRows, row]);
+    }
   };
 
-  const updatedColumns = rebuildColumnsWithFilterOperator(columns);
-
   return {
+    filterConfigs,
     postQuery,
     rows,
     totalRows,
     currentPage,
     pageSize,
     isLoading,
-    updatedColumns,
     selectedRows,
+    isActiveSort,
+    currentOrder,
     handleFilterChange,
     handleSortChange,
     handlePaginationChange,
-    handleRowSelectionChange,
+    allRowsSelected,
+    oneRowSelected,
     setPostQuery,
     setSelectedRows,
     resetSelection,
+    getInitialFilter,
+    resetFilter,
+    isActiveFilter,
   };
 };
 
