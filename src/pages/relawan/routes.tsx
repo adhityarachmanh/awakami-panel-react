@@ -28,7 +28,7 @@ const relawanRoutes: Route[] = [
     element: <TambahTPSRelawan />,
   },
   {
-    path: "relawan/edit-tps/:id/relawan/:relawanId/tps/:tpsId",
+    path: "relawan/edit-tps/:id",
     element: <EditTPSRelawan />,
   },
 ];

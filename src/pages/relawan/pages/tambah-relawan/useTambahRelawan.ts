@@ -9,7 +9,7 @@ const useTambahRelawan = () => {
   const relawanService = new RelawanService();
   const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
-  const validationCreateSchema = Yup.object().shape({
+  const validationSchema = Yup.object().shape({
     nama: Yup.string().required("Nama is required"),
     email: Yup.string().email("Invalid email").required("Email is required"),
     noKTP: Yup.string()
@@ -39,7 +39,7 @@ const useTambahRelawan = () => {
   return {
     mutation,
     navigate,
-    validationCreateSchema,
+    validationSchema,
   };
 };
 

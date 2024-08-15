@@ -5,6 +5,8 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import { Route } from "@/types/route";
 import HomePage from "@/pages/home";
 import relawanRoutes from "@/pages/relawan/routes";
+import tpsRoutes from "@/pages/tps/routes";
+import poskoRoutes from "@/pages/posko/routes";
 
 const routesConfig: Route[] = [
   {
@@ -25,6 +27,8 @@ const routesConfig: Route[] = [
         element: <HomePage />,
       },
       ...relawanRoutes,
+      ...tpsRoutes,
+      ...poskoRoutes,
     ],
   },
   {

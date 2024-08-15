@@ -21,7 +21,7 @@ class RelawanService {
   constructor() {
     this.authService = new AuthService();
   }
-  public async create(data: RelawanFormModel) {
+  public async create(data: RelawanFormModel): Promise<RelawanModel> {
     try {
       const auth = this.authService.getAuthenticated();
       if (auth !== null) {
@@ -62,7 +62,7 @@ class RelawanService {
       ResponseHandler.handleErrorResponse(error);
     }
   }
-  public async getDetail(id: number) {
+  public async getDetail(id: number): Promise<RelawanModel> {
     try {
       const auth = this.authService.getAuthenticated();
       if (auth !== null) {
@@ -81,7 +81,7 @@ class RelawanService {
       ResponseHandler.handleErrorResponse(error);
     }
   }
-  async update(id: number, data: RelawanEditFormModel) {
+  async update(id: number, data: RelawanEditFormModel): Promise<RelawanModel> {
     try {
       const auth = this.authService.getAuthenticated();
       if (auth !== null) {
@@ -142,7 +142,7 @@ class RelawanService {
       ResponseHandler.handleErrorResponse(error);
     }
   }
-  async createTPSRelawan(data: TPSRelawanFormModel) {
+  async createTPSRelawan(data: TPSRelawanFormModel): Promise<TPSRelawanModel> {
     try {
       const auth = this.authService.getAuthenticated();
       if (auth !== null) {
@@ -162,7 +162,10 @@ class RelawanService {
       ResponseHandler.handleErrorResponse(error);
     }
   }
-  async updateTPSRelawan(tpsId: number, data: TPSRelawanFormModel) {
+  async updateTPSRelawan(
+    tpsId: number,
+    data: TPSRelawanFormModel
+  ): Promise<TPSRelawanModel> {
     try {
       const auth = this.authService.getAuthenticated();
       if (auth !== null) {
@@ -191,6 +194,26 @@ class RelawanService {
           {
             ids,
           },
+          {
+            headers: {
+              Authorization: `Bearer ${auth.accessToken}`,
+            },
+          }
+        );
+        return response.data.data;
+      }
+      throw new Error("Token refresh failed");
+    } catch (error) {
+      ResponseHandler.handleErrorResponse(error);
+    }
+  }
+  async getTPSRelawanById(id: number): Promise<TPSRelawanModel> {
+    try {
+      const auth = this.authService.getAuthenticated();
+      if (auth !== null) {
+        const response = await axios.get<APIResponse<TPSRelawanModel>>(
+          `${this.baseURLTPSRelawan}/${id}`,
+
           {
             headers: {
               Authorization: `Bearer ${auth.accessToken}`,

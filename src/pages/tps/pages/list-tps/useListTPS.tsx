@@ -1,38 +1,33 @@
-import RelawanService from "../../services/RelawanService";
-// import { useQueryClient } from "@tanstack/react-query";
-import { RelawanModel } from "../../types/RelawanModel";
 import { ColumnType } from "@/components/table/types/ColumnModel";
 import { PostQuery } from "@/types/PostQuery";
 import { useNavigate } from "react-router-dom";
-import TableRelawanAction from "../../components/TableRelawanAction";
+import TPSService from "../../services/TPSService";
+import { TPSModel } from "../../types/TPSModel";
+import TableTPSAction from "../../components/TableTPSAction";
 import { formatDateString } from "@/utility/dateFormat";
 
-const useListRelawan = () => {
-  const uniqKey = "relawan";
-  const testService = new RelawanService();
-  // const queryClient = useQueryClient();
+const useListTPS = () => {
+  const uniqKey = "tps";
+  const testService = new TPSService();
   const navigate = useNavigate();
-  const columns: ColumnType<RelawanModel>[] = [
+  const columns: ColumnType<TPSModel>[] = [
     { field: "id", headerName: "ID", width: 100, type: "number" },
-    { field: "nama", headerName: "Nama" },
-    { field: "noKTP", headerName: "No KTP" },
-    { field: "jabatan", headerName: "Jabatan" },
+    { field: "nomor", headerName: "Nomor" },
+    { field: "alamat", headerName: "Alamat" },
     {
       field: "createdDate",
       headerName: "Created Date",
       type: "date",
-      valueFormatter: (data: RelawanModel) => {
+      valueFormatter: (data: TPSModel) => {
         return formatDateString(data.createdDate);
       },
     },
 
     {
       field: "updatedDate",
-
       headerName: "Updated Date",
       type: "date",
-
-      valueFormatter: (data: RelawanModel) => {
+      valueFormatter: (data: TPSModel) => {
         return formatDateString(data.updatedDate);
       },
     },
@@ -40,13 +35,13 @@ const useListRelawan = () => {
       field: "action",
       type: "actions",
       headerName: "Action",
-      renderCell: (data: RelawanModel) => {
-        return <TableRelawanAction data={data} />;
+      renderCell: (data: TPSModel) => {
+        return <TableTPSAction data={data} />;
       },
     },
   ];
   const handleAddButtonClick = () => {
-    navigate("/portal/relawan/tambah");
+    navigate("/portal/tps/tambah");
   };
 
   const service = (postQuery: PostQuery) => {
@@ -61,4 +56,4 @@ const useListRelawan = () => {
   };
 };
 
-export default useListRelawan;
+export default useListTPS;

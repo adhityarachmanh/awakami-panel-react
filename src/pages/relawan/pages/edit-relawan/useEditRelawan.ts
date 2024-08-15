@@ -9,7 +9,7 @@ const useEditRelawan = (id: number) => {
   const relawanService = new RelawanService();
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
-  const validationEditSchema = Yup.object().shape({
+  const validationSchema = Yup.object().shape({
     nama: Yup.string().required("Nama is required"),
 
     noKTP: Yup.string()
@@ -40,7 +40,7 @@ const useEditRelawan = (id: number) => {
       showSnackbar(error.message, "error");
     },
   });
-  return { isLoading, validationEditSchema, data, mutation, navigate };
+  return { isLoading, validationSchema, data, mutation, navigate };
 };
 
 export default useEditRelawan;

@@ -7,25 +7,25 @@ import {
   CircularProgress,
   IconButton,
 } from "@mui/material";
-import { Formik } from "formik";
-import { Form, useParams } from "react-router-dom";
-import { TPSRelawanFormModel } from "../../types/TPSRelawanModel";
-import useEditTPSRelawan from "./useEditTPSRelawan";
-import TPSField from "../../components/TPSField";
+import useEditPosko from "./useEditPosko";
+import { Form, Formik } from "formik";
+import { PoskoFormModel } from "../../types/PoskoModel";
+import NomorField from "../../components/NamaField";
+import AlamatField from "../../components/AlamatField";
+import { useParams } from "react-router-dom";
 import { useMemo } from "react";
 
-const EditTPSRelawan = () => {
+const EditPosko = () => {
   const { id } = useParams();
-  const { mutation, navigate, validationSchema, tpsQuery } = useEditTPSRelawan(
+  const { validationSchema, navigate, mutation, poskoQuery } = useEditPosko(
     Number(id)
   );
-  const tpsData = useMemo(() => {
-    return tpsQuery.data ?? null;
-    return null;
-  }, [tpsQuery.isSuccess, tpsQuery.data]);
+  const poskoData = useMemo(() => {
+    return poskoQuery.data ?? null;
+  }, [poskoQuery.isSuccess, poskoQuery.data]);
   return (
     <div className="wd-flex wd-flex-col wd-gap-4 wd-items-center wd-w-full wd-container wd-mx-auto wd-mt-[10rem] wd-m-8">
-      {tpsQuery.isLoading ? (
+      {poskoQuery.isLoading ? (
         <CircularProgress />
       ) : (
         <Card sx={{ width: { xs: "100%", sm: "60%", md: "40%", lg: "30%" } }}>
@@ -34,27 +34,25 @@ const EditTPSRelawan = () => {
             avatar={
               <IconButton
                 size="small"
-                onClick={() =>
-                  navigate(`/portal/relawan/detail/${tpsData?.relawanId}`)
-                }
+                onClick={() => navigate("/portal/posko")}
               >
                 <ArrowCircleLeftOutlined />
               </IconButton>
             }
-            title="Edit TPS Relawan"
+            title="Edit Posko"
             titleTypographyProps={{
               fontSize: 24,
             }}
-            subheader="Formulir Edit TPS untuk Relawan"
+            subheader="Formulir Pendaftaran Posko"
             subheaderTypographyProps={{
               fontSize: 16,
             }}
           />
           <CardContent style={{ paddingTop: 0 }}>
-            <Formik<TPSRelawanFormModel>
+            <Formik<PoskoFormModel>
               initialValues={{
-                tpsId: tpsData?.tpsId ?? 0,
-                relawanId: tpsData?.relawanId ?? 0,
+                nama: poskoData?.nama ?? "",
+                alamat: poskoData?.alamat ?? "",
               }}
               validationSchema={validationSchema}
               onSubmit={(values) => {
@@ -63,10 +61,11 @@ const EditTPSRelawan = () => {
             >
               {({ handleSubmit }) => (
                 <Form
-                  className="wd-flex wd-flex-col wd-gap-4"
+                  className="wd-flex wd-flex-col wd-gap-2"
                   onSubmit={handleSubmit}
                 >
-                  <TPSField />
+                  <NomorField />
+                  <AlamatField />
                   <Button
                     disabled={mutation.isPending}
                     startIcon={
@@ -92,4 +91,4 @@ const EditTPSRelawan = () => {
   );
 };
 
-export default EditTPSRelawan;
+export default EditPosko;

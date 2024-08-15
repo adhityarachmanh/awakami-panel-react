@@ -25,7 +25,7 @@ import JabatanField from "../../components/JabatanField";
 
 const EditRelawan = () => {
   const { id } = useParams();
-  const { isLoading, validationEditSchema, data, mutation, navigate } =
+  const { isLoading, validationSchema, data, mutation, navigate } =
     useEditRelawan(Number(id));
 
   return (
@@ -68,7 +68,7 @@ const EditRelawan = () => {
                 kelurahanId: data?.kelurahanId || null,
                 alamat: data?.alamat || "",
               }}
-              validationSchema={validationEditSchema}
+              validationSchema={validationSchema}
               onSubmit={(values) => {
                 mutation.mutate(values);
               }}

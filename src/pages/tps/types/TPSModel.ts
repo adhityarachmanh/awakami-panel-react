@@ -7,3 +7,7 @@ export interface TPSModel {
     createdBy: string;
     updatedBy: string;
 }
+export interface TPSFormModel {
+    nomor: string;
+    alamat: string;
+}

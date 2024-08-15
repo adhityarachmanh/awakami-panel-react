@@ -22,7 +22,7 @@ export default function ResponsiveDrawer(props: Props) {
     if (auth !== null) {
       const initialDelay = setTimeout(() => {
         refreshTokenMutation.mutate();
-      }, 3000);
+      }, 5000);
 
       return () => {
         clearTimeout(initialDelay);

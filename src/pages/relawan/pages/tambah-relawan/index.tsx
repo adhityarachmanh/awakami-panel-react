@@ -24,7 +24,7 @@ import JabatanField from "../../components/JabatanField";
 import AlamatField from "../../components/AlamatField";
 
 const TambahRelawan = () => {
-  const { validationCreateSchema, navigate, mutation } = useTambahRelawan();
+  const { validationSchema, navigate, mutation } = useTambahRelawan();
   return (
     <div className="wd-flex wd-flex-col wd-gap-4 wd-items-center wd-w-full wd-container wd-mx-auto wd-mt-[10rem] wd-m-8">
       <Card sx={{ width: { xs: "100%", sm: "80%", md: "60%", lg: "50%" } }}>
@@ -63,7 +63,7 @@ const TambahRelawan = () => {
               kelurahanId: null,
               alamat: "",
             }}
-            validationSchema={validationCreateSchema}
+            validationSchema={validationSchema}
             onSubmit={(values) => {
               mutation.mutate(values);
             }}

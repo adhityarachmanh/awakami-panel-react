@@ -7,7 +7,7 @@ import {
 } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import RelawanService from "../services/RelawanService";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "@/hooks/useSnackbar";
 import { useNavigate } from "react-router-dom";
 
@@ -16,6 +16,7 @@ interface TableRelawanActionProps {
 }
 
 const TableRelawanAction = ({ data }: TableRelawanActionProps) => {
+  const queryClient = useQueryClient();
   const { showConfirmationDialog } = useConfirmationDialog();
   const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ const TableRelawanAction = ({ data }: TableRelawanActionProps) => {
     },
     onSuccess: () => {
       showSnackbar("Relawan berhasil dihapus", "success");
+      queryClient.invalidateQueries({ queryKey: ["relawan"] });
     },
     onError: (error) => {
       showSnackbar(error.message, "error");

@@ -7,21 +7,21 @@ import {
   CircularProgress,
   IconButton,
 } from "@mui/material";
-import { Formik } from "formik";
-import { Form, useParams } from "react-router-dom";
-import { TPSRelawanFormModel } from "../../types/TPSRelawanModel";
-import useEditTPSRelawan from "./useEditTPSRelawan";
-import TPSField from "../../components/TPSField";
+import useEditTPS from "./useEditTPS";
+import { Form, Formik } from "formik";
+import { TPSFormModel } from "../../types/TPSModel";
+import NomorField from "../../components/NomorField";
+import AlamatField from "../../components/AlamatField";
+import { useParams } from "react-router-dom";
 import { useMemo } from "react";
 
-const EditTPSRelawan = () => {
+const EditTPS = () => {
   const { id } = useParams();
-  const { mutation, navigate, validationSchema, tpsQuery } = useEditTPSRelawan(
+  const { validationSchema, navigate, mutation, tpsQuery } = useEditTPS(
     Number(id)
   );
   const tpsData = useMemo(() => {
     return tpsQuery.data ?? null;
-    return null;
   }, [tpsQuery.isSuccess, tpsQuery.data]);
   return (
     <div className="wd-flex wd-flex-col wd-gap-4 wd-items-center wd-w-full wd-container wd-mx-auto wd-mt-[10rem] wd-m-8">
@@ -32,29 +32,24 @@ const EditTPSRelawan = () => {
           <CardHeader
             style={{ paddingBottom: 0 }}
             avatar={
-              <IconButton
-                size="small"
-                onClick={() =>
-                  navigate(`/portal/relawan/detail/${tpsData?.relawanId}`)
-                }
-              >
+              <IconButton size="small" onClick={() => navigate("/portal/tps")}>
                 <ArrowCircleLeftOutlined />
               </IconButton>
             }
-            title="Edit TPS Relawan"
+            title="Edit TPS"
             titleTypographyProps={{
               fontSize: 24,
             }}
-            subheader="Formulir Edit TPS untuk Relawan"
+            subheader="Formulir Pendaftaran TPS"
             subheaderTypographyProps={{
               fontSize: 16,
             }}
           />
           <CardContent style={{ paddingTop: 0 }}>
-            <Formik<TPSRelawanFormModel>
+            <Formik<TPSFormModel>
               initialValues={{
-                tpsId: tpsData?.tpsId ?? 0,
-                relawanId: tpsData?.relawanId ?? 0,
+                nomor: tpsData?.nomor ?? "",
+                alamat: tpsData?.alamat ?? "",
               }}
               validationSchema={validationSchema}
               onSubmit={(values) => {
@@ -63,10 +58,11 @@ const EditTPSRelawan = () => {
             >
               {({ handleSubmit }) => (
                 <Form
-                  className="wd-flex wd-flex-col wd-gap-4"
+                  className="wd-flex wd-flex-col wd-gap-2"
                   onSubmit={handleSubmit}
                 >
-                  <TPSField />
+                  <NomorField />
+                  <AlamatField />
                   <Button
                     disabled={mutation.isPending}
                     startIcon={
@@ -92,4 +88,4 @@ const EditTPSRelawan = () => {
   );
 };
 
-export default EditTPSRelawan;
+export default EditTPS;

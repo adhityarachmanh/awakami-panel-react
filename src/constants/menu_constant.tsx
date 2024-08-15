@@ -3,6 +3,7 @@ import {
   AppRegistration,
   CabinOutlined,
   DashboardOutlined,
+  EventOutlined,
   GroupOutlined,
   ListAltOutlined,
   NewReleasesOutlined,
@@ -30,8 +31,54 @@ const menu = [
       },
     ],
   },
-  { text: "TPS", icon: <AppRegistration /> },
-  { text: "POSKO", icon: <CabinOutlined /> },
+  {
+    text: "TPS",
+    icon: <AppRegistration />,
+    nestedItems: [
+      {
+        text: "List TPS",
+        icon: <ListAltOutlined />,
+        route: "/portal/tps",
+      },
+      {
+        text: "Tambah TPS",
+        icon: <AddBoxOutlined />,
+        route: "/portal/tps/tambah",
+      },
+    ],
+  },
+  {
+    text: "Posko",
+    icon: <CabinOutlined />,
+    nestedItems: [
+      {
+        text: "List Posko",
+        icon: <ListAltOutlined />,
+        route: "/portal/posko",
+      },
+      {
+        text: "Tambah Posko",
+        icon: <AddBoxOutlined />,
+        route: "/portal/posko/tambah",
+      },
+    ],
+  },
+  {
+    text: "Event",
+    icon: <EventOutlined />,
+    nestedItems: [
+      {
+        text: "List Event",
+        icon: <ListAltOutlined />,
+        route: "/portal/event",
+      },
+      {
+        text: "Tambah Event",
+        icon: <AddBoxOutlined />,
+        route: "/portal/event/tambah",
+      },
+    ],
+  },
   {
     text: "Berita",
     icon: <NewReleasesOutlined />,

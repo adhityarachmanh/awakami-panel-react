@@ -21,6 +21,13 @@ const useDetailRelawan = (id: number) => {
   const tpsColumns: ColumnType<TPSRelawanModel>[] = [
     {
       field: "tps",
+      headerName: "ID",
+      valueFormatter: (data: TPSRelawanModel) => {
+        return data.tps.id.toString();
+      },
+    },
+    {
+      field: "tps",
       headerName: "Nomor",
       valueFormatter: (data: TPSRelawanModel) => {
         return data.tps.nomor;

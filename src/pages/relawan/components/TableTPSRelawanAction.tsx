@@ -35,7 +35,7 @@ const TableTPSRelawanAction = ({ data }: TableTPSRelawanActionProps) => {
         color="warning"
         onClick={() =>
           navigate(
-            `/portal/relawan/edit-tps/${data.id}/relawan/${data.relawanId}/tps/${data.tpsId}`
+            `/portal/relawan/edit-tps/${data.id}`
           )
         }
       >
