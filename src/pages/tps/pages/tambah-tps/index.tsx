@@ -10,8 +10,7 @@ import {
 import useTambahTPS from "./useTambahTPS";
 import { Form, Formik } from "formik";
 import { TPSFormModel } from "../../types/TPSModel";
-import NomorField from "../../components/NomorField";
-import AlamatField from "../../components/AlamatField";
+import FormikTextField from "@/components/formik/FormikTextField";
 
 const TambahTPS = () => {
   const { validationSchema, navigate, mutation } = useTambahTPS();
@@ -50,8 +49,13 @@ const TambahTPS = () => {
                 className="wd-flex wd-flex-col wd-gap-2"
                 onSubmit={handleSubmit}
               >
-                <NomorField />
-                <AlamatField />
+                <FormikTextField name="nomor" label="Nomor" />
+                <FormikTextField
+                  name="alamat"
+                  label="Alamat"
+                  rows={4}
+                  multiline
+                />
                 <Button
                   disabled={mutation.isPending}
                   startIcon={

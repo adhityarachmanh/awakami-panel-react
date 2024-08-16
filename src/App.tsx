@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import { RouterProvider } from "react-router-dom";
-import { SnackbarProvider } from "./hooks/useSnackbar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "react-redux";
 import { rootStore, rootPersistor } from "../stores";
@@ -20,6 +19,8 @@ import {
 } from "./constants/theme_constant";
 import routes from "./router/routes";
 import InjectAllProvider from "./hooks/hooks";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -67,9 +68,11 @@ const App = () => {
         <PersistGate loading={<div>Loading...</div>} persistor={rootPersistor}>
           <Provider store={rootStore}>
             <ThemeProvider theme={muiTheme}>
-              <InjectAllProvider>
-                <RouterProvider router={routes} />
-              </InjectAllProvider>
+              <LocalizationProvider dateAdapter={AdapterMoment}>
+                <InjectAllProvider>
+                  <RouterProvider router={routes} />
+                </InjectAllProvider>
+              </LocalizationProvider>
             </ThemeProvider>
           </Provider>
         </PersistGate>

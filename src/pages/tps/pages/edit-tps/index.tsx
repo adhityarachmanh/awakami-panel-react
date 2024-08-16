@@ -10,10 +10,9 @@ import {
 import useEditTPS from "./useEditTPS";
 import { Form, Formik } from "formik";
 import { TPSFormModel } from "../../types/TPSModel";
-import NomorField from "../../components/NomorField";
-import AlamatField from "../../components/AlamatField";
 import { useParams } from "react-router-dom";
 import { useMemo } from "react";
+import FormikTextField from "@/components/formik/FormikTextField";
 
 const EditTPS = () => {
   const { id } = useParams();
@@ -61,8 +60,13 @@ const EditTPS = () => {
                   className="wd-flex wd-flex-col wd-gap-2"
                   onSubmit={handleSubmit}
                 >
-                  <NomorField />
-                  <AlamatField />
+                  <FormikTextField name="nomor" label="Nomor" />
+                  <FormikTextField
+                    name="alamat"
+                    label="Alamat"
+                    rows={4}
+                    multiline
+                  />
                   <Button
                     disabled={mutation.isPending}
                     startIcon={

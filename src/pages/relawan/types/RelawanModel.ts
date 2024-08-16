@@ -75,3 +75,4 @@ export interface TPSRelawanModel {
   updatedBy: string;
   tps: TPSModel;
 }
+

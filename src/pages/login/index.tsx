@@ -1,16 +1,15 @@
 import { LoginRequest } from "@/types/AuthModel";
 import useLogin from "./useLogin";
 import {
-  TextField,
   Button,
   CircularProgress,
   IconButton,
   InputAdornment,
 } from "@mui/material";
-import { Formik, Field, ErrorMessage } from "formik";
+import { Formik } from "formik";
 import { Form } from "react-router-dom";
-import { useState } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import FormikTextField from "@/components/formik/FormikTextField";
 
 const LoginPage = () => {
   const {
@@ -45,51 +44,35 @@ const LoginPage = () => {
             }}
           >
             {({ handleSubmit }) => (
-              <Form onSubmit={handleSubmit} className="wd-mt-4">
-                <div className="wd-mb-3">
-                  <Field
-                    name="email"
-                    as={TextField}
-                    label="Email"
-                    variant="outlined"
-                    fullWidth
-                  />
-                  <ErrorMessage
-                    className="wd-text-red-500 wd-text-sm"
-                    name="email"
-                    component="span"
-                  />
-                </div>
-                <div className="wd-mb-3">
-                  <Field
-                    name="password"
-                    as={TextField}
-                    type={showPassword ? "text" : "password"}
-                    label="Password"
-                    variant="outlined"
-                    fullWidth
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            edge="end"
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                  <ErrorMessage
-                    className="wd-text-red-500 wd-text-sm"
-                    name="password"
-                    component="span"
-                  />
-                </div>
+              <Form onSubmit={handleSubmit}>
+                <FormikTextField
+                  name="email"
+                  label="Email"
+                  placeholder="Masukkan email"
+                />
+
+                <FormikTextField
+                  name="password"
+                  label="Password"
+                  placeholder="Masukkan password"
+                  type={showPassword ? "text" : "password"}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
 
                 <Button
+                  style={{ marginTop: "0.5rem" }}
                   disabled={mutation.isPending}
                   startIcon={
                     mutation.isPending ? <CircularProgress size="1rem" /> : null
@@ -98,7 +81,6 @@ const LoginPage = () => {
                   variant="contained"
                   color="primary"
                   fullWidth
-                  className="wd-mb-4"
                 >
                   Login
                 </Button>

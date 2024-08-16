@@ -17,11 +17,7 @@ import KotaField from "../../components/KotaField";
 import KecamatanField from "../../components/KecamatanField";
 import KelurahanField from "../../components/KelurahanField";
 import useTambahRelawan from "./useTambahRelawan";
-import NamaField from "../../components/NamaField";
-import NoKTPField from "../../components/NoKTPField";
-import EmailField from "../../components/EmailField";
-import JabatanField from "../../components/JabatanField";
-import AlamatField from "../../components/AlamatField";
+import FormikTextField from "@/components/formik/FormikTextField";
 
 const TambahRelawan = () => {
   const { validationSchema, navigate, mutation } = useTambahRelawan();
@@ -74,11 +70,11 @@ const TambahRelawan = () => {
                 onSubmit={handleSubmit}
               >
                 <div className="wd-flex wd-flex-col ">
-                  <NamaField />
-                  <EmailField />
-                  <NoKTPField />
+                  <FormikTextField name="nama" label="Nama" />
+                  <FormikTextField name="email" label="Email" />
+                  <FormikTextField name="noKTP" label="No KTP" />
                   <JenisKelaminField />
-                  <JabatanField />
+                  <FormikTextField name="jabatan" label="Jabatan" />
                   <JabatanPoskoField />
                   <PoskoField />
                 </div>
@@ -87,7 +83,12 @@ const TambahRelawan = () => {
                   <KotaField />
                   <KecamatanField />
                   <KelurahanField />
-                  <AlamatField />
+                  <FormikTextField
+                    name="alamat"
+                    label="Alamat"
+                    rows={4}
+                    multiline
+                  />
                 </div>
                 <Button
                   disabled={mutation.isPending}

@@ -1,201 +1,125 @@
-import { TextFieldProps, TextField, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import moment from "moment";
 import React from "react";
 
-import { QueryOperator } from "@/types/PostQuery";
+import { PostFilter } from "@/types/PostQuery";
 import { AddCircleOutlineOutlined } from "@mui/icons-material";
+import { useFormikContext } from "formik";
+import FormikTextField from "@/components/formik/FormikTextField";
 
 export type InputType = "date" | "number" | "string" | "actions";
 
-export function InputBetweenFilterField(props: {
-  onApply: (value: [string, string]) => void;
-  type: InputType;
-  defaultValue: [string, string];
-  operator: QueryOperator;
-}) {
-  const { type, defaultValue, onApply, operator } = props;
-
-  const [filterValueState, setFilterValueState] = React.useState<
-    [string, string]
-  >(defaultValue ?? ["", ""]);
-
-  React.useEffect(() => {
-    const itemValue = defaultValue ?? ["", ""];
-    setFilterValueState(itemValue);
-  }, [defaultValue, operator]);
-
-  const updateFilterValue = (lowerBound: string, upperBound: string) => {
-    setFilterValueState([lowerBound, upperBound]);
-
-    const formattedLowerBound =
-      type === "date" ? moment(lowerBound).format("YYYY-MM-DD") : lowerBound;
-    const formattedUpperBound =
-      type === "date" ? moment(upperBound).format("YYYY-MM-DD") : upperBound;
-    onApply([formattedLowerBound, formattedUpperBound]);
-  };
-
-  const handleUpperFilterChange: TextFieldProps["onChange"] = (event) => {
-    const newUpperBound = event.target.value;
-    updateFilterValue(filterValueState[0], newUpperBound);
-  };
-  const handleLowerFilterChange: TextFieldProps["onChange"] = (event) => {
-    const newLowerBound = event.target.value;
-    updateFilterValue(newLowerBound, filterValueState[1]);
-  };
+export function InputBetweenFilterField(props: { type: InputType }) {
+  const { type } = props;
+  const { setFieldValue } = useFormikContext<PostFilter>();
 
   return (
     <div className="wd-flex wd-flex-col wd-gap-4">
-      <TextField
-        fullWidth
-        name="lower-bound-input"
-        placeholder="From"
-        label="From"
-        variant="outlined"
-        value={filterValueState[0] || ""}
-        onChange={handleLowerFilterChange}
+      <FormikTextField
+        name="values[0]"
+        label={`From ${type.charAt(0).toUpperCase() + type.slice(1)}`}
+        placeholder={`Enter From`}
         type={type === "string" ? "text" : type}
-        sx={{ mr: 2 }}
-        InputLabelProps={{ shrink: true }}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          const newValue = event.target.value;
+          const value =
+            type === "date" ? moment(newValue).format("YYYY-MM-DD") : newValue;
+          setFieldValue("values[0]", value);
+        }}
       />
-      <TextField
-        fullWidth
-        name="upper-bound-input"
-        placeholder="To"
-        label="To"
-        variant="outlined"
-        value={filterValueState[1] || ""}
-        onChange={handleUpperFilterChange}
+      <FormikTextField
+        name="values[1]"
+        placeholder={`Enter To`}
+        label={`To ${type.charAt(0).toUpperCase() + type.slice(1)}`}
         type={type === "string" ? "text" : type}
-        InputLabelProps={{ shrink: true }}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          const newValue = event.target.value;
+          const value =
+            type === "date" ? moment(newValue).format("YYYY-MM-DD") : newValue;
+          setFieldValue("values[1]", value);
+        }}
       />
     </div>
   );
 }
 
-export function InputFilterField(props: {
-  onApply: (value: any[]) => void;
-  type: InputType;
-  defaultValue: any[];
-  operator: QueryOperator;
-}) {
-  const { type, defaultValue, onApply, operator } = props;
-
-  const [filterValueState, setFilterValueState] = React.useState<any>(
-    defaultValue ?? ""
-  );
-
-  React.useEffect(() => {
-    setFilterValueState(defaultValue.length > 0 ? defaultValue : [""]);
-  }, [defaultValue, operator]);
-
-  const updateFilterValue = (newValue: any) => {
-    setFilterValueState(newValue);
-
-    const formattedValue =
-      type === "date"
-        ? moment(newValue).format("YYYY-MM-DD")
-        : newValue;
-    onApply([formattedValue]);
-  };
-
-  const handleFilterChange: TextFieldProps["onChange"] = (event) => {
-    const newValue = event.target.value;
-    updateFilterValue(newValue);
-  };
-
+export function InputFilterField(props: { type: InputType }) {
+  const { type } = props;
+  const { setFieldValue } = useFormikContext<PostFilter>();
   return (
-    <TextField
-      name={`${type}-input`}
-      placeholder={`Enter ${type.charAt(0).toUpperCase() + type.slice(1)}`}
-      fullWidth
+    <FormikTextField
+      name="values"
       label={type.charAt(0).toUpperCase() + type.slice(1)}
-      variant="outlined"
-      value={filterValueState}
-      onChange={handleFilterChange}
+      placeholder={`Enter ${type.charAt(0).toUpperCase() + type.slice(1)}`}
       type={type === "string" ? "text" : type}
-      InputLabelProps={{ shrink: true }}
+      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = event.target.value;
+        const formattedValue =
+          type === "date" ? moment(newValue).format("YYYY-MM-DD") : newValue;
+        setFieldValue("values[0]", formattedValue);
+      }}
     />
   );
 }
 
-export function DynamicInputFilterFields(props: {
-  onApply: (value: string[]) => void;
-  type: InputType;
-  defaultValue: string[];
-  operator: QueryOperator;
-}) {
-  const { type, defaultValue, onApply, operator } = props;
+export function DynamicInputFilterFields(props: { type: InputType }) {
+  const { type } = props;
 
-  const [filterValues, setFilterValues] = React.useState<string[]>(
-    defaultValue ?? [""]
-  );
-
-  React.useEffect(() => {
-    const itemValue = defaultValue ?? [""];
-
-    setFilterValues(itemValue);
-  }, [defaultValue, operator]);
-
-  const updateFilterValues = (newValues: string[]) => {
-    setFilterValues(newValues);
-
-    const formattedValues = newValues.map((value) =>
-      type === "date" ? moment(value).format("YYYY-MM-DD") : value
-    );
-
-    onApply(formattedValues);
-  };
-
-  const handleFilterChange =
-    (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      const newValues = [...filterValues];
-
-      newValues[index] = event.target.value;
-
-      updateFilterValues(newValues);
-    };
+  const { values, setFieldValue } = useFormikContext<PostFilter>();
 
   const addField = () => {
-    setFilterValues([...filterValues, ""]);
+    const newValues = [...(values.values || []), ""];
+    setFieldValue("values", newValues);
   };
 
   const deleteField = (index: number) => {
-    const newValues = filterValues.filter((_, i) => i !== index);
-    updateFilterValues(newValues);
+    const newValues = values.values?.filter((_, i) => i !== index) || [];
+    setFieldValue("values", newValues);
   };
 
   return (
-    <div className="wd-flex wd-flex-col wd-items-center wd-w-full wd-gap-4 ">
-      {filterValues.map((value, index) => (
+    <div className="wd-flex wd-flex-col wd-items-center wd-w-full wd-gap-4">
+      {values.values?.map((_value, index) => (
         <div
           key={index}
-          className="wd-flex wd-flex-row wd-items-center wd-w-full  wd-gap-2 "
+          className="wd-flex wd-flex-row wd-items-center wd-w-full wd-gap-2"
         >
-          <TextField
-            name={`${type}-input-${index}`}
-            placeholder={`Enter ${
-              type.charAt(0).toUpperCase() + type.slice(1)
-            }`}
-            fullWidth
+          <FormikTextField
+            name={`values[${index}]`}
             label={`${type.charAt(0).toUpperCase() + type.slice(1)} ${
               index + 1
             }`}
-            variant="outlined"
-            value={value}
-            style={{ marginBottom: 0 }}
-            onChange={handleFilterChange(index)}
+            placeholder={`Enter ${
+              type.charAt(0).toUpperCase() + type.slice(1)
+            }`}
             type={type === "string" ? "text" : type}
-            InputLabelProps={{ shrink: true }}
-            sx={{ mb: 2 }}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              const newValue = event.target.value;
+              const formattedValue =
+                type === "date"
+                  ? moment(newValue).format("YYYY-MM-DD")
+                  : newValue;
+              setFieldValue(`values[${index}]`, formattedValue);
+            }}
           />
-          <IconButton color="error" onClick={() => deleteField(index)}>
+          <IconButton
+            color="error"
+            onClick={() => {
+              deleteField(index);
+            }}
+          >
             <CloseIcon />
           </IconButton>
         </div>
       ))}
 
-      <IconButton color="primary" onClick={addField}>
+      <IconButton
+        color="primary"
+        onClick={() => {
+          addField();
+        }}
+      >
         <AddCircleOutlineOutlined />
       </IconButton>
     </div>

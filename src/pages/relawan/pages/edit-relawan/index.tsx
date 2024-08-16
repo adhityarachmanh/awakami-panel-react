@@ -18,10 +18,7 @@ import KotaField from "../../components/KotaField";
 import PoskoField from "../../components/PoskoField";
 import ProvinsiField from "../../components/ProvinsiField";
 import { RelawanEditFormModel } from "../../types/RelawanModel";
-import NamaField from "../../components/NamaField";
-import NoKTPField from "../../components/NoKTPField";
-import AlamatField from "../../components/AlamatField";
-import JabatanField from "../../components/JabatanField";
+import FormikTextField from "@/components/formik/FormikTextField";
 
 const EditRelawan = () => {
   const { id } = useParams();
@@ -79,11 +76,11 @@ const EditRelawan = () => {
                   onSubmit={handleSubmit}
                 >
                   <div className="wd-flex wd-flex-col ">
-                    <NamaField />
-                    <NoKTPField />
+                    <FormikTextField name="nama" label="Nama" />
+                    <FormikTextField name="noKTP" label="No KTP" />
 
                     <JenisKelaminField />
-                    <JabatanField />
+                    <FormikTextField name="jabatan" label="Jabatan" />
 
                     <JabatanPoskoField />
                     <PoskoField />
@@ -94,7 +91,12 @@ const EditRelawan = () => {
                     <KotaField />
                     <KecamatanField />
                     <KelurahanField />
-                    <AlamatField />
+                    <FormikTextField
+                      name="alamat"
+                      label="Alamat"
+                      rows={4}
+                      multiline
+                    />
                   </div>
                   <Button
                     disabled={mutation.isPending}

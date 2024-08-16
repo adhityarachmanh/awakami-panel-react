@@ -10,7 +10,7 @@ const useEditPosko = (id: number) => {
   const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const validationSchema = Yup.object().shape({
-    nomor: Yup.string().required("Nomor is required"),
+    nama: Yup.string().required("Nama is required"),
     alamat: Yup.string().required("Alamat is required"),
   });
   const poskoQuery = useQuery({

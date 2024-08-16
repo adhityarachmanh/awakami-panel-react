@@ -19,13 +19,13 @@ export type PostSort = {
   order: SortOrder;
 };
 
-type PrimitiveTypes = number | boolean | string;
+// type PrimitiveTypes = number | boolean | string;
 
 export type PostFilter = {
   key: string;
   operator: QueryOperator;
   // type: FilterTypes;
-  values?: PrimitiveTypes[];
+  values?: any[];
 };
 
 export type PostQuery = {

@@ -90,7 +90,7 @@ const Sidebar = ({ container }: { container?: () => HTMLElement }) => {
   );
 
   const drawer = (
-    <div>
+    <div className="wd-h-[100vh] wd-overflow-hidden">
       <Toolbar
         sx={{
           height: 200,
@@ -107,7 +107,7 @@ const Sidebar = ({ container }: { container?: () => HTMLElement }) => {
         <div className="text-body-1 whitespace-nowrap">{brandName}</div>
       </Toolbar>
       <Divider />
-      <List>
+      <List className="wd-overflow-y-auto wd-h-[calc(100vh-200px)] wd-flex-grow-1">
         {menu.map((item, index) => (
           <div key={index}>
             <ListItem disablePadding>

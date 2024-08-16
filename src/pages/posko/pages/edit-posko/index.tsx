@@ -10,10 +10,9 @@ import {
 import useEditPosko from "./useEditPosko";
 import { Form, Formik } from "formik";
 import { PoskoFormModel } from "../../types/PoskoModel";
-import NomorField from "../../components/NamaField";
-import AlamatField from "../../components/AlamatField";
 import { useParams } from "react-router-dom";
 import { useMemo } from "react";
+import FormikTextField from "@/components/formik/FormikTextField";
 
 const EditPosko = () => {
   const { id } = useParams();
@@ -64,8 +63,13 @@ const EditPosko = () => {
                   className="wd-flex wd-flex-col wd-gap-2"
                   onSubmit={handleSubmit}
                 >
-                  <NomorField />
-                  <AlamatField />
+                  <FormikTextField name="nama" label="Nama" />
+                  <FormikTextField
+                    name="alamat"
+                    label="Alamat"
+                    rows={4}
+                    multiline
+                  />
                   <Button
                     disabled={mutation.isPending}
                     startIcon={

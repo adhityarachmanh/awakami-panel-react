@@ -9,9 +9,8 @@ import {
 } from "@mui/material";
 import { Form, Formik } from "formik";
 import { PoskoFormModel } from "../../types/PoskoModel";
-import NomorField from "../../components/NamaField";
-import AlamatField from "../../components/AlamatField";
 import useTambahPosko from "./useTambahPosko";
+import FormikTextField from "@/components/formik/FormikTextField";
 
 const TambahPosko = () => {
   const { validationSchema, navigate, mutation } = useTambahPosko();
@@ -50,8 +49,13 @@ const TambahPosko = () => {
                 className="wd-flex wd-flex-col wd-gap-2"
                 onSubmit={handleSubmit}
               >
-                <NomorField />
-                <AlamatField />
+                <FormikTextField name="nama" label="Nama" />
+                <FormikTextField
+                  name="alamat"
+                  label="Alamat"
+                  rows={4}
+                  multiline
+                />
                 <Button
                   disabled={mutation.isPending}
                   startIcon={
