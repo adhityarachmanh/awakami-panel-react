@@ -1,25 +1,29 @@
-import { useState } from "react";
+import { CSSProperties, useMemo, useState } from "react";
 import { TextField } from "@mui/material";
 import { useFormikContext } from "formik";
 import ImagePreview from "@/components/image/ImagePreview";
 
 interface FormikImageFieldProps<T> {
   name: keyof T;
+  defaultSource?: string | null;
   label?: string;
   variant?: "outlined" | "filled" | "standard";
   fullWidth?: boolean;
   margin?: "none" | "dense" | "normal";
+  imageStyle?: CSSProperties;
 }
 
 const FormikImageField = <T,>({
   name,
   label = "Image",
+  defaultSource,
   variant = "outlined",
   fullWidth = true,
   margin = "none",
+  imageStyle = { width: "100%", height: "300px" },
 }: FormikImageFieldProps<T>) => {
   const { touched, errors, setFieldValue } = useFormikContext<T>();
-  const [preview, setPreview] = useState<string | null>(null);
+  const [preview, setPreview] = useState<string | null>(defaultSource || null);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.currentTarget as HTMLInputElement;
@@ -58,7 +62,7 @@ const FormikImageField = <T,>({
   return (
     <>
       {preview && (
-        <ImagePreview src={preview} alt="Preview" width="100%" height="100%" />
+        <ImagePreview src={preview} alt="Preview" imageStyle={imageStyle} />
       )}
       <TextField
         type="file"

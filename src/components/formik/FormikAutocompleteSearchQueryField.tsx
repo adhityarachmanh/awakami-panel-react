@@ -3,27 +3,27 @@ import { TextField, Autocomplete } from "@mui/material";
 import { Field } from "formik";
 import { APIResponse } from "@/types/APIResponse";
 import { PostQuery } from "@/types/PostQuery";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
-interface AutocompleteQueryProps<T> {
+interface FormikAutocompleteSearchQueryFieldProps<T> {
   label: string;
   name: string;
   placeholder?: string;
   debounce?: number;
   loadingText?: string;
-  buildValue: (item: T) => { label: string; value: any };
+  buildOption: (item: T) => { label: string; value: any };
   service: (postQuery: PostQuery) => Promise<APIResponse<T[]>>;
 }
 
-const AutocompleteQuery = <T,>({
+const FormikAutocompleteSearchQueryField = <T,>({
   label,
   name,
   placeholder,
   debounce,
   loadingText,
   service,
-  buildValue,
-}: AutocompleteQueryProps<T>) => {
+  buildOption,
+}: FormikAutocompleteSearchQueryFieldProps<T>) => {
   const [postQuery, setPostQuery] = useState<PostQuery>({
     keywords: "",
     filters: [],
@@ -46,11 +46,12 @@ const AutocompleteQuery = <T,>({
   const { data: queryData, isFetching: isLoadingQuery } = useQuery({
     queryKey: [name, debouncedQuery],
     queryFn: () => service(debouncedQuery),
+    placeholderData: keepPreviousData,
   });
 
   const options = React.useMemo(
-    () => queryData?.data.map(buildValue) ?? [],
-    [queryData, buildValue]
+    () => queryData?.data.map(buildOption) ?? [],
+    [queryData, buildOption]
   );
 
   return (
@@ -71,6 +72,18 @@ const AutocompleteQuery = <T,>({
               keywords: newInputValue,
             }));
           }}
+          // onScroll={(event) => {
+          //   const listboxNode = event.currentTarget;
+          //   if (
+          //     listboxNode.scrollTop + listboxNode.clientHeight ===
+          //     listboxNode.scrollHeight
+          //   ) {
+          //     setPostQuery((prevQuery) => ({
+          //       ...prevQuery,
+          //       page: prevQuery.page + 1,
+          //     }));
+          //   }
+          // }}
           isOptionEqualToValue={(option, value) => option.value === value.value}
           renderInput={(params) => (
             <TextField
@@ -93,4 +106,4 @@ const AutocompleteQuery = <T,>({
   );
 };
 
-export default AutocompleteQuery;
+export default FormikAutocompleteSearchQueryField;

@@ -2,29 +2,28 @@ import { useSnackbar } from "@/hooks/useSnackbar";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-import { EventFormModel } from "../../models/EventModel";
-import EventService from "../../services/EventService";
+import { BeritaFormModel } from "../../models/BeritaModel";
+import BeritaService from "../../services/BeritaService";
 
-const useEditEvent = (id: number) => {
-  const eventService = new EventService();
+const useEditBerita = (id: number) => {
+  const beritaService = new BeritaService();
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
   const validationSchema = Yup.object().shape({
     Judul: Yup.string().required("Judul is required"),
     Deskripsi: Yup.string().required("Deskripsi is required"),
     Tanggal: Yup.string().required("Tanggal is required"),
-    Jam: Yup.string().required("Jam is required"),
     ImageFile: Yup.mixed().nullable(),
   });
   const { data, isFetching: isLoading } = useQuery({
-    queryKey: ["event-detail", id],
-    queryFn: () => eventService.getDetail(id),
+    queryKey: ["berita-detail", id],
+    queryFn: () => beritaService.getDetail(id),
   });
   const mutation = useMutation({
-    mutationFn: (data: EventFormModel) => eventService.update(id, data),
+    mutationFn: (data: BeritaFormModel) => beritaService.update(id, data),
     onSuccess: () => {
-      showSnackbar("Event berhasil ditambahkan", "success");
-      navigate("/portal/event");
+      showSnackbar("Berita berhasil ditambahkan", "success");
+      navigate("/portal/berita");
     },
     onError: (error) => {
       showSnackbar(error.message, "error");
@@ -39,4 +38,4 @@ const useEditEvent = (id: number) => {
   };
 };
 
-export default useEditEvent;
+export default useEditBerita;

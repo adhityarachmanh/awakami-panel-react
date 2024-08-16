@@ -21,6 +21,7 @@ import SortingComponent from "./components/Sorting";
 import { FilterType } from "./types/FilterModel";
 import DefaultHeaderTable from "./components/DefaultHeaderTable";
 interface DataTableInterface<T> {
+  className?: string;
   uniqKey: string;
   selectable?: boolean;
   paginable?: boolean;
@@ -44,6 +45,7 @@ interface DataTableInterface<T> {
 }
 
 const DataTable = <T,>({
+  className,
   selectable = true,
   columns,
   rowsPerPageOptions = [5, 10, 20, 30, 40, 50],
@@ -87,7 +89,7 @@ const DataTable = <T,>({
   const currentPage = useMemo(() => query?.page?.current ?? 1, [query]);
   const pageSize = useMemo(() => query?.page?.size ?? 5, [query]);
   return (
-    <div className="w-full wd-flex-col wd-flex">
+    <div className={`w-full wd-flex-col wd-flex ${className}`}>
       {renderHeader ? (
         renderHeader({
           isLoading,

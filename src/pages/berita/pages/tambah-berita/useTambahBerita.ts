@@ -1,27 +1,26 @@
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-import EventService from "../../services/EventService";
+import BeritaService from "../../services/BeritaService";
 import { useSnackbar } from "@/hooks/useSnackbar";
 import { useMutation } from "@tanstack/react-query";
-import { EventFormModel } from "../../models/EventModel";
+import { BeritaFormModel } from "../../models/BeritaModel";
 
-const useTambahEvent = () => {
-  const eventService = new EventService();
+const useTambahBerita = () => {
+  const beritaService = new BeritaService();
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
   const validationSchema = Yup.object().shape({
     Judul: Yup.string().required("Judul is required"),
     Deskripsi: Yup.string().required("Deskripsi is required"),
     Tanggal: Yup.string().required("Tanggal is required"),
-    Jam: Yup.string().required("Jam is required"),
     ImageFile: Yup.mixed().nullable().required("ImageFile is required"),
   });
-  
+
   const mutation = useMutation({
-    mutationFn: (data: EventFormModel) => eventService.create(data),
+    mutationFn: (data: BeritaFormModel) => beritaService.create(data),
     onSuccess: () => {
-      showSnackbar("Event berhasil ditambahkan", "success");
-      navigate("/portal/event");
+      showSnackbar("Berita berhasil ditambahkan", "success");
+      navigate("/portal/berita");
     },
     onError: (error) => {
       showSnackbar(error.message, "error");
@@ -34,4 +33,4 @@ const useTambahEvent = () => {
   };
 };
 
-export default useTambahEvent;
+export default useTambahBerita;

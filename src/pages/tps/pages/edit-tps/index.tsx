@@ -22,11 +22,10 @@ const EditTPS = () => {
   const tpsData = useMemo(() => {
     return tpsQuery.data ?? null;
   }, [tpsQuery.isSuccess, tpsQuery.data]);
+  if (tpsQuery.isLoading) return <></>;
   return (
     <div className="wd-flex wd-flex-col wd-gap-4 wd-items-center wd-w-full wd-container wd-mx-auto wd-mt-[10rem] wd-m-8">
-      {tpsQuery.isLoading ? (
-        <CircularProgress />
-      ) : (
+   
         <Card sx={{ width: { xs: "100%", sm: "60%", md: "40%", lg: "30%" } }}>
           <CardHeader
             style={{ paddingBottom: 0 }}
@@ -87,7 +86,7 @@ const EditTPS = () => {
             </Formik>
           </CardContent>
         </Card>
-      )}
+   
     </div>
   );
 };

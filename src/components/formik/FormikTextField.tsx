@@ -1,4 +1,4 @@
-import { InputProps, TextField } from "@mui/material";
+import { InputBaseComponentProps, InputProps, TextField } from "@mui/material";
 import { useFormikContext, Field } from "formik";
 
 interface FormikTextFieldProps {
@@ -12,6 +12,7 @@ interface FormikTextFieldProps {
   type?: React.HTMLInputTypeAttribute;
   InputProps?: InputProps;
   placeholder?: string;
+  inputProps?: InputBaseComponentProps;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -26,9 +27,10 @@ const FormikTextField = <T,>({
   type,
   InputProps,
   placeholder,
+  inputProps,
   onChange,
 }: FormikTextFieldProps) => {
-  const { touched, errors } = useFormikContext<T>();
+  const { touched, errors, setFieldValue } = useFormikContext<T>();
   const error = touched[name as keyof T] && Boolean(errors[name as keyof T]);
   const helperText = touched[name as keyof T] && errors[name as keyof T];
 
@@ -45,13 +47,20 @@ const FormikTextField = <T,>({
           multiline={multiline}
           rows={rows}
           InputProps={InputProps}
+          inputProps={inputProps}
           InputLabelProps={{
             shrink: true,
           }}
           error={error}
           helperText={helperText}
           placeholder={placeholder}
-          onChange={onChange}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            field.onChange(event);
+            setFieldValue(name, event.target.value);
+            if (onChange) {
+              onChange(event);
+            }
+          }}
         />
       )}
     </Field>

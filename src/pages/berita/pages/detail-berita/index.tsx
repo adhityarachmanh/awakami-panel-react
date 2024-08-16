@@ -7,15 +7,15 @@ import {
   CardContent,
   Typography,
 } from "@mui/material";
-import useDetailEvent from "./useDetailEvent";
+import useDetailBerita from "./useDetailBerita";
 import { useParams } from "react-router-dom";
 import richtextDefaultFormater from "@/utility/richtextFormater";
 import ImagePreview from "@/components/image/ImagePreview";
 import { formatDateString } from "@/utility/dateFormat";
 
-const DetailEvent = () => {
+const DetailBerita = () => {
   const { id } = useParams();
-  const { data, isLoading, navigate } = useDetailEvent(Number(id));
+  const { data, isLoading, navigate } = useDetailBerita(Number(id));
   if (isLoading) return <></>;
   return (
     <div className="wd-flex wd-flex-col wd-gap-4 wd-container wd-mx-auto wd-mt-[5rem] wd-mb-4">
@@ -26,12 +26,12 @@ const DetailEvent = () => {
             avatar={
               <IconButton
                 size="small"
-                onClick={() => navigate("/portal/event")}
+                onClick={() => navigate("/portal/berita")}
               >
                 <ArrowCircleLeftOutlined />
               </IconButton>
             }
-            title="Detail Event"
+            title="Detail Berita"
             titleTypographyProps={{
               fontSize: 24,
             }}
@@ -67,12 +67,6 @@ const DetailEvent = () => {
                 </Typography>
                 <Typography>{formatDateString(data?.tanggal)}</Typography>
               </div>
-              <div className="wd-flex wd-flex-col wd-w-full">
-                <Typography color="primary" fontWeight="bold">
-                  Jam:
-                </Typography>
-                <Typography>{data?.jam}</Typography>
-              </div>
             </div>
           </CardContent>
         </Card>
@@ -94,4 +88,4 @@ const DetailEvent = () => {
   );
 };
 
-export default DetailEvent;
+export default DetailBerita;

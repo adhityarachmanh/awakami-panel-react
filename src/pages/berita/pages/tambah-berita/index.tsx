@@ -8,25 +8,24 @@ import {
   Button,
   CircularProgress,
 } from "@mui/material";
-import useTambahEvent from "./useTambahEvent";
+import useTambahBerita from "./useTambahBerita";
 import { Form, Formik } from "formik";
-import { EventFormModel } from "../../models/EventModel";
+import { BeritaFormModel } from "../../models/BeritaModel";
 import FormikRichTextEditor from "@/components/formik/FormikRichText";
 import FormikImageField from "@/components/formik/FormikImageField";
 import FormikTextField from "@/components/formik/FormikTextField";
 import FormikDateField from "@/components/formik/FormikDateField";
 import FormikTimeField from "@/components/formik/FormikTimeField";
 
-const TambahEvent = () => {
-  const { mutation, navigate, validationSchema } = useTambahEvent();
+const TambahBerita = () => {
+  const { mutation, navigate, validationSchema } = useTambahBerita();
   return (
-    <Formik<EventFormModel>
+    <Formik<BeritaFormModel>
       validationSchema={validationSchema}
       initialValues={{
         Judul: "",
         Deskripsi: "",
         Tanggal: "",
-        Jam: "",
         ImageFile: null,
       }}
       onSubmit={(values) => {
@@ -45,16 +44,16 @@ const TambahEvent = () => {
                 avatar={
                   <IconButton
                     size="small"
-                    onClick={() => navigate("/portal/event")}
+                    onClick={() => navigate("/portal/berita")}
                   >
                     <ArrowCircleLeftOutlined />
                   </IconButton>
                 }
-                title="Tambah Event"
+                title="Tambah Berita"
                 titleTypographyProps={{
                   fontSize: 24,
                 }}
-                subheader="Formulir Pendaftaran Event"
+                subheader="Formulir Pendaftaran Berita"
                 subheaderTypographyProps={{
                   fontSize: 16,
                 }}
@@ -63,7 +62,6 @@ const TambahEvent = () => {
                 <FormikImageField name="ImageFile" label="Gambar" />
                 <FormikTextField name="Judul" label="Judul" />
                 <FormikDateField name="Tanggal" label="Tanggal" />
-                <FormikTimeField name="Jam" label="Jam" />
                 <Button
                   disabled={mutation.isPending}
                   startIcon={
@@ -99,4 +97,4 @@ const TambahEvent = () => {
   );
 };
 
-export default TambahEvent;
+export default TambahBerita;

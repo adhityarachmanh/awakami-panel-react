@@ -28,26 +28,24 @@ const FormikRichText = ({ name, style, className }: FormikRichTextProps) => {
   };
 
   return (
-    <div className="wd-flex wd-flex-col wd-gap-2">
-      <Field name={name}>
-        {({ field, form }: { field: any; form: any }) => (
+    <Field name={name}>
+      {({ field, form }: { field: any; form: any }) => (
+        <div className={className} style={style}>
           <ReactQuill
-            className={className}
-            style={style}
             value={field.value}
             modules={modules}
+            style={{ height: "100%", width: "100%" }}
             onChange={(value) => form.setFieldValue(field.name, value)}
           />
-        )}
-      </Field>
-      <ErrorMessage
-        name={name}
-        component="span"
-        className="wd-text-red-600 wd-text-xs wd-mt-1 wd-text-left wd-font-normal wd-ml-4"
-      />
-    </div>
+          <ErrorMessage
+            name={name}
+            component="span"
+            className="wd-text-red-600 wd-text-xs wd-mt-1 wd-text-left wd-font-normal wd-ml-4"
+          />
+        </div>
+      )}
+    </Field>
   );
 };
-
 
 export default FormikRichText;

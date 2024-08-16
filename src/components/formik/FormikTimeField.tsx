@@ -19,6 +19,7 @@ interface FormikTimeFieldProps {
   placeholder?: string;
   displayFormat?: string;
   dataFormat?: string;
+  is24HourFormat?: boolean;
 }
 
 const FormikTimeField = <T,>({
@@ -27,6 +28,7 @@ const FormikTimeField = <T,>({
   placeholder = "Masukkan jam",
   displayFormat = "HH:mm",
   dataFormat = "HH:mm",
+  is24HourFormat = true,
 }: FormikTimeFieldProps) => {
   const { values, initialValues, setFieldValue } = useFormikContext<T>();
   const [open, setOpen] = useState(false);
@@ -96,6 +98,7 @@ const FormikTimeField = <T,>({
                   defaultValue={initialMemoizedValue}
                   value={selectedTime}
                   onChange={(value) => setSelectedTime(value)}
+                  ampm={!is24HourFormat}
                 />
               
               </DialogContent>

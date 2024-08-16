@@ -22,11 +22,10 @@ const EditPosko = () => {
   const poskoData = useMemo(() => {
     return poskoQuery.data ?? null;
   }, [poskoQuery.isSuccess, poskoQuery.data]);
+  if (poskoQuery.isLoading) return <></>;
   return (
     <div className="wd-flex wd-flex-col wd-gap-4 wd-items-center wd-w-full wd-container wd-mx-auto wd-mt-[10rem] wd-m-8">
-      {poskoQuery.isLoading ? (
-        <CircularProgress />
-      ) : (
+  
         <Card sx={{ width: { xs: "100%", sm: "60%", md: "40%", lg: "30%" } }}>
           <CardHeader
             style={{ paddingBottom: 0 }}
@@ -90,7 +89,7 @@ const EditPosko = () => {
             </Formik>
           </CardContent>
         </Card>
-      )}
+   
     </div>
   );
 };

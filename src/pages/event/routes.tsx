@@ -9,7 +9,7 @@ const eventRoutes: Route[] = [
     element: <ListEvent />,
   },
   {
-    path: "event/:id",
+    path: "event/detail/:id",
     element: <DetailEvent />,
   },
   {

@@ -1,32 +1,35 @@
+import FormikDateField from "@/components/formik/FormikDateField";
+import FormikImageField from "@/components/formik/FormikImageField";
+import FormikTextField from "@/components/formik/FormikTextField";
+import FormikTimeField from "@/components/formik/FormikTimeField";
+import FormikRichTextEditor from "@/components/formik/FormikRichText";
 import { ArrowCircleLeftOutlined } from "@mui/icons-material";
 import {
   Card,
   CardHeader,
   IconButton,
   CardContent,
-  Typography,
   Button,
   CircularProgress,
+  Typography,
 } from "@mui/material";
-import useTambahEvent from "./useTambahEvent";
-import { Form, Formik } from "formik";
-import { EventFormModel } from "../../models/EventModel";
-import FormikRichTextEditor from "@/components/formik/FormikRichText";
-import FormikImageField from "@/components/formik/FormikImageField";
-import FormikTextField from "@/components/formik/FormikTextField";
-import FormikDateField from "@/components/formik/FormikDateField";
-import FormikTimeField from "@/components/formik/FormikTimeField";
+import { Formik } from "formik";
+import { Form, useParams } from "react-router-dom";
+import { BeritaFormModel } from "../../models/BeritaModel";
+import useEditBerita from "./useEditBerita";
 
-const TambahEvent = () => {
-  const { mutation, navigate, validationSchema } = useTambahEvent();
+const EditBerita = () => {
+  const { id } = useParams();
+  const { mutation, navigate, validationSchema, data, isLoading } =
+    useEditBerita(Number(id));
+  if (isLoading) return <></>;
   return (
-    <Formik<EventFormModel>
+    <Formik<BeritaFormModel>
       validationSchema={validationSchema}
       initialValues={{
-        Judul: "",
-        Deskripsi: "",
-        Tanggal: "",
-        Jam: "",
+        Judul: data?.judul ?? "",
+        Deskripsi: data?.deskripsi ?? "",
+        Tanggal: data?.tanggal ?? "",
         ImageFile: null,
       }}
       onSubmit={(values) => {
@@ -45,25 +48,29 @@ const TambahEvent = () => {
                 avatar={
                   <IconButton
                     size="small"
-                    onClick={() => navigate("/portal/event")}
+                    onClick={() => navigate("/portal/berita")}
                   >
                     <ArrowCircleLeftOutlined />
                   </IconButton>
                 }
-                title="Tambah Event"
+                title="Edit Berita"
                 titleTypographyProps={{
                   fontSize: 24,
                 }}
-                subheader="Formulir Pendaftaran Event"
                 subheaderTypographyProps={{
                   fontSize: 16,
                 }}
               />
               <CardContent className="wd-flex wd-flex-col wd-gap-4">
-                <FormikImageField name="ImageFile" label="Gambar" />
+                <FormikImageField
+                  defaultSource={`${import.meta.env.VITE_BASE_URL}/${
+                    data?.filePath
+                  }`}
+                  name="ImageFile"
+                  label="Gambar"
+                />
                 <FormikTextField name="Judul" label="Judul" />
                 <FormikDateField name="Tanggal" label="Tanggal" />
-                <FormikTimeField name="Jam" label="Jam" />
                 <Button
                   disabled={mutation.isPending}
                   startIcon={
@@ -86,7 +93,7 @@ const TambahEvent = () => {
                     Deskripsi
                   </Typography>
                   <FormikRichTextEditor
-                    className="wd-h-[calc(700px-175px)] lg:wd-h-[calc(700px-125px)]"
+                    className="wd-h-[calc(700px-200px)] lg:wd-h-[calc(700px-200px)]"
                     name="Deskripsi"
                   />
                 </div>
@@ -99,4 +106,4 @@ const TambahEvent = () => {
   );
 };
 
-export default TambahEvent;
+export default EditBerita;

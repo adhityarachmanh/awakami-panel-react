@@ -8,6 +8,7 @@ import relawanRoutes from "@/pages/relawan/routes";
 import tpsRoutes from "@/pages/tps/routes";
 import poskoRoutes from "@/pages/posko/routes";
 import eventRoutes from "@/pages/event/routes";
+import beritaRoutes from "@/pages/berita/routes";
 
 const routesConfig: Route[] = [
   {
@@ -31,6 +32,7 @@ const routesConfig: Route[] = [
       ...tpsRoutes,
       ...poskoRoutes,
       ...eventRoutes,
+      ...beritaRoutes,
     ],
   },
   {
