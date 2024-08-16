@@ -15,7 +15,6 @@ import FormikRichTextEditor from "@/components/formik/FormikRichText";
 import FormikImageField from "@/components/formik/FormikImageField";
 import FormikTextField from "@/components/formik/FormikTextField";
 import FormikDateField from "@/components/formik/FormikDateField";
-import FormikTimeField from "@/components/formik/FormikTimeField";
 
 const TambahBerita = () => {
   const { mutation, navigate, validationSchema } = useTambahBerita();

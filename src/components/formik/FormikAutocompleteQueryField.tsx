@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { useFormikContext } from "formik";
 import { APIResponse } from "@/types/APIResponse";
-import { PostFilter, PostQuery } from "@/types/PostQuery";
+import { PostQuery } from "@/types/PostQuery";
 import { RefreshOutlined, SearchOutlined } from "@mui/icons-material";
 import DataTable from "../table";
 import { ColumnType } from "../table/types/ColumnModel";

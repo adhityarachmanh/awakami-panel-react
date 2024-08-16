@@ -121,7 +121,7 @@ const EditRelawan = () => {
                     service={(postQuery) =>
                       wilayahService.provinsiAll(postQuery)
                     }
-                    filterOnChange={(value) => {
+                    filterOnChange={() => {
                       setFieldValue("kotaId", null);
                       setFieldValue("kecamatanId", null);
                       setFieldValue("kelurahanId", null);
@@ -140,7 +140,7 @@ const EditRelawan = () => {
                       { field: "name", headerName: "Name", type: "string" },
                     ]}
                     service={(postQuery) => wilayahService.kotaAll(postQuery)}
-                    filterOnChange={(value) => {
+                    filterOnChange={() => {
                       setFieldValue("kecamatanId", null);
                       setFieldValue("kelurahanId", null);
                     }}
@@ -161,7 +161,7 @@ const EditRelawan = () => {
                     service={(postQuery) =>
                       wilayahService.kecamatanAll(postQuery)
                     }
-                    filterOnChange={(value) => {
+                    filterOnChange={() => {
                       setFieldValue("kelurahanId", null);
                     }}
                   />
