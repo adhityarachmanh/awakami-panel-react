@@ -24,7 +24,7 @@ i18n
         "path",
         "subdomain",
       ],
-      caches: ["cookie"],
+      caches: ["localStorage"],
     },
     backend: {
       loadPath: "/locales/{{lng}}/{{ns}}.json",

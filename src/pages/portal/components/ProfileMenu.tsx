@@ -1,13 +1,15 @@
 import React from "react";
-import { Menu, Box, Avatar, Divider, MenuItem, IconButton } from "@mui/material";
-import UserService from "@/services/UserService";
+import { Menu, Box, Divider, MenuItem, IconButton } from "@mui/material";
 import { deauthenticate } from "@/stores/reducers/authReducer";
 import { useQuery } from "@tanstack/react-query";
 import { useRootDispatch } from "@/stores";
+import { useNavigate } from "react-router-dom";
+import ProfileService from "@/pages/profile/services/ProfileService";
+import ProfileAvatar from "@/components/profile_avatar";
 
-const AvatarComponent = () => {
-    
-  const profileService = new UserService();
+const ProfileMenu = () => {
+  const profileService = new ProfileService();
+  const navigate = useNavigate();
   const dispatch = useRootDispatch();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -26,56 +28,49 @@ const AvatarComponent = () => {
   const logout = () => {
     dispatch(deauthenticate());
   };
-  const user = React.useMemo(
+  const profile = React.useMemo(
     () => profileQuery.data?.data,
     [profileQuery.data?.data]
   );
 
-  const stringAvatar = React.useMemo(() => {
-    if (!user?.name) return {};
-    return {
-      alt: "User Avatar",
-      src: user.imagePath
-        ? `${import.meta.env.VITE_API_URL}/${user.imagePath}`
-        : undefined,
-      children: user.imagePath ? undefined : (
-        <span className="wd-text-base wd-font-medium ">
-          {`${user.name.split(" ")[0][0]}${user.name.split(" ")[1][0]}`}
-        </span>
-      ),
-    };
-  }, [user?.name, user?.imagePath]);
-
-
   return (
     <>
       <IconButton onClick={handleAvatarClick} color="inherit">
-            <Avatar {...stringAvatar} />
-          </IconButton>
+        <ProfileAvatar />
+      </IconButton>
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >
         <Box sx={{ p: 2, display: "flex", alignItems: "center" }}>
-          <Avatar {...stringAvatar} />
+          <ProfileAvatar />
 
           <Box
             sx={{
               ml: 2,
             }}
           >
-            <p className="wd-text-base wd-font-medium">{user?.name ?? "-"}</p>
+            <p className="wd-text-base wd-font-medium">
+              {profile?.name ?? "-"}
+            </p>
 
-            <p className="wd-text-sm wd-text-gray-500">{user?.email ?? "-"}</p>
+            <p className="wd-text-sm wd-text-gray-500">
+              {profile?.email ?? "-"}
+            </p>
           </Box>
         </Box>
 
         <Divider />
 
-        <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-
-        <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleMenuClose();
+            navigate("/portal/profile");
+          }}
+        >
+          Profile
+        </MenuItem>
 
         <MenuItem
           onClick={() => {
@@ -90,4 +85,4 @@ const AvatarComponent = () => {
   );
 };
 
-export default AvatarComponent;
+export default ProfileMenu;

@@ -13,13 +13,13 @@ class BeritaService {
     this.authService = new AuthService();
   }
 
-  async create(data: BeritaFormModel): Promise<APIResponse<BeritaFormModel>> {
+  async create(data: BeritaFormModel): Promise<APIResponse<BeritaModel>> {
     const auth = this.authService.getAuthenticated();
     if (!auth) {
       throw new Error("User not authenticated");
     }
     try {
-      const response = await axios.post<APIResponse<BeritaFormModel>>(
+      const response = await axios.post<APIResponse<BeritaModel>>(
         `${this.baseURL}/create`,
         Object.keys(data).reduce((fd, key) => {
           if (data[key as keyof BeritaFormModel])
@@ -43,13 +43,13 @@ class BeritaService {
   async update(
     id: number,
     data: BeritaFormModel
-  ): Promise<APIResponse<BeritaFormModel>> {
+  ): Promise<APIResponse<BeritaModel>> {
     const auth = this.authService.getAuthenticated();
     if (!auth) {
       throw new Error("User not authenticated");
     }
     try {
-      const response = await axios.put<APIResponse<BeritaFormModel>>(
+      const response = await axios.put<APIResponse<BeritaModel>>(
         `${this.baseURL}/update/${id}`,
         Object.keys(data).reduce((fd, key) => {
           if (data[key as keyof BeritaFormModel])

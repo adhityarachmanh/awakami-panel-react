@@ -1,7 +1,7 @@
-export interface ProfileEditForm {
-  name: string;
-  email: string;
-  image: File | null;
+export interface ProfileFormModel {
+  Name: string;
+  Email: string;
+  ImageFile: File | null;
 }
 
 export interface ProfileModel {

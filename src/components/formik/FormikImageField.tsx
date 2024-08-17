@@ -60,7 +60,7 @@ const FormikImageField = <T,>({
   const helperText = touched[name] && (errors[name] as unknown as string);
 
   return (
-    <>
+    <div className="wd-flex wd-flex-col wd-w-full wd-gap-4">
       {preview && (
         <ImagePreview src={preview} alt="Preview" imageStyle={imageStyle} />
       )}
@@ -77,7 +77,7 @@ const FormikImageField = <T,>({
         helperText={helperText}
         onChange={handleChange}
       />
-    </>
+    </div>
   );
 };
 

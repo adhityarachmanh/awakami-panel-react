@@ -7,6 +7,7 @@ import {
   Menu,
   SxProps,
   Theme,
+  Typography,
 } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -48,8 +49,8 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ sx }) => {
         onClick={handleClick}
         sx={{
           minWidth: "auto",
-          paddingRight: 0.5,
-          paddingLeft: 0.5,
+          paddingRight: 1,
+          paddingLeft: 1,
           paddingTop: 0,
           paddingBottom: 0,
           backgroundColor: "#cccccc",
@@ -63,7 +64,10 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ sx }) => {
           src={currentLanguage.image}
           alt={currentLanguage.label}
           style={{ height: 30, width: 30 }}
-        />
+        /> 
+        <Typography variant="body2" color="white" sx={{ marginLeft: 1 }}>
+          {currentLanguage.label}
+        </Typography>
       </Button>
       <Menu
         id="basic-menu"

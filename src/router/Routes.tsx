@@ -9,6 +9,7 @@ import tpsRoutes from "@/pages/tps/routes";
 import poskoRoutes from "@/pages/posko/routes";
 import eventRoutes from "@/pages/event/routes";
 import beritaRoutes from "@/pages/berita/routes";
+import profileRoutes from "@/pages/profile/routes";
 
 export const routesConfig: Route[] = [
   {
@@ -33,6 +34,7 @@ export const routesConfig: Route[] = [
       ...poskoRoutes,
       ...eventRoutes,
       ...beritaRoutes,
+      ...profileRoutes,
     ],
   },
   {

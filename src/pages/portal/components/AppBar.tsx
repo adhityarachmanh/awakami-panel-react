@@ -15,7 +15,7 @@ import StyledAppBar from "./StyledAppBar";
 import { routesConfig } from "@/router/routes";
 import LanguageSwitcher from "@/components/language";
 import Notification from "./Notification";
-import AvatarComponent from "./Avatar";
+import ProfileMenu from "./ProfileMenu";
 
 const AppBar = () => {
   const dispatch = useRootDispatch();
@@ -102,7 +102,7 @@ const AppBar = () => {
         >
           <MenuIcon />
         </IconButton>
-       
+
         <Breadcrumbs
           aria-label="breadcrumb"
           sx={{
@@ -115,7 +115,7 @@ const AppBar = () => {
         <div className="wd-flex wd-items-center wd-gap-2">
           <LanguageSwitcher />
           <Notification />
-          <AvatarComponent />
+          <ProfileMenu />
         </div>
       </Toolbar>
     </StyledAppBar>

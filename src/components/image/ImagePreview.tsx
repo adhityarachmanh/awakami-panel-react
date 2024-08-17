@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { Modal, Box, IconButton, Dialog, DialogTitle } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, IconButton, Dialog } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import ZoomOutIcon from "@mui/icons-material/ZoomOut";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import DownloadIcon from "@mui/icons-material/Download";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
-
+import PhotoIcon from "@mui/icons-material/Photo";
 interface ImagePreviewProps {
   src: string;
   alt: string;
@@ -25,7 +25,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
   const [open, setOpen] = useState(false);
   const [zoom, setZoom] = useState(1);
   const handle = useFullScreenHandle();
-
+  const [error, setError] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
@@ -35,7 +35,9 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
   const handleZoomIn = () => setZoom((prevZoom) => Math.min(prevZoom + 0.1, 3));
   const handleZoomOut = () =>
     setZoom((prevZoom) => Math.max(prevZoom - 0.1, 0.1));
-
+  useEffect(() => {
+    setError(false);
+  }, [src]);
   const handleDownload = () => {
     fetch(src)
       .then((response) => response.blob())
@@ -50,16 +52,49 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
       .catch(console.error);
   };
 
+  const handleError = () => {
+    setError(true);
+  };
+
+  const handleWheel = (event: React.WheelEvent) => {
+    if (event.deltaY < 0) {
+      handleZoomIn();
+    } else {
+      handleZoomOut();
+    }
+  };
+
   return (
     <>
-      <img
-        src={src}
-        alt={alt}
-        width={width}
-        height={height}
-        style={{ cursor: "pointer", borderRadius: "4px", ...imageStyle }}
-        onClick={handleOpen}
-      />
+      {!error ? (
+        <img
+          src={src}
+          alt={alt}
+          width={width}
+          height={height}
+          onError={handleError}
+          style={{ cursor: "pointer", borderRadius: "4px", ...imageStyle }}
+          onClick={handleOpen}
+        />
+      ) : (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          style={{
+            cursor: "pointer",
+            borderRadius: "4px",
+            width: "100%",
+            height: "300px",
+            backgroundColor: "lightgray",
+          }}
+        >
+          <PhotoIcon
+            fontSize="large"
+            style={{ fontSize: "100px", color: "white" }}
+          />
+        </Box>
+      )}
       <Dialog
         open={open}
         onClose={handleClose}
@@ -78,6 +113,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
               width: "100%",
               height: "100%",
             }}
+            onWheel={handleWheel}
           >
             <IconButton
               sx={{

@@ -13,13 +13,13 @@ class EventService {
     this.authService = new AuthService();
   }
 
-  async create(data: EventFormModel): Promise<APIResponse<EventFormModel>> {
+  async create(data: EventFormModel): Promise<APIResponse<EventModel>> {
     const auth = this.authService.getAuthenticated();
     if (!auth) {
       throw new Error("User not authenticated");
     }
     try {
-      const response = await axios.post<APIResponse<EventFormModel>>(
+      const response = await axios.post<APIResponse<EventModel>>(
         `${this.baseURL}/create`,
         Object.keys(data).reduce((fd, key) => {
           if (data[key as keyof EventFormModel])
@@ -43,13 +43,13 @@ class EventService {
   async update(
     id: number,
     data: EventFormModel
-  ): Promise<APIResponse<EventFormModel>> {
+  ): Promise<APIResponse<EventModel>> {
     const auth = this.authService.getAuthenticated();
     if (!auth) {
       throw new Error("User not authenticated");
     }
     try {
-      const response = await axios.put<APIResponse<EventFormModel>>(
+      const response = await axios.put<APIResponse<EventModel>>(
         `${this.baseURL}/update/${id}`,
         Object.keys(data).reduce((fd, key) => {
           if (data[key as keyof EventFormModel])
