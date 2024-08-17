@@ -1,8 +1,8 @@
 import { Route } from "@/types/route";
-import ListBerita from "./pages/list-berita";
-import DetailBerita from "./pages/detail-berita";
-import TambahBerita from "./pages/tambah-berita";
-import EditBerita from "./pages/edit-berita";
+import ListBerita from "./pages/list_berita";
+import DetailBerita from "./pages/detail_berita";
+import TambahBerita from "./pages/tambah_berita";
+import EditBerita from "./pages/edit_berita";
 const beritaRoutes: Route[] = [
   {
     path: "berita",

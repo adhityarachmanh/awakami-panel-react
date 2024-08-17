@@ -10,6 +10,7 @@ import { Formik } from "formik";
 import { Form } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import FormikTextField from "@/components/formik/FormikTextField";
+import LanguageSwitcher from "@/components/language";
 
 const LoginPage = () => {
   const {
@@ -23,7 +24,10 @@ const LoginPage = () => {
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
   return (
-    <div className="wd-h-screen wd-flex wd-flex-row wd-w-full wd-bg-login-right wd-bg-cover">
+    <div className="wd-h-screen wd-flex wd-flex-row wd-w-full wd-bg-login-right wd-bg-cover wd-relative">
+      <div style={{ position: "absolute", top: 5, right: 5 }}>
+      <LanguageSwitcher />
+      </div>
       <div className="wd-w-1/2 wd-gap-4  wd-flex-col wd-bg-login-left wd-bg-cover wd-justify-center wd-items-center wd-hidden md:wd-flex wd-m-3 wd-rounded-lg wd-text-white wd-shadow-md">
         {/* <img src="assets/images/logo.png" alt="logo" className="wd-w-[180px] wd-h-[180px]"> */}
         <p className="wd-text-4xl">{brandName}</p>

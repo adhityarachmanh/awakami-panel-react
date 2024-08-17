@@ -10,23 +10,21 @@ import {
   ListItemIcon,
   ListItemText,
   Toolbar,
+  Typography,
 } from "@mui/material";
 
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
-
-import { useRootDispatch, useRootSelector } from "stores";
+import { useRootDispatch, useRootSelector } from "@/stores";
 import {
   closeDrawer,
   toggleNestedOpen,
   transitionEnd,
-} from "stores/reducers/sidebarReducer";
+} from "@/stores/reducers/sidebarReducer";
 import usePanel from "../usePanel";
 import menu from "@/constants/menu_constant";
 import { useNavigate, useLocation } from "react-router-dom";
-import { t } from "i18next";
-import { useTranslation } from "react-i18next";
 
 const drawerWidth = 240;
 
@@ -47,7 +45,6 @@ const getNestedItemStyles = (isActive: boolean, level?: number) => ({
 
 const Sidebar = ({ container }: { container?: () => HTMLElement }) => {
   const dispatch = useRootDispatch();
-  const { t } = useTranslation();
   const { desktopOpen, mobileOpen, nestedOpen } = useRootSelector(
     (state) => state.sidebar
   );
@@ -136,7 +133,9 @@ const Sidebar = ({ container }: { container?: () => HTMLElement }) => {
           alt="Brand Logo"
           sx={{ height: "60px", width: "60px", marginRight: "10px" }}
         />
-        <div className="text-body-1 whitespace-nowrap">{t("welcome")}</div>
+        <Typography variant="body1" noWrap>
+          {brandName}
+        </Typography>
       </Toolbar>
       <Divider />
       <List className="wd-overflow-y-auto wd-h-[calc(100vh-200px)] wd-flex-grow-1">

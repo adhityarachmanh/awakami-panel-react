@@ -3,8 +3,8 @@ import AuthService from "@/services/AuthService";
 import { LoginRequest } from "@/types/AuthModel";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { useRootDispatch } from "stores";
-import { authenticate } from "stores/reducers/authReducer";
+import { useRootDispatch } from "@/stores";
+import { authenticate } from "@/stores/reducers/authReducer";
 import * as Yup from "yup";
 
 const useLogin = () => {

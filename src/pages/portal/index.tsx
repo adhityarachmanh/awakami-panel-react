@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import AppBar from "./components/AppBar";
 import Sidebar from "./components/Sidebar";
 import { Box, Toolbar } from "@mui/material";
-import { useRootSelector } from "stores";
+import { useRootSelector } from "@/stores";
 import StyledMain from "./components/StyledMain";
 import usePanel from "./usePanel";
 import { useEffect } from "react";

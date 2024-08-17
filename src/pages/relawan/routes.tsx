@@ -1,10 +1,10 @@
 import { Route } from "@/types/route";
-import ListRelawan from "./pages/list-relawan";
-import TambahRelawan from "./pages/tambah-relawan";
-import EditRelawan from "./pages/edit-relawan";
-import DetailRelawan from "./pages/detail-relawan/indext";
-import TambahTPSRelawan from "./pages/tambah-tps-relawan";
-import EditTPSRelawan from "./pages/edit-tps-relawan";
+import ListRelawan from "./pages/list_relawan";
+import TambahRelawan from "./pages/tambah_relawan";
+import EditRelawan from "./pages/edit_relawan";
+import DetailRelawan from "./pages/detail_relawan/indext";
+import TambahTPSRelawan from "./pages/tambah_tps_relawan";
+import EditTPSRelawan from "./pages/edit_tps_relawan";
 
 const relawanRoutes: Route[] = [
   {

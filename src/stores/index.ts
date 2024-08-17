@@ -9,6 +9,7 @@ import { PersistedState } from "redux-persist";
 import { useDispatch, useSelector } from "react-redux";
 import authReducer from "./reducers/authReducer";
 import { encryptTransform } from "redux-persist-transform-encrypt";
+import languageReducer from "./reducers/languageReducer";
 
 export const encryptor = encryptTransform({
   secretKey: import.meta.env.VITE_REDUX_PERSIST_SECRET_KEY,
@@ -34,9 +35,10 @@ let rootStore = configureStore({
   reducer: {
     auth: persistReducer(persistConfig("xa"), authReducer),
     sidebar: persistReducer(persistConfig("xs"), sidebarReducer),
+    language: persistReducer(persistConfig("xl"), languageReducer),
     example: exampleReducer,
     examplePresist: persistReducer(
-      persistConfig("root"),
+      persistConfig("ex"),
       examplePresistReducer
     ),
   },

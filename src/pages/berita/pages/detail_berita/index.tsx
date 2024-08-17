@@ -1,4 +1,4 @@
-import RichTextView from "@/components/richtext-view";
+import RichTextView from "@/components/richtext_view";
 import { ArrowCircleLeftOutlined } from "@mui/icons-material";
 import {
   Card,
@@ -24,10 +24,7 @@ const DetailBerita = () => {
           <CardHeader
             style={{ paddingBottom: 0 }}
             avatar={
-              <IconButton
-                size="small"
-                onClick={() => navigate(-1)}
-              >
+              <IconButton size="small" onClick={() => navigate(-1)}>
                 <ArrowCircleLeftOutlined />
               </IconButton>
             }

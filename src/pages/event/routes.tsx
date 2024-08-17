@@ -1,8 +1,8 @@
 import { Route } from "@/types/route";
-import ListEvent from "./pages/list-event";
-import DetailEvent from "./pages/detail-event";
-import TambahEvent from "./pages/tambah-event";
-import EditEvent from "./pages/edit-event";
+import ListEvent from "./pages/list_event";
+import DetailEvent from "./pages/detail_event";
+import TambahEvent from "./pages/tambah_event";
+import EditEvent from "./pages/edit_event";
 const eventRoutes: Route[] = [
   {
     path: "event",

@@ -2,13 +2,15 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import HttpApi from "i18next-http-backend";
+import { AVAILABLE_LANGUAGES } from "./constants/app_constant";
 
 i18n
   .use(initReactI18next)
   .use(LanguageDetector)
   .use(HttpApi)
   .init({
-    supportedLngs: ["en", "id"],
+    lng: "id",
+    supportedLngs: AVAILABLE_LANGUAGES,
     fallbackLng: "id",
     detection: {
       order: [
@@ -34,6 +36,6 @@ export const changeLanguage = (lng: string) => {
   i18n.changeLanguage(lng);
 };
 
-changeLanguage("id");
+
 
 export default i18n;

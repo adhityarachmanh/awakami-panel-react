@@ -4,6 +4,7 @@ import { SnackbarProvider } from "./useSnackbar";
 import { ConfirmationDialogProvider } from "./useConfirmationDialog";
 
 const InjectAllProvider = ({ children }: { children: React.ReactNode }) => {
+ 
   return (
     <DialogProvider>
       <ConfirmationDialogProvider>
