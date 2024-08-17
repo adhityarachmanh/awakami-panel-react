@@ -12,6 +12,8 @@ i18n
     lng: "id",
     supportedLngs: AVAILABLE_LANGUAGES,
     fallbackLng: "id",
+    ns: ["general"],
+    defaultNS: "general",
     detection: {
       order: [
         "cookie",
