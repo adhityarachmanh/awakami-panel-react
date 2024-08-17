@@ -77,6 +77,11 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ sx }) => {
         MenuListProps={{
           "aria-labelledby": "basic-button",
         }}
+        sx={{
+          "& .MuiPaper-root": {
+            minWidth: 200, // Lebarkan sedikit
+          },
+        }}
       >
         {availableLanguages.map((language) => (
           <MenuItem
@@ -85,6 +90,7 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ sx }) => {
               handleChange(language);
               handleClose();
             }}
+            selected={currentLanguage.value === language.value}
           >
             <img
               src={language.image}
