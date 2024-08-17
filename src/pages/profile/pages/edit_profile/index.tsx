@@ -1,11 +1,9 @@
-import ImagePreview from "@/components/image/ImagePreview";
 import { ArrowCircleLeftOutlined, EditOutlined } from "@mui/icons-material";
 import {
   Card,
   CardHeader,
   IconButton,
   CardContent,
-  Typography,
   Button,
   CircularProgress,
 } from "@mui/material";
@@ -36,8 +34,11 @@ const EditProfile = () => {
     >
       {({ handleSubmit }) => (
         <div className="wd-flex wd-flex-col wd-gap-4 wd-items-center wd-w-full wd-container wd-mx-auto wd-mt-[10rem] wd-m-8">
-          <Form className="wd-w-full sm:wd-w-6/12 md:wd-w-4/12 lg:wd-w-3/12" onSubmit={handleSubmit}>
-            <Card >
+          <Form
+            className="wd-w-full sm:wd-w-6/12 md:wd-w-4/12 lg:wd-w-3/12"
+            onSubmit={handleSubmit}
+          >
+            <Card>
               <CardHeader
                 style={{ paddingBottom: 0 }}
                 avatar={

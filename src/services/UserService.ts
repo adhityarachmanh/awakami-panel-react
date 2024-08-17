@@ -2,7 +2,6 @@ import { APIResponse } from "@/types/APIResponse";
 import { ResponseHandler } from "@/utility/ResponseHandler";
 import axios from "axios";
 import AuthService from "./AuthService";
-import { ProfileModel } from "@/pages/profile/types/ProfileModel";
 import { PostQuery } from "@/types/PostQuery";
 import { UserModel } from "@/types/UserModel";
 

@@ -1,6 +1,5 @@
 import { ArrowCircleLeftOutlined, EditOutlined } from "@mui/icons-material";
 import {
-  Box,
   Card,
   CardContent,
   CardHeader,
@@ -10,7 +9,6 @@ import {
 import React from "react";
 import useDetailProfile from "./useDetailProfile";
 import ImagePreview from "@/components/image/ImagePreview";
-import PhotoIcon from "@mui/icons-material/Photo";
 const DetailProfile = () => {
   const { query, navigate } = useDetailProfile();
 

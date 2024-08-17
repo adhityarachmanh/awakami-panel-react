@@ -1,4 +1,4 @@
-import { CSSProperties, useMemo, useState } from "react";
+import { CSSProperties, useState } from "react";
 import { TextField } from "@mui/material";
 import { useFormikContext } from "formik";
 import ImagePreview from "@/components/image/ImagePreview";
