@@ -48,7 +48,7 @@ const TableRelawanAction = ({ data }: TableRelawanActionProps) => {
         <EditOutlined />
       </IconButton>
       <IconButton
-        color="secondary"
+        color="error"
         onClick={() => {
           showConfirmationDialog(
             "Apakah Anda yakin ingin menghapus relawan ini?",

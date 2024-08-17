@@ -9,7 +9,7 @@ const poskoRoutes: Route[] = [
     element: <ListPosko />,
   },
   {
-    path: "posko/:id",
+    path: "posko/detail/:id",
     element: <DetailPosko />,
   },
   {

@@ -33,16 +33,12 @@ const TableTPSRelawanAction = ({ data }: TableTPSRelawanActionProps) => {
     <div className="wd-flex wd-flex-row wd-gap-2 ">
       <IconButton
         color="warning"
-        onClick={() =>
-          navigate(
-            `/portal/relawan/edit-tps/${data.id}`
-          )
-        }
+        onClick={() => navigate(`/portal/relawan/edit-tps/${data.id}`)}
       >
         <EditOutlined />
       </IconButton>
       <IconButton
-        color="secondary"
+        color="error"
         onClick={() => {
           showConfirmationDialog(
             "Apakah Anda yakin ingin menghapus relawan ini?",

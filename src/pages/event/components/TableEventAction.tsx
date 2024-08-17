@@ -49,7 +49,7 @@ const TableEventAction = ({ data }: TableEventActionProps) => {
         <EditOutlined />
       </IconButton>
       <IconButton
-        color="secondary"
+        color="error"
         onClick={() => {
           showConfirmationDialog(
             "Apakah Anda yakin ingin menghapus event ini?",

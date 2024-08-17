@@ -49,7 +49,7 @@ const TableBeritaAction = ({ data }: TableBeritaActionProps) => {
         <EditOutlined />
       </IconButton>
       <IconButton
-        color="secondary"
+        color="error"
         onClick={() => {
           showConfirmationDialog(
             "Apakah Anda yakin ingin menghapus berita ini?",

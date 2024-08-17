@@ -15,23 +15,42 @@ import {
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
-import { useState } from "react";
 
 import { useRootDispatch, useRootSelector } from "stores";
-import { closeDrawer, toggleNestedOpen, transitionEnd } from "stores/reducers/sidebarReducer";
+import {
+  closeDrawer,
+  toggleNestedOpen,
+  transitionEnd,
+} from "stores/reducers/sidebarReducer";
 import usePanel from "../usePanel";
 import menu from "@/constants/menu_constant";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const drawerWidth = 240;
 
+const getNestedItemStyles = (isActive: boolean, level?: number) => ({
+  pl: level ? 4 * level : 2,
+
+  bgcolor: isActive ? "primary.main" : "inherit",
+  color: isActive ? "white" : "inherit",
+  borderRight: isActive ? "4px solid" : "none",
+  borderRightColor: isActive ? "secondary.main" : "inherit",
+  borderTopRightRadius: isActive ? "8px" : "0",
+  borderBottomRightRadius: isActive ? "8px" : "0",
+  transition: "all 0.3s ease",
+  "&:hover": {
+    bgcolor: isActive ? "primary.main" : "action.hover",
+  },
+});
+
 const Sidebar = ({ container }: { container?: () => HTMLElement }) => {
   const dispatch = useRootDispatch();
-  const { desktopOpen, mobileOpen, nestedOpen } = useRootSelector((state) => state.sidebar);
+  const { desktopOpen, mobileOpen, nestedOpen } = useRootSelector(
+    (state) => state.sidebar
+  );
   const { brandName } = usePanel();
   const navigate = useNavigate();
   const location = useLocation();
-
 
   const handleDrawerClose = () => {
     dispatch(closeDrawer());
@@ -62,15 +81,25 @@ const Sidebar = ({ container }: { container?: () => HTMLElement }) => {
       {items.map((nestedItem: any, nestedIndex: number) => (
         <div key={nestedIndex}>
           <ListItemButton
-            sx={{ pl: 4 * level }}
+            sx={getNestedItemStyles(
+              location.pathname === nestedItem.route,
+              level
+            )}
             onClick={() =>
               nestedItem.route
                 ? handleNestedClick(nestedItem.text, nestedItem.route)
                 : handleNestedClick(nestedItem.text)
             }
-            selected={location.pathname === nestedItem.route} // Highlight active item
+            // selected={location.pathname === nestedItem.route}
           >
-            <ListItemIcon>{nestedItem.icon}</ListItemIcon>
+            <ListItemIcon
+              sx={{
+                color:
+                  location.pathname === nestedItem.route ? "white" : "inherit",
+              }}
+            >
+              {nestedItem.icon}
+            </ListItemIcon>
             <ListItemText primary={nestedItem.text} />
             {nestedItem.nestedItems &&
               (nestedOpen[nestedItem.text] ? <ExpandLess /> : <ExpandMore />)}
@@ -112,12 +141,20 @@ const Sidebar = ({ container }: { container?: () => HTMLElement }) => {
           <div key={index}>
             <ListItem disablePadding>
               <ListItemButton
+                sx={getNestedItemStyles(location.pathname === item.route)}
                 onClick={() => handleClick(item)}
-                selected={location.pathname === item.route} // Highlight active item
               >
-                <ListItemIcon>{item.icon}</ListItemIcon>
+                <ListItemIcon
+                  sx={{
+                    color:
+                      location.pathname === item.route ? "white" : "inherit",
+                  }}
+                >
+                  {item.icon}
+                </ListItemIcon>
                 <ListItemText primary={item.text} />
-                {item.nestedItems && (nestedOpen[item.text] ? <ExpandLess /> : <ExpandMore />)}
+                {item.nestedItems &&
+                  (nestedOpen[item.text] ? <ExpandLess /> : <ExpandMore />)}
               </ListItemButton>
             </ListItem>
             {item.nestedItems && (

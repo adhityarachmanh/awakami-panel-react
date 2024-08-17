@@ -10,7 +10,7 @@ import poskoRoutes from "@/pages/posko/routes";
 import eventRoutes from "@/pages/event/routes";
 import beritaRoutes from "@/pages/berita/routes";
 
-const routesConfig: Route[] = [
+export const routesConfig: Route[] = [
   {
     path: "/login",
     element: <LoginPage />,

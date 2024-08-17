@@ -20,6 +20,7 @@ import { toggleDrawer } from "stores/reducers/sidebarReducer";
 
 import StyledAppBar from "./StyledAppBar";
 import usePanel from "../usePanel";
+import { routesConfig } from "@/router/routes";
 
 const AppBar = () => {
   const dispatch = useRootDispatch();
@@ -70,6 +71,61 @@ const AppBar = () => {
     );
   };
 
+  const validateRoute = (path: string) => {
+    const allPaths = routesConfig
+      .map((route) => {
+        if (route.children) {
+          return [
+            route.path,
+            ...route.children.map(
+              (child) => `${route.path}/${child.path ?? ""}`
+            ),
+          ];
+        }
+        return route.path ?? "";
+      })
+      .flat()
+      .filter((path) => path !== undefined && !path.includes(":"))
+      .filter((path) => path !== "/")
+      .filter((path) => path !== "");
+
+    return allPaths.includes(path);
+  };
+
+  const breadcrumbs = React.useMemo(() => {
+    return pathnames.map((value, index) => {
+      const to = `/${pathnames.slice(0, index + 1).join("/")}`;
+      const isLast = index === pathnames.length - 1;
+      const formattedValue = value.replace(/-/g, " ");
+      const isValid = validateRoute(to);
+      if (isLast) {
+        return (
+          <Typography color="white" sx={{ fontWeight: "bold" }} key={to}>
+            {toPascalCase(formattedValue)}
+          </Typography>
+        );
+      } else if (!isValid) {
+        return (
+          <Typography color="white" key={to}>
+            {toPascalCase(formattedValue)}
+          </Typography>
+        );
+      } else {
+        return (
+          <Link
+            underline="hover"
+            color="white"
+            component={RouterLink}
+            to={to}
+            key={to}
+          >
+            {toPascalCase(formattedValue)}
+          </Link>
+        );
+      }
+    });
+  }, [pathnames, validateRoute, toPascalCase]);
+
   return (
     <StyledAppBar open={desktopOpen} position="fixed">
       <Toolbar>
@@ -90,26 +146,7 @@ const AppBar = () => {
             "& .MuiBreadcrumbs-separator": { color: "white" },
           }}
         >
-          {pathnames.map((value, index) => {
-            const to = `/${pathnames.slice(0, index + 1).join("/")}`;
-            const isLast = index === pathnames.length - 1;
-            const formattedValue = value.replace(/-/g, ' ');
-            return isLast ? (
-              <Typography color="white" sx={{ fontWeight: "bold" }} key={to}>
-                {toPascalCase(formattedValue)}
-              </Typography>
-            ) : (
-              <Link
-                underline="hover"
-                color="white"
-                component={RouterLink}
-                to={to}
-                key={to}
-              >
-                {toPascalCase(formattedValue)}
-              </Link>
-            );
-          })}
+          {breadcrumbs}
         </Breadcrumbs>
 
         <IconButton onClick={handleAvatarClick} color="inherit">
@@ -122,7 +159,7 @@ const AppBar = () => {
           onClose={handleMenuClose}
         >
           <Box sx={{ p: 2, display: "flex", alignItems: "center" }}>
-            <Avatar  {...stringAvatar} />
+            <Avatar {...stringAvatar} />
 
             <Box
               sx={{

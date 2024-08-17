@@ -9,7 +9,7 @@ const tpsRoutes: Route[] = [
     element: <ListTPS />,
   },
   {
-    path: "tps/:id",
+    path: "tps/detail/:id",
     element: <DetailTPS />,
   },
   {
