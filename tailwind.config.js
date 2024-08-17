@@ -8,7 +8,7 @@ const {
   backgroundColorDefault,
   backgroundColorPaper,
   fontFamily,
-} = require("./src/constants/theme_constant");
+} = require("./src/constants/app_theme_constant");
 
 module.exports = {
   darkMode: "class",

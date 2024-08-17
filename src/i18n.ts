@@ -2,7 +2,10 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import HttpApi from "i18next-http-backend";
-import { AVAILABLE_LANGUAGES } from "./constants/app_constant";
+import {
+  AVAILABLE_LANGUAGES,
+  LANGUAGE_FEATURE,
+} from "./constants/app_language";
 
 i18n
   .use(initReactI18next)
@@ -12,7 +15,7 @@ i18n
     lng: "id",
     supportedLngs: AVAILABLE_LANGUAGES,
     fallbackLng: "id",
-    ns: ["general"],
+    ns: LANGUAGE_FEATURE,
     defaultNS: "general",
     detection: {
       order: [
@@ -37,7 +40,5 @@ i18n
 export const changeLanguage = (lng: string) => {
   i18n.changeLanguage(lng);
 };
-
-
 
 export default i18n;

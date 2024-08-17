@@ -6,9 +6,11 @@ import { useState } from "react";
 import { useRootDispatch } from "@/stores";
 import { authenticate } from "@/stores/reducers/authReducer";
 import * as Yup from "yup";
+import { useTranslation } from "react-i18next";
 
 const useLogin = () => {
   const authService = new AuthService();
+  const { t } = useTranslation("login");
   const dispatch = useRootDispatch();
   const { showSnackbar } = useSnackbar();
   const [showPassword, setShowPassword] = useState(false);
@@ -37,6 +39,7 @@ const useLogin = () => {
     },
   });
   return {
+    t,
     showPassword,
     mutation,
     validationSchema,

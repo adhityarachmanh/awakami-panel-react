@@ -1,4 +1,4 @@
-import { LANGUAGE_OPTIONS } from "@/constants/app_constant";
+import { LANGUAGE_OPTIONS } from "@/constants/app_language";
 import { LanguageModel } from "@/types/LanguageModel";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 

@@ -1,0 +1,8 @@
+{
+  "login": "Login",
+  "login_description": "Enter your email and password to login",
+  "email": "Email",
+  "email_placeholder": "Enter your email",
+  "password": "Password",
+  "password_placeholder": "Enter your password"
+}

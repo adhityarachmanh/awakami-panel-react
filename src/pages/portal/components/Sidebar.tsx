@@ -23,7 +23,7 @@ import {
   transitionEnd,
 } from "@/stores/reducers/sidebarReducer";
 import usePanel from "../usePanel";
-import menu from "@/constants/menu_constant";
+import menu from "@/constants/app_menu_constant";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const drawerWidth = 240;

@@ -1,0 +1,8 @@
+{
+    "login": "Masuk",
+    "login_description": "Masukkan email dan password untuk masuk",
+    "email": "Email",
+    "email_placeholder": "Masukkan email",
+    "password": "Kata Sandi",
+    "password_placeholder": "Masukkan password"
+}
