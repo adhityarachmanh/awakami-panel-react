@@ -15,9 +15,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { useRootDispatch, useRootSelector } from "stores";
 import { useLocation, Link as RouterLink } from "react-router-dom";
-
 import { toggleDrawer } from "stores/reducers/sidebarReducer";
-
 import StyledAppBar from "./StyledAppBar";
 import usePanel from "../usePanel";
 import { routesConfig } from "@/router/routes";
