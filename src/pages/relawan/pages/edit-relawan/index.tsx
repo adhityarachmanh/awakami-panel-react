@@ -10,28 +10,34 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { Formik } from "formik";
-import PoskoField from "../../components/PoskoField";
 import { RelawanEditFormModel } from "../../types/RelawanModel";
 import FormikTextField from "@/components/formik/FormikTextField";
-import FormikAutocompleteField from "@/components/formik/FormikAutocompleteField";
 import {
   JENIS_KELAMIN_OPTIONS,
   JABATAN_POSKO_OPTIONS,
 } from "@/constants/app_constant";
-import FormikAutocompleteQueryField from "@/components/formik/FormikAutocompleteQueryField";
 import {
   WilayahProvinsi,
   WilayahKota,
   WilayahKecamatan,
   WilayahKelurahan,
 } from "@/types/WilayahModel";
-import WilayahService from "@/services/WilayahService";
+import { PostQuery } from "@/types/PostQuery";
+import FormikAutocompleteField from "@/components/formik/autocomplete";
+import { PoskoModel } from "@/pages/posko/types/PoskoModel";
 
 const EditRelawan = () => {
   const { id } = useParams();
-  const wilayahService = new WilayahService();
-  const { isLoading, validationSchema, data, mutation, navigate } =
-    useEditRelawan(Number(id));
+
+  const {
+    isLoading,
+    validationSchema,
+    data,
+    mutation,
+    navigate,
+    poskoService,
+    wilayahService,
+  } = useEditRelawan(Number(id));
   if (isLoading) return <></>;
   return (
     <div className="wd-flex wd-flex-col wd-gap-4 wd-items-center wd-w-full wd-container wd-mx-auto wd-mt-[10rem] wd-m-8">
@@ -87,9 +93,10 @@ const EditRelawan = () => {
                   <FormikAutocompleteField
                     name="jenisKelamin"
                     label="Jenis Kelamin"
+                    mode="dropdown"
                     placeholder="-- Pilih Jenis Kelamin --"
                     options={Object.entries(JENIS_KELAMIN_OPTIONS)}
-                    buildOption={(option) => ({
+                    buildOption={(option: [string, string]) => ({
                       label: option[1],
                       value: option[0],
                     })}
@@ -99,17 +106,28 @@ const EditRelawan = () => {
                   <FormikAutocompleteField
                     name="jabatanPosko"
                     label="Jabatan Posko"
+                    mode="dropdown"
                     placeholder="-- Pilih Jabatan Posko --"
                     options={Object.entries(JABATAN_POSKO_OPTIONS)}
-                    buildOption={(option) => ({
+                    buildOption={(option: [string, string]) => ({
                       label: option[1],
                       value: option[0],
                     })}
                   />
-                  <PoskoField />
+                  <FormikAutocompleteField
+                    name="poskoId"
+                    label="Posko"
+                    mode="dropdown"
+                    placeholder="-- Pilih Posko --"
+                    service={() => poskoService.list()}
+                    buildOption={(option: PoskoModel) => ({
+                      label: option.nama,
+                      value: option.id,
+                    })}
+                  />
                 </div>
                 <div className="wd-flex wd-flex-col">
-                  <FormikAutocompleteQueryField<WilayahProvinsi>
+                  <FormikAutocompleteField<WilayahProvinsi>
                     name="provinsiId"
                     labelKey="name"
                     label="Provinsi"
@@ -117,8 +135,8 @@ const EditRelawan = () => {
                     columns={[
                       { field: "name", headerName: "Name", type: "string" },
                     ]}
-                    buildValue={(row) => row.id}
-                    service={(postQuery) =>
+                    buildValue={(row: WilayahProvinsi) => row.id}
+                    service={(postQuery: PostQuery) =>
                       wilayahService.provinsiAll(postQuery)
                     }
                     filterOnChange={() => {
@@ -127,7 +145,7 @@ const EditRelawan = () => {
                       setFieldValue("kelurahanId", null);
                     }}
                   />
-                  <FormikAutocompleteQueryField<WilayahKota>
+                  <FormikAutocompleteField<WilayahKota>
                     visible={values.provinsiId !== null}
                     filterKey="provinsiId"
                     filterValue={values.provinsiId?.toString()}
@@ -135,18 +153,20 @@ const EditRelawan = () => {
                     labelKey="name"
                     label="Kota"
                     placeholder="Cari Kota..."
-                    buildValue={(row) => row.id}
+                    buildValue={(row: WilayahKota) => row.id}
                     columns={[
                       { field: "name", headerName: "Name", type: "string" },
                     ]}
-                    service={(postQuery) => wilayahService.kotaAll(postQuery)}
+                    service={(postQuery: PostQuery) =>
+                      wilayahService.kotaAll(postQuery)
+                    }
                     filterOnChange={() => {
                       setFieldValue("kecamatanId", null);
                       setFieldValue("kelurahanId", null);
                     }}
                   />
 
-                  <FormikAutocompleteQueryField<WilayahKecamatan>
+                  <FormikAutocompleteField<WilayahKecamatan>
                     visible={values.kotaId !== null}
                     filterKey="kotaId"
                     filterValue={values.kotaId?.toString()}
@@ -157,15 +177,15 @@ const EditRelawan = () => {
                     columns={[
                       { field: "name", headerName: "Name", type: "string" },
                     ]}
-                    buildValue={(row) => row.id}
-                    service={(postQuery) =>
+                    buildValue={(row: WilayahKecamatan) => row.id}
+                    service={(postQuery: PostQuery) =>
                       wilayahService.kecamatanAll(postQuery)
                     }
                     filterOnChange={() => {
                       setFieldValue("kelurahanId", null);
                     }}
                   />
-                  <FormikAutocompleteQueryField<WilayahKelurahan>
+                  <FormikAutocompleteField<WilayahKelurahan>
                     visible={values.kecamatanId !== null}
                     filterKey="kecamatanId"
                     filterValue={values.kecamatanId?.toString()}
@@ -176,8 +196,8 @@ const EditRelawan = () => {
                     columns={[
                       { field: "name", headerName: "Name", type: "string" },
                     ]}
-                    buildValue={(row) => row.id}
-                    service={(postQuery) =>
+                    buildValue={(row: WilayahKelurahan) => row.id}
+                    service={(postQuery: PostQuery) =>
                       wilayahService.kelurahanAll(postQuery)
                     }
                   />

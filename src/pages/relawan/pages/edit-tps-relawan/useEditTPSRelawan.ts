@@ -4,9 +4,11 @@ import RelawanService from "../../services/RelawanService";
 import { useSnackbar } from "@/hooks/useSnackbar";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import TPSService from "@/pages/tps/services/TPSService";
 
 const useEditTPSRelawan = (id: number) => {
-  const tpsService = new RelawanService();
+  const relawanService = new RelawanService();
+  const tpsService = new TPSService();
   const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const validationSchema = Yup.object().shape({
@@ -14,11 +16,11 @@ const useEditTPSRelawan = (id: number) => {
   });
   const tpsQuery = useQuery({
     queryKey: ["tps-relawan", id],
-    queryFn: () => tpsService.getTPSRelawanById(id),
+    queryFn: () => relawanService.getTPSRelawanById(id),
   });
   const mutation = useMutation({
     mutationFn: (data: TPSRelawanFormModel) =>
-      tpsService.updateTPSRelawan(id, data),
+      relawanService.updateTPSRelawan(id, data),
     onSuccess: (data) => {
       console.log(data);
       showSnackbar("TPS Relawan berhasil diubah", "success");
@@ -33,6 +35,7 @@ const useEditTPSRelawan = (id: number) => {
     tpsQuery,
     navigate,
     validationSchema,
+    tpsService,
   };
 };
 

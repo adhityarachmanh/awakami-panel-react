@@ -4,9 +4,13 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSnackbar } from "@/hooks/useSnackbar";
 import { useNavigate } from "react-router-dom";
 import { RelawanEditFormModel } from "../../types/RelawanModel";
+import PoskoService from "@/pages/posko/services/PoskoService";
+import WilayahService from "@/services/WilayahService";
 
 const useEditRelawan = (id: number) => {
   const relawanService = new RelawanService();
+  const wilayahService = new WilayahService();
+  const poskoService = new PoskoService();
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
   const validationSchema = Yup.object().shape({
@@ -40,7 +44,15 @@ const useEditRelawan = (id: number) => {
       showSnackbar(error.message, "error");
     },
   });
-  return { isLoading, validationSchema, data, mutation, navigate };
+  return {
+    isLoading,
+    validationSchema,
+    data,
+    mutation,
+    navigate,
+    poskoService,
+    wilayahService,
+  };
 };
 
 export default useEditRelawan;

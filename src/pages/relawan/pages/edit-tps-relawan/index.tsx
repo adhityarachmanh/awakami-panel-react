@@ -11,14 +11,14 @@ import { Formik } from "formik";
 import { Form, useParams } from "react-router-dom";
 import { TPSRelawanFormModel } from "../../types/TPSRelawanModel";
 import useEditTPSRelawan from "./useEditTPSRelawan";
-import TPSField from "../../components/TPSField";
 import { useMemo } from "react";
+import FormikAutocompleteField from "@/components/formik/autocomplete";
+import { TPSModel } from "@/pages/tps/types/TPSModel";
 
 const EditTPSRelawan = () => {
   const { id } = useParams();
-  const { mutation, navigate, validationSchema, tpsQuery } = useEditTPSRelawan(
-    Number(id)
-  );
+  const { mutation, navigate, validationSchema, tpsQuery, tpsService } =
+    useEditTPSRelawan(Number(id));
   const tpsData = useMemo(() => {
     return tpsQuery.data ?? null;
     return null;
@@ -64,7 +64,17 @@ const EditTPSRelawan = () => {
                 className="wd-flex wd-flex-col wd-gap-4"
                 onSubmit={handleSubmit}
               >
-                <TPSField />
+                <FormikAutocompleteField
+                  name="tpsId"
+                  label="TPS"
+                  mode="dropdown"
+                  placeholder="-- Pilih TPS --"
+                  service={() => tpsService.list()}
+                  buildOption={(option: TPSModel) => ({
+                    label: option.nomor,
+                    value: option.id,
+                  })}
+                />
                 <Button
                   disabled={mutation.isPending}
                   startIcon={

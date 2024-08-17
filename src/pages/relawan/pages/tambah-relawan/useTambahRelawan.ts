@@ -4,8 +4,12 @@ import RelawanService from "../../services/RelawanService";
 import { useMutation } from "@tanstack/react-query";
 import { RelawanFormModel } from "../../types/RelawanModel";
 import { useSnackbar } from "@/hooks/useSnackbar";
+import PoskoService from "@/pages/posko/services/PoskoService";
+import WilayahService from "@/services/WilayahService";
 
 const useTambahRelawan = () => {
+  const wilayahService = new WilayahService();
+  const poskoService = new PoskoService();
   const relawanService = new RelawanService();
   const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -40,6 +44,8 @@ const useTambahRelawan = () => {
     mutation,
     navigate,
     validationSchema,
+    poskoService,
+    wilayahService,
   };
 };
 

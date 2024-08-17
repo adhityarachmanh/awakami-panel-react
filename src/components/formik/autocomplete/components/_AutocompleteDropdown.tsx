@@ -1,29 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { TextField, Autocomplete } from "@mui/material";
 import { Field } from "formik";
+import { Autocomplete, TextField } from "@mui/material";
+import { FormikAutocompleteFieldProps } from "../interface/AutocompleteInterface";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { APIResponse } from "@/types/APIResponse";
 import { PostQuery } from "@/types/PostQuery";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
-interface FormikAutocompleteSearchQueryFieldProps<T> {
-  label: string;
-  name: string;
-  placeholder?: string;
-  debounce?: number;
-  loadingText?: string;
-  buildOption: (item: T) => { label: string; value: any };
-  service: (postQuery: PostQuery) => Promise<APIResponse<T[]>>;
-}
-
-const FormikAutocompleteSearchQueryField = <T,>({
+const _AutocompleteDropdown = <T,>({
   label,
   name,
   placeholder,
   debounce,
   loadingText,
-  service,
+  options,
   buildOption,
-}: FormikAutocompleteSearchQueryFieldProps<T>) => {
+  service,
+  mode,
+}: FormikAutocompleteFieldProps<T>) => {
   const [postQuery, setPostQuery] = useState<PostQuery>({
     keywords: "",
     filters: [],
@@ -45,53 +38,56 @@ const FormikAutocompleteSearchQueryField = <T,>({
 
   const { data: queryData, isFetching: isLoadingQuery } = useQuery({
     queryKey: [name, debouncedQuery],
-    queryFn: () => service(debouncedQuery),
+    enabled: !!service,
+    queryFn: () =>
+      service?.(debouncedQuery) ??
+      Promise.resolve({ data: [] } as unknown as APIResponse<T[]>),
     placeholderData: keepPreviousData,
   });
 
-  const options = React.useMemo(
-    () => queryData?.data.map(buildOption) ?? [],
-    [queryData, buildOption]
-  );
+  const autocompleteOptions = React.useMemo(() => {
+    if (options) {
+      return options.map(buildOption ?? (() => ({ label: "", value: "" })));
+    } else if (queryData) {
+      return queryData.data.map(
+        buildOption ?? (() => ({ label: "", value: "" }))
+      );
+    }
+    return [];
+  }, [options, queryData, buildOption]);
 
   return (
     <Field name={name}>
       {({ field, form }: { field: any; form: any }) => (
         <Autocomplete
-          options={options}
+          options={autocompleteOptions}
           getOptionLabel={(option) => option.label ?? ""}
-          value={options.find((option) => option.value === field.value) || null}
-          onChange={(_, value) =>
+          value={
+            autocompleteOptions.find(
+              (option) => option.value === field.value
+            ) || null
+          }
+          onChange={(_event, value) =>
             form.setFieldValue(field.name, value ? value.value : "")
           }
           loading={isLoadingQuery}
           loadingText={loadingText ?? "Loading..."}
           onInputChange={(_, newInputValue) => {
-            setPostQuery((prevQuery) => ({
-              ...prevQuery,
-              keywords: newInputValue,
-            }));
+            if (mode === "dropdown-query") {
+              setPostQuery((prevQuery) => ({
+                ...prevQuery,
+                keywords: newInputValue,
+              }));
+            }
           }}
-          // onScroll={(event) => {
-          //   const listboxNode = event.currentTarget;
-          //   if (
-          //     listboxNode.scrollTop + listboxNode.clientHeight ===
-          //     listboxNode.scrollHeight
-          //   ) {
-          //     setPostQuery((prevQuery) => ({
-          //       ...prevQuery,
-          //       page: prevQuery.page + 1,
-          //     }));
-          //   }
-          // }}
           isOptionEqualToValue={(option, value) => option.value === value.value}
           renderInput={(params) => (
             <TextField
               {...params}
               label={label}
+              placeholder={placeholder ?? `Cari ${label.toLowerCase()}...`}
               variant="outlined"
               fullWidth
-              placeholder={placeholder ?? `Cari ${label.toLowerCase()}...`}
               margin="normal"
               InputLabelProps={{
                 shrink: true,
@@ -106,4 +102,4 @@ const FormikAutocompleteSearchQueryField = <T,>({
   );
 };
 
-export default FormikAutocompleteSearchQueryField;
+export default _AutocompleteDropdown;

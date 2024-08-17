@@ -6,37 +6,19 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  Breakpoint,
 } from "@mui/material";
 import { useFormikContext } from "formik";
-import { APIResponse } from "@/types/APIResponse";
 import { PostQuery } from "@/types/PostQuery";
 import { RefreshOutlined, SearchOutlined } from "@mui/icons-material";
-import DataTable from "../table";
-import { ColumnType } from "../table/types/ColumnModel";
+import DataTable from "../../../table";
 import { useQuery } from "@tanstack/react-query";
+import { FormikAutocompleteFieldProps } from "../interface/AutocompleteInterface";
+import { APIResponse } from "@/types/APIResponse";
 
-interface FormikAutocompleteQueryFieldProps<T> {
-  label: string;
-  name: string;
-  visible?: boolean;
-  placeholder?: string;
-  service: (labelQuery: PostQuery) => Promise<APIResponse<T[]>>;
-  columns?: ColumnType<T>[];
-  buildValue: (item: T) => {};
-  filterKey?: keyof T;
-  filterValue?: any;
-  queryKey?: keyof T | string;
-  labelKey: keyof T;
-  maxDialogWidth?: Breakpoint;
-  filterOnChange?: (value: any) => void;
-}
-
-const FormikAutocompleteQueryField = <T,>({
+const _AutocompleteTable = <T,>({
   label,
   filterKey,
   filterValue,
-  visible = true,
   queryKey = "id",
   labelKey,
   name,
@@ -45,8 +27,8 @@ const FormikAutocompleteQueryField = <T,>({
   columns = [],
   buildValue,
   filterOnChange,
-  maxDialogWidth = "xl",
-}: FormikAutocompleteQueryFieldProps<T>) => {
+  maxDialogWidth = "sm",
+}: FormikAutocompleteFieldProps<T>) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { setFieldValue, initialValues, values } = useFormikContext();
   const [labelQuery, setLabelQuery] = useState<PostQuery>({
@@ -62,7 +44,10 @@ const FormikAutocompleteQueryField = <T,>({
 
   const searchQuery = useQuery({
     queryKey: [name, labelQuery?.filters],
-    queryFn: () => service(labelQuery),
+    enabled: !!service,
+    queryFn: () =>
+      service?.(labelQuery) ??
+      Promise.resolve({ data: [] } as unknown as APIResponse<T[]>),
   });
 
   const memoizedValue = React.useMemo(
@@ -76,28 +61,25 @@ const FormikAutocompleteQueryField = <T,>({
       labelQuery.filters?.length &&
       memoizedValue !== null
     ) {
-      return searchQuery.data.data[0][labelKey]?.toString() ?? "";
+      return searchQuery.data.data[0][labelKey as keyof T]?.toString() ?? "";
     }
     return "";
   }, [searchQuery, labelQuery, memoizedValue]);
 
   useEffect(() => {
-    setLabelQuery((prev) => ({
-      ...prev,
-      filters: [
-        {
-          key: queryKey as string,
-          operator: "EQUAL",
-          values: [
-            initialValues?.[name as keyof typeof initialValues]
-              ? (
-                  initialValues[name as keyof typeof initialValues] as any
-                ).toString()
-              : "",
-          ],
-        },
-      ],
-    }));
+    if (initialValues?.[name as keyof typeof initialValues]) {
+      const initialValue = initialValues[name as keyof typeof initialValues];
+      setLabelQuery((prev) => ({
+        ...prev,
+        filters: [
+          {
+            key: queryKey as string,
+            operator: "EQUAL",
+            values: [initialValue ? String(initialValue) : ""],
+          },
+        ],
+      }));
+    }
   }, [initialValues]);
 
   useEffect(() => {
@@ -117,12 +99,8 @@ const FormikAutocompleteQueryField = <T,>({
 
   const handleDialogOpen = () => setDialogOpen(true);
   const handleDialogClose = () => setDialogOpen(false);
-
-  if (!visible) return null;
-
   return (
     <>
-      {console.log(queryLabel)}
       <TextField
         label={label}
         variant="outlined"
@@ -173,7 +151,11 @@ const FormikAutocompleteQueryField = <T,>({
             selectable={false}
             showAddButton={false}
             uniqKey={name}
-            service={service}
+            service={
+              service ??
+              (() =>
+                Promise.resolve({ data: [] } as unknown as APIResponse<T[]>))
+            }
             columns={[
               ...columns,
               {
@@ -195,7 +177,7 @@ const FormikAutocompleteQueryField = <T,>({
                           },
                         ],
                       }));
-                      setFieldValue(name, buildValue(row));
+                      setFieldValue(name, buildValue?.(row) ?? "");
                       handleDialogClose();
                     }}
                   >
@@ -213,4 +195,4 @@ const FormikAutocompleteQueryField = <T,>({
   );
 };
 
-export default FormikAutocompleteQueryField;
+export default _AutocompleteTable;
