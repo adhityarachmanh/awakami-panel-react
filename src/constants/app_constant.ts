@@ -1,4 +1,6 @@
 import { LanguageModel } from "@/types/LanguageModel";
+import en from "@/assets/images/en.png";
+import id from "@/assets/images/id.png";
 
 export const WARGA_KAWIN_OPTIONS = {
   "1": "Belum Menikah",
@@ -22,12 +24,12 @@ export const LANGUAGE_OPTIONS: LanguageModel[] = [
   {
     label: "English",
     value: "en",
-    image: "https://cdn-icons-png.flaticon.com/512/555/555417.png",
+    image: en,
   },
   {
     label: "Indonesian",
     value: "id",
-    image: "https://cdn-icons-png.flaticon.com/512/14009/14009993.png",
+    image: id,
   },
 ];
 
