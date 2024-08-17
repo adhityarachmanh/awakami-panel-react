@@ -38,7 +38,7 @@ const useEditRelawan = (id: number) => {
     mutationFn: (data: RelawanEditFormModel) => relawanService.update(id, data),
     onSuccess: () => {
       showSnackbar("Relawan berhasil diubah", "success");
-      navigate(`/portal/relawan/detail/${id}`);
+      navigate(-1);
     },
     onError: (error) => {
       showSnackbar(error.message, "error");

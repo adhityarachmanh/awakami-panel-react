@@ -30,7 +30,7 @@ const EditTPS = () => {
           <CardHeader
             style={{ paddingBottom: 0 }}
             avatar={
-              <IconButton size="small" onClick={() => navigate("/portal/tps")}>
+              <IconButton size="small" onClick={() => navigate(-1)}>
                 <ArrowCircleLeftOutlined />
               </IconButton>
             }

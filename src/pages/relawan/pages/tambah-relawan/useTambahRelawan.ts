@@ -34,7 +34,7 @@ const useTambahRelawan = () => {
     mutationFn: (data: RelawanFormModel) => relawanService.create(data),
     onSuccess: () => {
       showSnackbar("Relawan berhasil ditambahkan", "success");
-      navigate("/portal/relawan");
+      navigate(-1);
     },
     onError: (error) => {
       showSnackbar(error.message, "error");

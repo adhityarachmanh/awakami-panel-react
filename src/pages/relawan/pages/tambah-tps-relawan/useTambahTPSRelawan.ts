@@ -6,7 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import TPSService from "@/pages/tps/services/TPSService";
 
-const useTambahTPSRelawan = (id: number) => {
+const useTambahTPSRelawan = () => {
   const relawanService = new RelawanService();
   const tpsService = new TPSService();
   const { showSnackbar } = useSnackbar();
@@ -19,7 +19,7 @@ const useTambahTPSRelawan = (id: number) => {
       relawanService.createTPSRelawan(data),
     onSuccess: () => {
       showSnackbar("TPS Relawan berhasil ditambahkan", "success");
-      navigate(`/portal/relawan/detail/${id}`);
+      navigate(-1);
     },
     onError: (error) => {
       showSnackbar(error.message, "error");

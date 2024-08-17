@@ -33,7 +33,7 @@ const EditTPSRelawan = () => {
             <IconButton
               size="small"
               onClick={() =>
-                navigate(`/portal/relawan/detail/${tpsData?.relawanId}`)
+                navigate(-1)
               }
             >
               <ArrowCircleLeftOutlined />

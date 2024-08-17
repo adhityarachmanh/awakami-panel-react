@@ -43,7 +43,7 @@ const TambahBerita = () => {
                 avatar={
                   <IconButton
                     size="small"
-                    onClick={() => navigate("/portal/berita")}
+                    onClick={() => navigate(-1)}
                   >
                     <ArrowCircleLeftOutlined />
                   </IconButton>

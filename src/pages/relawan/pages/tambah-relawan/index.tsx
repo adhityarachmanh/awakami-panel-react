@@ -37,7 +37,7 @@ const TambahRelawan = () => {
           avatar={
             <IconButton
               size="small"
-              onClick={() => navigate("/portal/relawan")}
+              onClick={() => navigate(-1)}
             >
               <ArrowCircleLeftOutlined />
             </IconButton>

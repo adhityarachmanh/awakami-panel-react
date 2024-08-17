@@ -26,7 +26,7 @@ const DetailEvent = () => {
             avatar={
               <IconButton
                 size="small"
-                onClick={() => navigate("/portal/event")}
+                onClick={() => navigate(-1)}
               >
                 <ArrowCircleLeftOutlined />
               </IconButton>

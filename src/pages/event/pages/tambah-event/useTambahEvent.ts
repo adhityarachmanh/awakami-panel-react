@@ -21,7 +21,7 @@ const useTambahEvent = () => {
     mutationFn: (data: EventFormModel) => eventService.create(data),
     onSuccess: () => {
       showSnackbar("Event berhasil ditambahkan", "success");
-      navigate("/portal/event");
+      navigate(-1);
     },
     onError: (error) => {
       showSnackbar(error.message, "error");

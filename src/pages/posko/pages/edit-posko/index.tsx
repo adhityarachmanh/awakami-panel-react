@@ -32,7 +32,7 @@ const EditPosko = () => {
             avatar={
               <IconButton
                 size="small"
-                onClick={() => navigate("/portal/posko")}
+                onClick={() => navigate(-1)}
               >
                 <ArrowCircleLeftOutlined />
               </IconButton>

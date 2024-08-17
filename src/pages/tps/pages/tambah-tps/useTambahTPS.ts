@@ -17,7 +17,7 @@ const useTambahTPS = () => {
     mutationFn: (data: TPSFormModel) => tpsService.create(data),
     onSuccess: () => {
       showSnackbar("TPS berhasil ditambahkan", "success");
-      navigate("/portal/tps");
+      navigate(-1);
     },
     onError: (error) => {
       showSnackbar(error.message, "error");

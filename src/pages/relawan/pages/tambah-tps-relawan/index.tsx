@@ -16,19 +16,15 @@ import FormikAutocompleteField from "@/components/formik/autocomplete";
 
 const TambahTPSRelawan = () => {
   const { id } = useParams();
-  const { mutation, navigate, validationSchema, tpsService } = useTambahTPSRelawan(
-    Number(id)
-  );
+  const { mutation, navigate, validationSchema, tpsService } =
+    useTambahTPSRelawan();
   return (
     <div className="wd-flex wd-flex-col wd-gap-4 wd-items-center wd-w-full wd-container wd-mx-auto wd-mt-[10rem] wd-m-8">
       <Card sx={{ width: { xs: "100%", sm: "60%", md: "40%", lg: "30%" } }}>
         <CardHeader
           style={{ paddingBottom: 0 }}
           avatar={
-            <IconButton
-              size="small"
-              onClick={() => navigate(`/portal/relawan/detail/${id}`)}
-            >
+            <IconButton size="small" onClick={() => navigate(-1)}>
               <ArrowCircleLeftOutlined />
             </IconButton>
           }
@@ -66,8 +62,8 @@ const TambahTPSRelawan = () => {
                   buildOption={(option: TPSModel) => ({
                     label: option.nomor,
                     value: option.id,
-                    })}
-                  />
+                  })}
+                />
                 <Button
                   disabled={mutation.isPending}
                   startIcon={

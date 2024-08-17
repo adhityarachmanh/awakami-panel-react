@@ -24,7 +24,7 @@ const useEditTPSRelawan = (id: number) => {
     onSuccess: (data) => {
       console.log(data);
       showSnackbar("TPS Relawan berhasil diubah", "success");
-      navigate(`/portal/relawan/detail/${data.relawanId}`);
+      navigate(-1);
     },
     onError: (error) => {
       showSnackbar(error.message, "error");

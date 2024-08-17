@@ -17,7 +17,7 @@ const useTambahPosko = () => {
     mutationFn: (data: PoskoFormModel) => poskoService.create(data),
     onSuccess: () => {
       showSnackbar("Posko berhasil ditambahkan", "success");
-      navigate("/portal/posko");
+      navigate(-1);
     },
     onError: (error) => {
       showSnackbar(error.message, "error");

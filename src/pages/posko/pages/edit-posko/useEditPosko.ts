@@ -21,7 +21,7 @@ const useEditPosko = (id: number) => {
     mutationFn: (data: PoskoFormModel) => poskoService.update(id, data),
     onSuccess: () => {
       showSnackbar("Posko berhasil ditambahkan", "success");
-      navigate("/portal/posko");
+      navigate(-1);
     },
     onError: (error) => {
       showSnackbar(error.message, "error");

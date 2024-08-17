@@ -20,7 +20,7 @@ const useTambahBerita = () => {
     mutationFn: (data: BeritaFormModel) => beritaService.create(data),
     onSuccess: () => {
       showSnackbar("Berita berhasil ditambahkan", "success");
-      navigate("/portal/berita");
+      navigate(-1);
     },
     onError: (error) => {
       showSnackbar(error.message, "error");
