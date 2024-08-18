@@ -8,7 +8,7 @@ export interface FormikAutocompleteFieldProps<T> {
     name: string;
     visible?: boolean;
     placeholder?: string;
-    mode?: "table-query" | "dropdown-query" | "dropdown";
+    mode?: "table"| "dropdown";
     options?: T[];
     columns?: ColumnType<T>[];
     filterKey?: keyof T;

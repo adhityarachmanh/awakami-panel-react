@@ -5,9 +5,9 @@ import { FormikAutocompleteFieldProps } from "./interface/AutocompleteInterface"
 const FormikAutocompleteField = <T,>(
   props: FormikAutocompleteFieldProps<T>
 ) => {
-  const { visible = true, mode = "table-query", ...rest } = props;
+  const { visible = true, mode = "table", ...rest } = props;
   if (!visible) return null;
-  if (mode === "table-query") return <_AutocompleteTable<T> {...rest} />;
+  if (mode === "table") return <_AutocompleteTable<T> {...rest} />;
   return <_AutocompleteDropdown<T> {...rest} />;
 };
 
