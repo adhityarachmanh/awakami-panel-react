@@ -144,10 +144,11 @@ const DetailRelawan = () => {
           <CardContent>
             <DataTable
               uniqKey="tps-relawan"
+              clientSearchField="nomor"
               handleAddButtonClick={() =>
                 navigate(`/portal/relawan/tambah-tps/${id}`)
               }
-              paginable={false}
+              mode="client"
               selectable={false}
               columns={tpsColumns}
               service={tpsService}

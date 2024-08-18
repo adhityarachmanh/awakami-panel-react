@@ -1,14 +1,18 @@
-import { PostQuery, PostFilter, PostSort } from "@/types/PostQuery";
+import { PostQuery, PostFilter } from "@/types/PostQuery";
 import { GridPaginationModel } from "@mui/x-data-grid";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { APIResponse } from "@/types/APIResponse";
 import { FilterType } from "./types/FilterModel";
 import defaultFilterConfigs from "./constants/filterConfig";
-
+import { ColumnType } from "./types/ColumnModel";
+import { debounce } from "lodash";
 const useTable = <T,>(
   uniqKey: string,
+  mode: "server" | "client",
+  columns: ColumnType<T>[],
   service: (postQuery: PostQuery) => Promise<APIResponse<T[]>>,
+  clientSearchField?: string,
   postQueryValue?: PostQuery,
   onSelectionChange?: (selectedRows: T[]) => void,
   filterConfigsCustom?: FilterType[]
@@ -16,6 +20,8 @@ const useTable = <T,>(
   const [filterConfigs, _] = useState<FilterType[]>(
     filterConfigsCustom || defaultFilterConfigs
   );
+  const [selectedRows, setSelectedRows] = useState<T[]>([]);
+  const [clientData, setClientData] = useState<T[]>([]);
   const [postQuery, setPostQuery] = useState<PostQuery>({
     keywords: "",
     filters: [],
@@ -24,7 +30,23 @@ const useTable = <T,>(
     size: 5,
   });
 
-  const [selectedRows, setSelectedRows] = useState<T[]>([]);
+  const { data: query, isFetching: isLoading } = useQuery({
+    queryKey: [
+      uniqKey,
+      mode === "server" ? postQuery?.page : undefined,
+      mode === "server" ? postQuery?.size : undefined,
+      mode === "server" ? postQuery?.filters : undefined,
+      mode === "server" ? postQuery?.sorts : undefined,
+      mode === "server" ? postQuery?.keywords : undefined,
+    ],
+    queryFn: () => service(postQuery),
+    placeholderData: keepPreviousData,
+  });
+
+  useEffect(() => {
+    setClientData(query?.data || []);
+  }, [query?.data]);
+
   useEffect(() => {
     if (postQueryValue) {
       setPostQuery((prevQuery) => {
@@ -57,32 +79,13 @@ const useTable = <T,>(
       });
     }
   }, [postQueryValue]);
+
   useEffect(() => {
     if (onSelectionChange) {
       onSelectionChange(selectedRows);
     }
   }, [selectedRows]);
-  const {
-    data:query,
-    isFetching: isLoading,
-  } = useQuery({
-    queryKey: [
-      uniqKey,
-      postQuery?.page,
-      postQuery?.size,
-      postQuery?.filters,
-      postQuery?.sorts,
-      postQuery?.keywords,
-    ],
-    queryFn: () => service(postQuery),
-    placeholderData: keepPreviousData,
-  });
-  // const rows = data ?? [];
-  // const totalRows = total ?? 0;
-  // const currentPage = current ?? 1;
-  // const pageSize = size ?? 5;
-  
-  
+
   const getInitialFilter = (field: string) => {
     return (
       postQuery?.filters?.find((filter) => filter.key === field) || {
@@ -96,6 +99,39 @@ const useTable = <T,>(
     return postQuery.filters?.some((filter) => filter.key === field) ?? false;
   };
   const resetFilter = (field: string) => {
+    if (mode === "server") {
+      resetFilterServer(field);
+    } else {
+      resetFilterClient(field);
+    }
+  };
+
+  const resetFilterClient = (field: string) => {
+    const filters = [...(postQuery.filters || [])];
+    const existingFilterIndex = filters.findIndex(
+      (filter) => filter.key === field
+    );
+    if (existingFilterIndex >= 0) {
+      filters.splice(existingFilterIndex, 1);
+    }
+    setPostQuery({ ...postQuery, filters });
+
+    let filteredData = query?.data || [];
+    filters.forEach((filter) => {
+      if (filter.operator === "EQUAL") {
+        filteredData = filteredData.filter((item) => {
+          const column = columns.find((col) => col.field === filter.key);
+          const value = column?.buildClientValue
+            ? column.buildClientValue(item)
+            : (item as any)[filter.key];
+          return value === filter.values?.[0];
+        });
+      }
+    });
+    setClientData(filteredData);
+  };
+
+  const resetFilterServer = (field: string) => {
     const filters = [...(postQuery.filters || [])];
     const existingFilterIndex = filters.findIndex(
       (filter) => filter.key === field
@@ -105,8 +141,115 @@ const useTable = <T,>(
     }
     setPostQuery({ ...postQuery, filters });
   };
+
   const handleFilterChange = (postFilter: PostFilter) => {
-    console.log(postFilter);
+    if (mode === "server") {
+      handleFilterServer(postFilter);
+    } else {
+      handleFilterClient(postFilter);
+    }
+  };
+
+  const handleFilterClient = (postFilter: PostFilter) => {
+    const filters = [...(postQuery.filters || [])];
+    const existingFilterIndex = filters.findIndex(
+      (filter) => filter.key === postFilter.key
+    );
+    if (existingFilterIndex >= 0) {
+      filters[existingFilterIndex] = postFilter;
+    } else {
+      filters.push(postFilter);
+    }
+    setPostQuery({ ...postQuery, filters });
+
+    let filteredData = query?.data || [];
+    filters.forEach((filter) => {
+      if (filter.operator === "EQUAL") {
+        filteredData = filteredData.filter((item) => {
+          const column = columns.find((col) => col.field === filter.key);
+          const value = column?.buildClientValue
+            ? column.buildClientValue(item)
+            : (item as any)[filter.key];
+          return value === filter.values?.[0];
+        });
+      } else if (filter.operator === "NOT_EQUAL") {
+        filteredData = filteredData.filter((item) => {
+          const column = columns.find((col) => col.field === filter.key);
+          const value = column?.buildClientValue
+            ? column.buildClientValue(item)
+            : (item as any)[filter.key];
+          return value !== filter.values?.[0];
+        });
+      } else if (filter.operator === "GREATER_THAN") {
+        filteredData = filteredData.filter((item) => {
+          const column = columns.find((col) => col.field === filter.key);
+          const value = column?.buildClientValue
+            ? column.buildClientValue(item)
+            : (item as any)[filter.key];
+          return value > filter.values?.[0];
+        });
+      } else if (filter.operator === "LESS_THAN") {
+        filteredData = filteredData.filter((item) => {
+          const column = columns.find((col) => col.field === filter.key);
+          const value = column?.buildClientValue
+            ? column.buildClientValue(item)
+            : (item as any)[filter.key];
+          return value < filter.values?.[0];
+        });
+      } else if (filter.operator === "GREATER_THAN_OR_EQUAL") {
+        filteredData = filteredData.filter((item) => {
+          const column = columns.find((col) => col.field === filter.key);
+          const value = column?.buildClientValue
+            ? column.buildClientValue(item)
+            : (item as any)[filter.key];
+          return value >= filter.values?.[0];
+        });
+      } else if (filter.operator === "LESS_THAN_OR_EQUAL") {
+        filteredData = filteredData.filter((item) => {
+          const column = columns.find((col) => col.field === filter.key);
+          const value = column?.buildClientValue
+            ? column.buildClientValue(item)
+            : (item as any)[filter.key];
+          return value <= filter.values?.[0];
+        });
+      } else if (filter.operator === "ILIKE") {
+        filteredData = filteredData.filter((item) => {
+          const column = columns.find((col) => col.field === filter.key);
+          const value = column?.buildClientValue
+            ? column.buildClientValue(item)
+            : (item as any)[filter.key];
+          return value.toLowerCase().includes(filter.values?.[0].toLowerCase());
+        });
+      } else if (filter.operator === "BETWEEN") {
+        filteredData = filteredData.filter((item) => {
+          const column = columns.find((col) => col.field === filter.key);
+          const value = column?.buildClientValue
+            ? column.buildClientValue(item)
+            : (item as any)[filter.key];
+          return value >= filter.values?.[0] && value <= filter.values?.[1];
+        });
+      } else if (filter.operator === "IN") {
+        filteredData = filteredData.filter((item) => {
+          const column = columns.find((col) => col.field === filter.key);
+          const value = column?.buildClientValue
+            ? column.buildClientValue(item)
+            : (item as any)[filter.key];
+          return filter.values?.includes(value);
+        });
+      } else if (filter.operator === "NOT_IN") {
+        filteredData = filteredData.filter((item) => {
+          const column = columns.find((col) => col.field === filter.key);
+          const value = column?.buildClientValue
+            ? column.buildClientValue(item)
+            : (item as any)[filter.key];
+          return !filter.values?.includes(value);
+        });
+      }
+    });
+    setClientData(filteredData);
+  };
+
+  const handleFilterServer = (postFilter: PostFilter) => {
     const filters = [...(postQuery.filters || [])];
     const existingFilterIndex = filters.findIndex(
       (filter) => filter.key === postFilter.key
@@ -134,20 +277,54 @@ const useTable = <T,>(
   }
 
   const handleSortChange = (field: string) => {
-    let sorts: PostSort[] = [...(postQuery.sorts || [])];
-    const currentSort = sorts.find((sort) => sort.key === field);
+    if (mode === "server") {
+      handleSortServer(field);
+    } else {
+      handleSortClient(field);
+    }
+  };
 
-    if (currentSort) {
-      if (currentSort.order === "ASC") {
-        currentSort.order = "DESC";
-      } else if (currentSort.order === "DESC") {
-        sorts = sorts.filter((sort) => sort.key !== field);
+  const handleSortClient = (field: string) => {
+    const sorts = [...(postQuery.sorts || [])];
+    const existingSortIndex = sorts.findIndex((sort) => sort.key === field);
+    if (existingSortIndex >= 0) {
+      const currentOrder = sorts[existingSortIndex].order;
+      if (currentOrder === "ASC") {
+        sorts[existingSortIndex].order = "DESC";
+      } else {
+        sorts.splice(existingSortIndex, 1);
       }
     } else {
-      sorts.push({ key: field, order: "ASC" } as PostSort);
+      sorts.push({ key: field, order: "ASC" });
     }
+    const sortedRows = [...(clientData || [])].sort((a, b) => {
+      const aValue =
+        columns.find((col) => col.field === field)?.buildClientValue?.(a) || "";
+      const bValue =
+        columns.find((col) => col.field === field)?.buildClientValue?.(b) || "";
+      return sorts[existingSortIndex]?.order === "DESC"
+        ? bValue.localeCompare(aValue)
+        : aValue.localeCompare(bValue);
+    });
+    setClientData(sortedRows);
 
-    setPostQuery({ ...postQuery, sorts: sorts });
+    setPostQuery({ ...postQuery, sorts });
+  };
+
+  const handleSortServer = (field: string) => {
+    const sorts = [...(postQuery.sorts || [])];
+    const existingSortIndex = sorts.findIndex((sort) => sort.key === field);
+    if (existingSortIndex >= 0) {
+      const currentOrder = sorts[existingSortIndex].order;
+      if (currentOrder === "ASC") {
+        sorts[existingSortIndex].order = "DESC";
+      } else {
+        sorts.splice(existingSortIndex, 1);
+      }
+    } else {
+      sorts.push({ key: field, order: "ASC" });
+    }
+    setPostQuery({ ...postQuery, sorts });
   };
 
   const handlePaginationChange = (model: GridPaginationModel) => {
@@ -170,8 +347,45 @@ const useTable = <T,>(
       setSelectedRows([...selectedRows, row]);
     }
   };
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (mode === "server") {
+      handleSearchServer(e);
+    } else {
+      const searchTerm = e.target.value.toLowerCase();
+      if (!searchTerm) {
+        setClientData(query?.data || []);
+      } else {
+        const filteredData =
+          query?.data?.filter((item) => {
+            if (clientSearchField) {
+              const column = columns.find(
+                (col) => col.field === clientSearchField
+              );
+              const value = column?.buildClientValue
+                ? column.buildClientValue(item)
+                : (item as any)[clientSearchField];
+              return value.toString().toLowerCase().includes(searchTerm);
+            }
+            return false;
+          }) || [];
+        setClientData(filteredData);
+      }
+    }
+  };
+
+  const handleSearchServer = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const debouncedSetPostQuery = debounce((value) => {
+      setPostQuery({
+        ...postQuery,
+        keywords: value,
+      });
+    }, 300);
+
+    debouncedSetPostQuery((e.target as HTMLInputElement).value);
+  };
 
   return {
+    clientData,
     filterConfigs,
     postQuery,
     query,
@@ -190,6 +404,7 @@ const useTable = <T,>(
     getInitialFilter,
     resetFilter,
     isActiveFilter,
+    handleSearchChange,
   };
 };
 

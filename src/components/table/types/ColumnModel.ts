@@ -9,4 +9,5 @@ export type ColumnType<T> = {
   fullWidth?: boolean;
   valueFormatter?: (params: T) => string;
   renderCell?: (params: T) => React.ReactNode;
+  buildClientValue?: (params: T) => string;
 };

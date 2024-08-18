@@ -1,21 +1,17 @@
 import React from "react";
 import { Button, TextField } from "@mui/material";
-import { PostQuery } from "@/types/PostQuery";
 
 interface DefaultHeaderTableProps {
-  paginable: boolean;
+  mode: "server" | "client";
   showAddButton: boolean;
   handleAddButtonClick?: () => void;
-  postQuery: PostQuery;
-  setPostQuery: (postQuery: PostQuery) => void;
+  handleSearchChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const DefaultHeaderTable: React.FC<DefaultHeaderTableProps> = ({
-  paginable,
   showAddButton,
   handleAddButtonClick,
-  postQuery,
-  setPostQuery,
+  handleSearchChange,
 }) => {
   return (
     <div className="wd-flex wd-justify-between wd-items-center">
@@ -30,22 +26,16 @@ const DefaultHeaderTable: React.FC<DefaultHeaderTableProps> = ({
           </Button>
         )}
       </div>
-      {paginable && (
-        <TextField
-          id="search-bar"
-          className="text"
-          onInput={(e) => {
-            setPostQuery({
-              ...postQuery,
-              keywords: (e.target as HTMLInputElement).value,
-            });
-          }}
-          label="Pencarian"
-          variant="outlined"
-          placeholder="Cari..."
-          size="small"
-        />
-      )}
+
+      <TextField
+        id="search-bar"
+        className="text"
+        onInput={handleSearchChange}
+        label="Pencarian"
+        variant="outlined"
+        placeholder="Cari..."
+        size="small"
+      />
     </div>
   );
 };

@@ -20,28 +20,38 @@ const useDetailRelawan = (id: number) => {
   });
   const tpsColumns: ColumnType<TPSRelawanModel>[] = [
     {
-      field: "tps",
+      field: "id",
       headerName: "ID",
+      buildClientValue: (data: TPSRelawanModel) => {
+        return data.tps.id.toString();
+      },
       valueFormatter: (data: TPSRelawanModel) => {
         return data.tps.id.toString();
       },
     },
     {
-      field: "tps",
+      field: "nomor",
       headerName: "Nomor",
+      buildClientValue: (data: TPSRelawanModel) => {
+        return data.tps.nomor;
+      },
       valueFormatter: (data: TPSRelawanModel) => {
         return data.tps.nomor;
       },
     },
     {
-      field: "tps",
+      field: "alamat",
       headerName: "Alamat",
+      buildClientValue: (data: TPSRelawanModel) => {
+        return data.tps.alamat;
+      },
       valueFormatter: (data: TPSRelawanModel) => {
         return data.tps.alamat;
       },
     },
     {
       field: "actions",
+      type: "actions",
       headerName: "Actions",
       renderCell: (data: TPSRelawanModel) => {
         return <TableTPSRelawanAction data={data} />;
