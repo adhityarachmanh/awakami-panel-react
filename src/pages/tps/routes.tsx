@@ -1,4 +1,4 @@
-import { Route } from "@/types/route";
+import { Route } from "@/types/RouteModel";
 import ListTPS from "./pages/list-tps";
 import DetailTPS from "./pages/detail-tps";
 import TambahTPS from "./pages/tambah-tps";

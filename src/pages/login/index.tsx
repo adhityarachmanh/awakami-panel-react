@@ -19,10 +19,8 @@ const LoginPage = () => {
     validationSchema,
     brandName,
     showPassword,
-    setShowPassword,
+    handleClickShowPassword,
   } = useLogin();
-
-  const handleClickShowPassword = () => setShowPassword(!showPassword);
 
   return (
     <div className="wd-h-screen wd-flex wd-flex-row wd-w-full wd-bg-login-right wd-bg-cover wd-relative">

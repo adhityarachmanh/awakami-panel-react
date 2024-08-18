@@ -14,6 +14,7 @@ const useLogin = () => {
   const dispatch = useRootDispatch();
   const { showSnackbar } = useSnackbar();
   const [showPassword, setShowPassword] = useState(false);
+  
   const brandName = import.meta.env.VITE_BRAND_NAME;
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -38,13 +39,14 @@ const useLogin = () => {
       showSnackbar("Login failed", "error");
     },
   });
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
   return {
     t,
     showPassword,
     mutation,
     validationSchema,
     brandName,
-    setShowPassword,
+    handleClickShowPassword,
   };
 };
 export default useLogin;

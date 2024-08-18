@@ -1,4 +1,4 @@
-import { Route } from "@/types/route";
+import { Route } from "@/types/RouteModel";
 import DetailProfile from "./pages/detail_profile";
 import EditProfile from "./pages/edit_profile";
 

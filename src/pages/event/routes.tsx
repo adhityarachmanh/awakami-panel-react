@@ -1,4 +1,4 @@
-import { Route } from "@/types/route";
+import { Route } from "@/types/RouteModel";
 import ListEvent from "./pages/list_event";
 import DetailEvent from "./pages/detail_event";
 import TambahEvent from "./pages/tambah_event";

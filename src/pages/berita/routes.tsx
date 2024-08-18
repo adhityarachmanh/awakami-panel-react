@@ -1,4 +1,4 @@
-import { Route } from "@/types/route";
+import { Route } from "@/types/RouteModel";
 import ListBerita from "./pages/list_berita";
 import DetailBerita from "./pages/detail_berita";
 import TambahBerita from "./pages/tambah_berita";

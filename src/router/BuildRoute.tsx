@@ -1,16 +1,12 @@
-import PrivateRoute from "./PrivateRoute";
-import PublicRoute from "./PublicRoute";
-
 const buildRoute = (route: any) => {
-  if (route.isAuthenticated) {
-    return {
-      ...route,
-      element: <PrivateRoute>{route.element}</PrivateRoute>,
-    };
-  }
+  const { GuardComponent, element, ...rest } = route;
   return {
-    ...route,
-    element: <PublicRoute>{route.element}</PublicRoute>,
+    ...rest,
+    element: GuardComponent ? (
+      <GuardComponent>{element}</GuardComponent>
+    ) : (
+      element
+    ),
   };
 };
 

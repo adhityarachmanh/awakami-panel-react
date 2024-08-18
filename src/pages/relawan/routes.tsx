@@ -1,4 +1,4 @@
-import { Route } from "@/types/route";
+import { Route } from "@/types/RouteModel";
 import ListRelawan from "./pages/list_relawan";
 import TambahRelawan from "./pages/tambah_relawan";
 import EditRelawan from "./pages/edit_relawan";

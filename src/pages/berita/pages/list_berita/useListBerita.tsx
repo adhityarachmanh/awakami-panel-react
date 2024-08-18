@@ -19,7 +19,7 @@ const useListBerita = () => {
       renderCell: (data: BeritaModel) => {
         return (
           <ImagePreview
-          imageStyle={{ width: '120px', height: '120px' }}
+            imageStyle={{ width: "120px", height: "120px" }}
             src={`${import.meta.env.VITE_BASE_URL}/${data.filePath}`}
             alt="berita"
           />

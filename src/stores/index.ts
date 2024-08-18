@@ -3,9 +3,8 @@ import exampleReducer from "./reducers/exampleReducer";
 import examplePresistReducer from "./reducers/examplePresistReducer";
 import sidebarReducer from "./reducers/sidebarReducer";
 import storage from "redux-persist/lib/storage";
-import persistStore from "redux-persist/es/persistStore";
 import persistReducer from "redux-persist/es/persistReducer";
-import { PersistedState } from "redux-persist";
+import { PersistedState, persistStore } from "redux-persist";
 import { useDispatch, useSelector } from "react-redux";
 import authReducer from "./reducers/authReducer";
 import { encryptTransform } from "redux-persist-transform-encrypt";
@@ -31,16 +30,13 @@ const persistConfig = (key: string) => ({
   transforms: [encryptor],
 });
 
-let rootStore = configureStore({
+const rootStore = configureStore({
   reducer: {
     auth: persistReducer(persistConfig("xa"), authReducer),
     sidebar: persistReducer(persistConfig("xs"), sidebarReducer),
     language: persistReducer(persistConfig("xl"), languageReducer),
     example: exampleReducer,
-    examplePresist: persistReducer(
-      persistConfig("ex"),
-      examplePresistReducer
-    ),
+    examplePresist: persistReducer(persistConfig("ex"), examplePresistReducer),
   },
   middleware: (getDefaultMiddleware: any) =>
     getDefaultMiddleware({
@@ -50,7 +46,7 @@ let rootStore = configureStore({
     }),
 });
 
-let rootPersistor = persistStore(rootStore);
+const rootPersistor = persistStore(rootStore);
 
 export type RootState = ReturnType<typeof rootStore.getState>;
 export type RootDispatch = typeof rootStore.dispatch;

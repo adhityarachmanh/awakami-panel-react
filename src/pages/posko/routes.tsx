@@ -1,4 +1,4 @@
-import { Route } from "@/types/route";
+import { Route } from "@/types/RouteModel";
 import ListPosko from "./pages/list_posko";
 import DetailPosko from "./pages/detail_posko";
 import TambahPosko from "./pages/tambah_posko";
