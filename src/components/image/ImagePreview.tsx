@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Box, IconButton, Dialog } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
@@ -7,6 +7,7 @@ import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import DownloadIcon from "@mui/icons-material/Download";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import PhotoIcon from "@mui/icons-material/Photo";
+
 interface ImagePreviewProps {
   src: string;
   alt: string;
@@ -26,18 +27,26 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
   const [zoom, setZoom] = useState(1);
   const handle = useFullScreenHandle();
   const [error, setError] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
+  const imgRef = useRef<HTMLImageElement>(null);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
     setZoom(1.1);
+    setPosition({ x: 0, y: 0 });
   };
 
   const handleZoomIn = () => setZoom((prevZoom) => Math.min(prevZoom + 0.1, 3));
   const handleZoomOut = () =>
     setZoom((prevZoom) => Math.max(prevZoom - 0.1, 0.1));
+
   useEffect(() => {
     setError(false);
   }, [src]);
+
   const handleDownload = () => {
     fetch(src)
       .then((response) => response.blob())
@@ -62,6 +71,27 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
     } else {
       handleZoomOut();
     }
+  };
+
+  const handleMouseDown = (event: React.MouseEvent) => {
+    setIsDragging(true);
+    setStartPosition({
+      x: event.clientX - position.x,
+      y: event.clientY - position.y,
+    });
+  };
+
+  const handleMouseMove = (event: React.MouseEvent) => {
+    if (isDragging) {
+      setPosition({
+        x: event.clientX - startPosition.x,
+        y: event.clientY - startPosition.y,
+      });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
   };
 
   return (
@@ -101,7 +131,11 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
         maxWidth="lg"
         fullWidth
         PaperProps={{
-          style: { backgroundColor: "transparent", boxShadow: "none" },
+          style: {
+            backgroundColor: "transparent",
+            boxShadow: "none",
+            width: "auto",
+          },
         }}
       >
         <FullScreen handle={handle}>
@@ -114,6 +148,10 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
               height: "100%",
             }}
             onWheel={handleWheel}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
           >
             <IconButton
               sx={{
@@ -143,10 +181,12 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
                 component="img"
                 src={src}
                 alt={alt}
+                ref={imgRef}
                 sx={{
-                  transform: `scale(${zoom})`, // Apply zoom using transform
+                  transform: `scale(${zoom}) translate(${position.x}px, ${position.y}px)`, // Apply zoom and position using transform
                   objectFit: "cover",
-                  transition: "transform 0.3s",
+                  transition: isDragging ? "none" : "transform 0.3s",
+                  cursor: isDragging ? "grabbing" : "grab", // Change cursor style
                 }}
               />
               <Box

@@ -46,14 +46,7 @@ const EditProfile = () => {
                     <ArrowCircleLeftOutlined />
                   </IconButton>
                 }
-                action={
-                  <IconButton
-                    size="small"
-                    onClick={() => navigate(`/portal/profile/edit`)}
-                  >
-                    <EditOutlined color="warning" />
-                  </IconButton>
-                }
+
                 title="Edit Profile"
                 titleTypographyProps={{
                   fontSize: 24,
