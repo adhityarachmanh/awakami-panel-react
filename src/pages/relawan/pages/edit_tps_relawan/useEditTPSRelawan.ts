@@ -22,7 +22,6 @@ const useEditTPSRelawan = (id: number) => {
     mutationFn: (data: TPSRelawanFormModel) =>
       relawanService.updateTPSRelawan(id, data),
     onSuccess: (data) => {
-      console.log(data);
       showSnackbar("TPS Relawan berhasil diubah", "success");
       navigate(-1);
     },
