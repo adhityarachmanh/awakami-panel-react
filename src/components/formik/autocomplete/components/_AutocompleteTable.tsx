@@ -28,6 +28,7 @@ const _AutocompleteTable = <T,>({
   buildValue,
   filterOnChange,
   maxDialogWidth = "sm",
+  buildLabel,
 }: FormikAutocompleteFieldProps<T>) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { setFieldValue, initialValues, values } = useFormikContext();
@@ -61,7 +62,9 @@ const _AutocompleteTable = <T,>({
       labelQuery.filters?.length &&
       memoizedValue !== null
     ) {
-      return searchQuery.data.data[0][labelKey as keyof T]?.toString() ?? "";
+      return buildLabel 
+        ? buildLabel(searchQuery.data.data[0]) 
+        : searchQuery.data.data[0][labelKey as keyof T]?.toString() ?? "";
     }
     return "";
   }, [searchQuery, labelQuery, memoizedValue]);

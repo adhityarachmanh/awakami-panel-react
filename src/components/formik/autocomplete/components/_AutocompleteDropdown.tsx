@@ -73,7 +73,7 @@ const _AutocompleteDropdown = <T,>({
           loading={isLoadingQuery}
           loadingText={loadingText ?? "Loading..."}
           onInputChange={(_, newInputValue) => {
-            if (mode === "dropdown-query") {
+            if (mode === "dropdown") {
               setPostQuery((prevQuery) => ({
                 ...prevQuery,
                 keywords: newInputValue,

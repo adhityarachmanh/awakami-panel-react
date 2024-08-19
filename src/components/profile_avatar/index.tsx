@@ -28,7 +28,9 @@ const ProfileAvatar = ({ style, fontSize = 16 }: ProfileAvatarProps) => {
         : undefined,
       children: profile.imagePath ? undefined : (
         <Typography fontSize={fontSize} fontWeight="medium">
-          {`${profile.name.split(" ")[0][0]}${profile.name.split(" ")[1][0]}`}
+          {`${profile.name?.split(" ")[0]?.[0] ?? ""}${
+            profile.name?.split(" ")[1]?.[0] ?? ""
+          }`}
         </Typography>
       ),
     };

@@ -11,10 +11,11 @@ export interface FormikAutocompleteFieldProps<T> {
     mode?: "table"| "dropdown";
     options?: T[];
     columns?: ColumnType<T>[];
-    filterKey?: keyof T;
+    filterKey?: string;
     filterValue?: any;
     queryKey?: keyof T | string;
     labelKey?: keyof T;
+    buildLabel?: (item: T) => string;
     maxDialogWidth?: Breakpoint;
     debounce?: number;
     loadingText?: string;

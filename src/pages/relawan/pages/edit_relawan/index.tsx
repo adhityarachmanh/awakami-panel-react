@@ -147,7 +147,7 @@ const EditRelawan = () => {
                     filterKey="provinsiId"
                     filterValue={values.provinsiId?.toString()}
                     name="kotaId"
-                    labelKey="name"
+                    buildLabel={(row: WilayahKota) => `${row.name}`}
                     label="Kota"
                     placeholder="Cari Kota..."
                     buildValue={(row: WilayahKota) => row.id}
