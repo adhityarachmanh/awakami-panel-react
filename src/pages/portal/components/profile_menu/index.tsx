@@ -1,33 +1,17 @@
 import React from "react";
 import { Menu, Box, Divider, MenuItem, IconButton } from "@mui/material";
-import { deauthenticate } from "@/stores/reducers/authReducer";
-import { useQuery } from "@tanstack/react-query";
-import { useRootDispatch } from "@/stores";
-import { useNavigate } from "react-router-dom";
-import ProfileService from "@/pages/profile/services/ProfileService";
 import ProfileAvatar from "@/components/profile_avatar";
+import useProfileMenu from "./useProfileMenu";
 
 const ProfileMenu = () => {
-  const profileService = new ProfileService();
-  const navigate = useNavigate();
-  const dispatch = useRootDispatch();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-  const handleAvatarClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const profileQuery = useQuery({
-    queryKey: ["profile"],
-    queryFn: () => profileService.getProfile(),
-  });
-
-  const logout = () => {
-    dispatch(deauthenticate());
-  };
+  const {
+    profileQuery,
+    anchorEl,
+    navigate,
+    handleAvatarClick,
+    handleMenuClose,
+    logout,
+  } = useProfileMenu();
   const profile = React.useMemo(
     () => profileQuery.data?.data,
     [profileQuery.data?.data]

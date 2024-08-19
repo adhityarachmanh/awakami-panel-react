@@ -1,19 +1,14 @@
-import React from 'react'
 import { IconButton, Badge, Menu, MenuItem } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import useNotification from "./useNotification";
 
 const Notification = () => {
-  const [notificationAnchorEl, setNotificationAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(notificationAnchorEl);
-
-  const handleNotificationClick = (event: React.MouseEvent<HTMLElement>) => {
-    setNotificationAnchorEl(event.currentTarget);
-  };
-
-  const handleNotificationClose = () => {
-    setNotificationAnchorEl(null);
-  };
-
+  const {
+    open,
+    notificationAnchorEl,
+    handleNotificationClick,
+    handleNotificationClose,
+  } = useNotification();
   return (
     <>
       <IconButton
@@ -40,6 +35,6 @@ const Notification = () => {
       </Menu>
     </>
   );
-}
+};
 
-export default Notification
+export default Notification;

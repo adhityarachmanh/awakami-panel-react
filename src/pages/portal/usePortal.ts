@@ -1,14 +1,17 @@
 import { useSnackbar } from "@/hooks/useSnackbar";
 import AuthService from "@/services/AuthService";
 import { useMutation } from "@tanstack/react-query";
-import { useRootDispatch } from "@/stores";
+import { useRootDispatch, useRootSelector } from "@/stores";
 import { authenticate, deauthenticate } from "@/stores/reducers/authReducer";
 
-const usePanel = () => {
+const usePortal = ({ window }: any) => {
   const authService = new AuthService();
   const { showSnackbar } = useSnackbar();
   const dispatch = useRootDispatch();
-  const brandName = import.meta.env.VITE_BRAND_NAME;
+  const { desktopOpen } = useRootSelector((state) => state.sidebar);
+  const { auth } = useRootSelector((state) => state.auth);
+  const container =
+  window !== undefined ? () => window().document.body : undefined;
   const refreshTokenMutation = useMutation({
     mutationKey: ["refreshToken"],
     mutationFn: async () => {
@@ -25,9 +28,7 @@ const usePanel = () => {
     },
   });
 
- 
-
-  return { refreshTokenMutation,  brandName };
+  return { refreshTokenMutation, desktopOpen, auth, window, container };
 };
 
-export default usePanel;
+export default usePortal;
