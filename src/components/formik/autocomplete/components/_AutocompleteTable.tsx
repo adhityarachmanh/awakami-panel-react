@@ -64,12 +64,12 @@ const _AutocompleteTable = <T,>({
     ) {
       return searchQuery.data.data.length === 0
         ? "No Label"
-        : buildLabel 
-        ? buildLabel(searchQuery.data.data[0]) 
+        : buildLabel
+        ? buildLabel(searchQuery.data.data[0])
         : searchQuery.data.data[0][labelKey as keyof T]?.toString() ?? "";
     }
     return "";
-  }, [searchQuery, labelQuery, memoizedValue]);
+  }, [searchQuery, buildLabel, labelQuery, memoizedValue]);
 
   useEffect(() => {
     if (initialValues?.[name as keyof typeof initialValues]) {
