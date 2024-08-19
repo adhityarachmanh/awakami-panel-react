@@ -62,7 +62,9 @@ const _AutocompleteTable = <T,>({
       labelQuery.filters?.length &&
       memoizedValue !== null
     ) {
-      return buildLabel 
+      return searchQuery.data.data.length === 0
+        ? "No Label"
+        : buildLabel 
         ? buildLabel(searchQuery.data.data[0]) 
         : searchQuery.data.data[0][labelKey as keyof T]?.toString() ?? "";
     }
