@@ -177,23 +177,27 @@ const DataTable = <T,>({
                     </span>
                     {column.type !== "actions" && (
                       <div className="wd-flex wd-flex-row wd-items-center">
-                        <SortingComponent
-                          isActiveSort={isActiveSort(column.field)}
-                          currentOrder={currentOrder(column.field)}
-                          handleSortChange={() =>
-                            handleSortChange(column.field)
-                          }
-                        />
-                        <FilterDropdown
-                          field={column.field}
-                          type={column.type}
-                          isActiveFilter={isActiveFilter(column.field)}
-                          initialFilter={getInitialFilter(column.field)}
-                          headerName={column.headerName}
-                          filterConfigs={filterConfigs}
-                          onApply={handleFilterChange}
-                          resetFilter={resetFilter}
-                        />
+                        {!column.hideSort && (
+                          <SortingComponent
+                            isActiveSort={isActiveSort(column.field)}
+                            currentOrder={currentOrder(column.field)}
+                            handleSortChange={() =>
+                              handleSortChange(column.field)
+                            }
+                          />
+                        )}
+                        {!column.hideFilter && (
+                          <FilterDropdown
+                            field={column.field}
+                            type={column.type}
+                            isActiveFilter={isActiveFilter(column.field)}
+                            initialFilter={getInitialFilter(column.field)}
+                            headerName={column.headerName}
+                            filterConfigs={filterConfigs}
+                            onApply={handleFilterChange}
+                            resetFilter={resetFilter}
+                          />
+                        )}
                       </div>
                     )}
                   </div>

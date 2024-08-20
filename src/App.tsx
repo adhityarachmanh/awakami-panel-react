@@ -6,7 +6,7 @@ import { rootStore, rootPersistor } from "@/stores";
 import { PersistGate } from "redux-persist/integration/react";
 import { ThemeProvider } from "@emotion/react";
 import { muiTheme } from "./constants/app_theme_constant";
-import routes from "@/router/Routes";
+import routes from "@/router/routes";
 import InjectAllProvider from "./hooks/hooks";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";

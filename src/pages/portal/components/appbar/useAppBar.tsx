@@ -1,4 +1,4 @@
-import { routesConfig } from "@/router/Routes";
+import { routesConfig } from "@/router/routes";
 import { useRootDispatch, useRootSelector } from "@/stores";
 import { toggleDrawer } from "@/stores/reducers/sidebarReducer";
 import { Link, Typography } from "@mui/material";

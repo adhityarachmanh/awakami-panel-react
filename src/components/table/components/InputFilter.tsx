@@ -7,8 +7,8 @@ import { PostFilter } from "@/types/PostQuery";
 import { AddCircleOutlineOutlined } from "@mui/icons-material";
 import { useFormikContext } from "formik";
 import FormikTextField from "@/components/formik/FormikTextField";
-
-export type InputType = "date" | "number" | "string" | "actions";
+import { InputType } from "../constants/filterConfig";
+import FormikSwitchField from "@/components/formik/FormikSwitchField";
 
 export function InputBetweenFilterField(props: { type: InputType }) {
   const { type } = props;
@@ -47,7 +47,16 @@ export function InputBetweenFilterField(props: { type: InputType }) {
 export function InputFilterField(props: { type: InputType }) {
   const { type } = props;
   const { setFieldValue } = useFormikContext<PostFilter>();
-  return (
+  return type === "boolean" ? (
+    <FormikSwitchField
+      name="values[0]"
+      label={type.charAt(0).toUpperCase() + type.slice(1)}
+      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = event.target.checked;
+        setFieldValue("values[0]", newValue.toString());
+      }}
+    />
+  ) : (
     <FormikTextField
       name="values"
       label={type.charAt(0).toUpperCase() + type.slice(1)}

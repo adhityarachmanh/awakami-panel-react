@@ -7,6 +7,8 @@ import { FilterType } from "./types/FilterModel";
 import defaultFilterConfigs from "./constants/filterConfig";
 import { ColumnType } from "./types/ColumnModel";
 import { debounce } from "lodash";
+import { applyLocalFilters } from "./utility/localFilterLogic";
+import { applyLocalSorting } from "./utility/localSortingLogic";
 const useTable = <T,>(
   uniqKey: string,
   mode: "server" | "client",
@@ -116,18 +118,11 @@ const useTable = <T,>(
     }
     setPostQuery({ ...postQuery, filters });
 
-    let filteredData = query?.data || [];
-    filters.forEach((filter) => {
-      if (filter.operator === "EQUAL") {
-        filteredData = filteredData.filter((item) => {
-          const column = columns.find((col) => col.field === filter.key);
-          const value = column?.buildClientValue
-            ? column.buildClientValue(item)
-            : (item as any)[filter.key];
-          return value === filter.values?.[0];
-        });
-      }
-    });
+    const filteredData = applyLocalFilters<T>(
+      query?.data || [],
+      filters,
+      columns
+    );
     setClientData(filteredData);
   };
 
@@ -162,90 +157,11 @@ const useTable = <T,>(
     }
     setPostQuery({ ...postQuery, filters });
 
-    let filteredData = query?.data || [];
-    filters.forEach((filter) => {
-      if (filter.operator === "EQUAL") {
-        filteredData = filteredData.filter((item) => {
-          const column = columns.find((col) => col.field === filter.key);
-          const value = column?.buildClientValue
-            ? column.buildClientValue(item)
-            : (item as any)[filter.key];
-          return value === filter.values?.[0];
-        });
-      } else if (filter.operator === "NOT_EQUAL") {
-        filteredData = filteredData.filter((item) => {
-          const column = columns.find((col) => col.field === filter.key);
-          const value = column?.buildClientValue
-            ? column.buildClientValue(item)
-            : (item as any)[filter.key];
-          return value !== filter.values?.[0];
-        });
-      } else if (filter.operator === "GREATER_THAN") {
-        filteredData = filteredData.filter((item) => {
-          const column = columns.find((col) => col.field === filter.key);
-          const value = column?.buildClientValue
-            ? column.buildClientValue(item)
-            : (item as any)[filter.key];
-          return value > filter.values?.[0];
-        });
-      } else if (filter.operator === "LESS_THAN") {
-        filteredData = filteredData.filter((item) => {
-          const column = columns.find((col) => col.field === filter.key);
-          const value = column?.buildClientValue
-            ? column.buildClientValue(item)
-            : (item as any)[filter.key];
-          return value < filter.values?.[0];
-        });
-      } else if (filter.operator === "GREATER_THAN_OR_EQUAL") {
-        filteredData = filteredData.filter((item) => {
-          const column = columns.find((col) => col.field === filter.key);
-          const value = column?.buildClientValue
-            ? column.buildClientValue(item)
-            : (item as any)[filter.key];
-          return value >= filter.values?.[0];
-        });
-      } else if (filter.operator === "LESS_THAN_OR_EQUAL") {
-        filteredData = filteredData.filter((item) => {
-          const column = columns.find((col) => col.field === filter.key);
-          const value = column?.buildClientValue
-            ? column.buildClientValue(item)
-            : (item as any)[filter.key];
-          return value <= filter.values?.[0];
-        });
-      } else if (filter.operator === "ILIKE") {
-        filteredData = filteredData.filter((item) => {
-          const column = columns.find((col) => col.field === filter.key);
-          const value = column?.buildClientValue
-            ? column.buildClientValue(item)
-            : (item as any)[filter.key];
-          return value.toLowerCase().includes(filter.values?.[0].toLowerCase());
-        });
-      } else if (filter.operator === "BETWEEN") {
-        filteredData = filteredData.filter((item) => {
-          const column = columns.find((col) => col.field === filter.key);
-          const value = column?.buildClientValue
-            ? column.buildClientValue(item)
-            : (item as any)[filter.key];
-          return value >= filter.values?.[0] && value <= filter.values?.[1];
-        });
-      } else if (filter.operator === "IN") {
-        filteredData = filteredData.filter((item) => {
-          const column = columns.find((col) => col.field === filter.key);
-          const value = column?.buildClientValue
-            ? column.buildClientValue(item)
-            : (item as any)[filter.key];
-          return filter.values?.includes(value);
-        });
-      } else if (filter.operator === "NOT_IN") {
-        filteredData = filteredData.filter((item) => {
-          const column = columns.find((col) => col.field === filter.key);
-          const value = column?.buildClientValue
-            ? column.buildClientValue(item)
-            : (item as any)[filter.key];
-          return !filter.values?.includes(value);
-        });
-      }
-    });
+    const filteredData = applyLocalFilters<T>(
+      query?.data || [],
+      filters,
+      columns
+    );
     setClientData(filteredData);
   };
 
@@ -297,15 +213,12 @@ const useTable = <T,>(
     } else {
       sorts.push({ key: field, order: "ASC" });
     }
-    const sortedRows = [...(clientData || [])].sort((a, b) => {
-      const aValue =
-        columns.find((col) => col.field === field)?.buildClientValue?.(a) || "";
-      const bValue =
-        columns.find((col) => col.field === field)?.buildClientValue?.(b) || "";
-      return sorts[existingSortIndex]?.order === "DESC"
-        ? bValue.localeCompare(aValue)
-        : aValue.localeCompare(bValue);
-    });
+    const sortedRows = applyLocalSorting<T>(
+      query?.data || [],
+      field,
+      columns,
+      sorts[existingSortIndex]?.order
+    );
     setClientData(sortedRows);
 
     setPostQuery({ ...postQuery, sorts });

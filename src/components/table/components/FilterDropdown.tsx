@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Menu, IconButton, Button } from "@mui/material";
 import {
   FilterAlt,
@@ -6,11 +6,12 @@ import {
   RefreshOutlined,
 } from "@mui/icons-material";
 import { PostFilter, QueryOperator } from "@/types/PostQuery";
-import { InputType } from "./InputFilter";
+import { InputType } from "../constants/filterConfig";
 import { FilterType } from "../types/FilterModel";
 import { Form, Formik } from "formik";
 import * as yup from "yup";
 import OperatorField from "./OperatorField";
+import { allowedOperator } from "../constants/filterConfig";
 
 interface FilterDropdownProps {
   initialFilter?: PostFilter;
@@ -68,6 +69,14 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
       .required("tidak boleh kosong"),
   });
 
+  const operatorsMapping = useMemo(() => {
+    return filterConfigs.filter((config) =>
+      allowedOperator[type as keyof typeof allowedOperator].includes(
+        config.value as QueryOperator
+      )
+    );
+  }, [filterConfigs, type]);
+
   return (
     <div>
       <IconButton
@@ -118,7 +127,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
                       </IconButton>
                     </div>
 
-                    <OperatorField filterConfigs={filterConfigs} />
+                    <OperatorField filterConfigs={operatorsMapping} />
 
                     {getTemplateFromOperator(values.operator)}
                     <Button

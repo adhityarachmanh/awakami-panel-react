@@ -1,9 +1,20 @@
+import { QueryOperator } from "@/types/PostQuery";
 import {
   InputFilterField,
   InputBetweenFilterField,
   DynamicInputFilterFields,
 } from "../components/InputFilter";
 import { FilterType } from "../types/FilterModel";
+
+export type InputType = "date" | "number" | "string" | "boolean" | "actions";
+
+export const allowedOperator: Record<InputType, QueryOperator[]> = {
+  date: ["BETWEEN", "EQUAL", "NOT_EQUAL", "GREATER_THAN", "LESS_THAN"],
+  number: ["BETWEEN", "EQUAL", "NOT_EQUAL", "GREATER_THAN", "LESS_THAN"],
+  string: ["EQUAL", "NOT_EQUAL", "ILIKE"],
+  boolean: ["EQUAL", "NOT_EQUAL"],
+  actions: [],
+};
 
 const defaultFilterConfigs: FilterType[] = [
   { label: "Equal", value: "EQUAL", component: InputFilterField },

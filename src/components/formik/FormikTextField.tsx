@@ -55,7 +55,6 @@ const FormikTextField = <T,>({
           helperText={helperText}
           placeholder={placeholder}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            field.onChange(event);
             setFieldValue(name, event.target.value);
             if (onChange) {
               onChange(event);

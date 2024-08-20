@@ -1,4 +1,4 @@
-import { InputType } from "../components/InputFilter";
+import { InputType } from "../constants/filterConfig";
 
 export type ColumnType<T> = {
   field: string;
@@ -7,6 +7,8 @@ export type ColumnType<T> = {
   type?: InputType;
   width?: number;
   fullWidth?: boolean;
+  hideFilter?: boolean ;
+  hideSort?: boolean ;
   valueFormatter?: (params: T) => string;
   renderCell?: (params: T) => React.ReactNode;
   buildClientValue?: (params: T) => string;

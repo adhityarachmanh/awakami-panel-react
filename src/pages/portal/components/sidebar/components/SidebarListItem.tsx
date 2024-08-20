@@ -8,6 +8,7 @@ import {
   List,
 } from "@mui/material";
 import { getNestedItemStyles } from "../StyledDrawer";
+import { useMediaQuery, useTheme } from "@mui/material";
 
 const SidebarListItem = ({
   item,
@@ -22,6 +23,9 @@ const SidebarListItem = ({
   handleClick: any;
   handleNestedClick: any;
 }) => {
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
   const renderNestedItems = (items: any, level = 1) => (
     <List component="div" disablePadding>
       {items.map((nestedItem: any, nestedIndex: number) => (
@@ -45,7 +49,12 @@ const SidebarListItem = ({
             >
               {nestedItem.icon}
             </ListItemIcon>
-            <ListItemText primary={nestedItem.text} />
+            <ListItemText
+              primary={nestedItem.text}
+              primaryTypographyProps={{
+                fontSize: isSmallScreen ? "0.875rem" : "1rem",
+              }}
+            />
             {nestedItem.nestedItems &&
               (nestedOpen[nestedItem.text] ? <ExpandLess /> : <ExpandMore />)}
           </ListItemButton>
@@ -77,7 +86,12 @@ const SidebarListItem = ({
           >
             {item.icon}
           </ListItemIcon>
-          <ListItemText primary={item.text} />
+          <ListItemText
+            primary={item.text}
+            primaryTypographyProps={{
+              fontSize: isSmallScreen ? "0.875rem" : "1rem",
+            }}
+          />
           {item.nestedItems &&
             (nestedOpen[item.text] ? <ExpandLess /> : <ExpandMore />)}
         </ListItemButton>
