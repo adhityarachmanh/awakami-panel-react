@@ -6,6 +6,7 @@ import { Breakpoint } from "@mui/material";
 export interface FormikAutocompleteFieldProps<T> {
     label: string;
     name: string;
+    disabled?: boolean;
     visible?: boolean;
     placeholder?: string;
     mode?: "table"| "dropdown";

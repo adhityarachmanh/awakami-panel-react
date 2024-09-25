@@ -12,6 +12,7 @@ import { applyLocalSorting } from "./utility/localSortingLogic";
 const useTable = <T,>(
   uniqKey: string,
   mode: "server" | "client",
+  defaultDisplay: "table" | "grid",
   columns: ColumnType<T>[],
   service: (postQuery: PostQuery) => Promise<APIResponse<T[]>>,
   clientSearchField?: string,
@@ -31,7 +32,12 @@ const useTable = <T,>(
     page: 1,
     size: 5,
   });
-
+  const [isGridView, setIsGridView] = useState(
+    defaultDisplay === "grid" ? true : false
+  );
+  const handleToggleView = () => {
+    setIsGridView(!isGridView);
+  };
   const { data: query, isFetching: isLoading } = useQuery({
     queryKey: [
       uniqKey,
@@ -304,6 +310,8 @@ const useTable = <T,>(
     query,
     isLoading,
     selectedRows,
+    isGridView,
+    handleToggleView,
     isActiveSort,
     currentOrder,
     handleFilterChange,

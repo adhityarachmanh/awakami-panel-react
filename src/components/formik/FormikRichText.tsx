@@ -1,13 +1,15 @@
 import { Field, ErrorMessage } from "formik";
 import ReactQuill from "react-quill";
+import { Typography } from "@mui/material";
 
 interface FormikRichTextProps {
   name: string;
+  disabled?: boolean;
   style?: React.CSSProperties;
   className?: string;
 }
 
-const FormikRichText = ({ name, style, className }: FormikRichTextProps) => {
+const FormikRichText = ({ name, disabled = false }: FormikRichTextProps) => {
   const modules = {
     toolbar: [
       [
@@ -30,17 +32,24 @@ const FormikRichText = ({ name, style, className }: FormikRichTextProps) => {
   return (
     <Field name={name}>
       {({ field, form }: { field: any; form: any }) => (
-        <div className={className} style={style}>
+        <div style={{ height: "750px", width: "100%" }}>
           <ReactQuill
             value={field.value}
+            readOnly={disabled}
             modules={modules}
-            style={{ height: "100%", width: "100%" }}
+            style={{ height: "700px", width: "100%" }}
+            scrollingContainer={"#root"}
+       
             onChange={(value) => form.setFieldValue(field.name, value)}
           />
           <ErrorMessage
             name={name}
             component="span"
-            className="wd-text-red-600 wd-text-xs wd-mt-1 wd-text-left wd-font-normal wd-ml-4"
+            render={(msg) => (
+              <Typography variant="body2" color="error" style={{ marginTop: "4px", marginLeft: "16px", textAlign: "left", fontWeight: "normal" }}>
+                {msg}
+              </Typography>
+            )}
           />
         </div>
       )}

@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Box, IconButton, Dialog } from "@mui/material";
+import React, { useEffect, useState, useRef, useMemo } from "react";
+import { Box, IconButton, Dialog, SxProps, Theme } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import ZoomOutIcon from "@mui/icons-material/ZoomOut";
@@ -9,19 +9,21 @@ import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import PhotoIcon from "@mui/icons-material/Photo";
 
 interface ImagePreviewProps {
-  src: string;
+  src?: string;
   alt: string;
-  width?: string;
-  height?: string;
   imageStyle?: React.CSSProperties;
+  sx?: SxProps<Theme>;
+  handleSuccess?: () => void;
+  handleError?: () => void;
 }
 
 const ImagePreview: React.FC<ImagePreviewProps> = ({
   src,
   alt,
-  width = "100px",
-  height = "100px",
   imageStyle,
+  sx,
+  handleSuccess,
+  handleError,
 }) => {
   const [open, setOpen] = useState(false);
   const [zoom, setZoom] = useState(1);
@@ -43,12 +45,8 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
   const handleZoomOut = () =>
     setZoom((prevZoom) => Math.max(prevZoom - 0.1, 0.1));
 
-  useEffect(() => {
-    setError(false);
-  }, [src]);
-
   const handleDownload = () => {
-    fetch(src)
+    fetch(`${import.meta.env.VITE_BASE_URL}/${src}`)
       .then((response) => response.blob())
       .then((blob) => {
         const url = window.URL.createObjectURL(blob);
@@ -59,10 +57,6 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
         window.URL.revokeObjectURL(url);
       })
       .catch(console.error);
-  };
-
-  const handleError = () => {
-    setError(true);
   };
 
   const handleWheel = (event: React.WheelEvent) => {
@@ -94,18 +88,62 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
     setIsDragging(false);
   };
 
+  const imageUrl = useMemo(() => {
+    handleSuccess?.();
+    if (src && /api\/v1\/files/.test(src)) {
+      const supportedImageExtensions = [
+        "jpg",
+        "jpeg",
+        "png",
+        "gif",
+        "bmp",
+        "webp",
+      ];
+      const isSupportedImage = supportedImageExtensions.some((ext) =>
+        src.toLowerCase().endsWith(ext)
+      );
+
+      if (!isSupportedImage) {
+        handleError?.();
+        console.error("Unsupported image format");
+        return null;
+      }
+
+      return `${import.meta.env.VITE_BASE_URL}/${src}`;
+    } else {
+      return src;
+    }
+  }, [src]);
+
   return (
     <>
-      {!error ? (
-        <img
-          src={src}
-          alt={alt}
-          width={width}
-          height={height}
-          onError={handleError}
-          style={{ cursor: "pointer", borderRadius: "4px", ...imageStyle }}
+      {imageUrl !== null ? (
+        <Box
+          sx={{
+            position: "relative",
+            width: "100%",
+            height: "100%",
+            borderRadius: "4px",
+            overflow: "hidden",
+            cursor: "pointer",
+            ...imageStyle,
+          }}
           onClick={handleOpen}
-        />
+        >
+          <Box
+            component="img"
+            src={imageUrl}
+            alt={alt}
+            sx={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              ...sx,
+            }}
+          />
+        </Box>
       ) : (
         <Box
           display="flex"
@@ -115,8 +153,9 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
             cursor: "pointer",
             borderRadius: "4px",
             width: "100%",
-            height: "300px",
+            height: "100%",
             backgroundColor: "lightgray",
+            ...imageStyle,
           }}
         >
           <PhotoIcon
@@ -179,7 +218,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
             >
               <Box
                 component="img"
-                src={src}
+                src={imageUrl ?? ""}
                 alt={alt}
                 ref={imgRef}
                 sx={{

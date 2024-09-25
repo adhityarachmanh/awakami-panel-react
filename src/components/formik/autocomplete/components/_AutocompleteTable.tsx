@@ -7,7 +7,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
-import { useFormikContext } from "formik";
+import { ErrorMessage, useFormikContext } from "formik";
 import { PostQuery } from "@/types/PostQuery";
 import { RefreshOutlined, SearchOutlined } from "@mui/icons-material";
 import DataTable from "../../../table";
@@ -29,6 +29,7 @@ const _AutocompleteTable = <T,>({
   filterOnChange,
   maxDialogWidth = "sm",
   buildLabel,
+  disabled = false,
 }: FormikAutocompleteFieldProps<T>) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { setFieldValue, initialValues, values } = useFormikContext();
@@ -111,7 +112,7 @@ const _AutocompleteTable = <T,>({
         variant="outlined"
         fullWidth
         placeholder={placeholder ?? `Cari ${label.toLowerCase()}...`}
-        margin="normal"
+        disabled={disabled}
         value={queryLabel}
         InputLabelProps={{ shrink: true }}
         InputProps={{
@@ -119,6 +120,7 @@ const _AutocompleteTable = <T,>({
           readOnly: true, // Make the TextField not clickable but not disabled
           endAdornment: (
             <IconButton
+              disabled={disabled}
               onClick={handleDialogOpen}
               style={{ position: "absolute", right: 0 }}
             >
@@ -127,7 +129,11 @@ const _AutocompleteTable = <T,>({
           ),
         }}
       />
-
+      <ErrorMessage
+        name={name}
+        component="span"
+        className="wd-text-red-600 wd-text-xs  wd-text-left wd-font-normal wd-ml-4"
+      />
       <Dialog
         open={dialogOpen}
         onClose={handleDialogClose}
@@ -139,8 +145,8 @@ const _AutocompleteTable = <T,>({
           <IconButton
             onClick={() => {
               setFieldValue(name, null);
-              filterOnChange?.(null);
               setLabelQuery((prev) => ({ ...prev, filters: [] }));
+              filterOnChange?.(null);
               handleDialogClose();
             }}
             style={{ position: "absolute", right: 16 }}
@@ -171,7 +177,6 @@ const _AutocompleteTable = <T,>({
                   <Button
                     disabled={row[queryKey as keyof T] === memoizedValue}
                     onClick={() => {
-                      filterOnChange?.(row[queryKey as keyof T]);
                       setLabelQuery((prev) => ({
                         ...prev,
                         filters: [
@@ -183,6 +188,7 @@ const _AutocompleteTable = <T,>({
                         ],
                       }));
                       setFieldValue(name, buildValue?.(row) ?? "");
+                      filterOnChange?.(row[queryKey as keyof T]);
                       handleDialogClose();
                     }}
                   >

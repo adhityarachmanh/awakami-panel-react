@@ -10,7 +10,7 @@ import {
 import useDetailBerita from "./useDetailBerita";
 import { useParams } from "react-router-dom";
 import richtextDefaultFormater from "@/utility/richtextFormater";
-import ImagePreview from "@/components/image/ImagePreview";
+import ImagePreview from "@/components/media/ImagePreview";
 import { formatDateString } from "@/utility/dateFormat";
 
 const DetailBerita = () => {

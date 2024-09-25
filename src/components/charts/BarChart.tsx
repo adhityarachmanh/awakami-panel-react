@@ -15,9 +15,7 @@ const BarChart = ({
   style?: React.CSSProperties; // Define the type for style
 }) => {
   const option = {
-    title: {
-      text: title,
-    },
+    
     tooltip: {},
 
     xAxis: {

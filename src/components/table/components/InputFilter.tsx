@@ -18,6 +18,7 @@ export function InputBetweenFilterField(props: { type: InputType }) {
     <div className="wd-flex wd-flex-col wd-gap-4">
       <FormikTextField
         name="values[0]"
+        margin="none"
         label={`From ${type.charAt(0).toUpperCase() + type.slice(1)}`}
         placeholder={`Enter From`}
         type={type === "string" ? "text" : type}
@@ -30,6 +31,7 @@ export function InputBetweenFilterField(props: { type: InputType }) {
       />
       <FormikTextField
         name="values[1]"
+        margin="none"
         placeholder={`Enter To`}
         label={`To ${type.charAt(0).toUpperCase() + type.slice(1)}`}
         type={type === "string" ? "text" : type}
@@ -51,6 +53,7 @@ export function InputFilterField(props: { type: InputType }) {
     <FormikSwitchField
       name="values[0]"
       label={type.charAt(0).toUpperCase() + type.slice(1)}
+      valueToString={true}
       onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = event.target.checked;
         setFieldValue("values[0]", newValue.toString());
@@ -59,6 +62,7 @@ export function InputFilterField(props: { type: InputType }) {
   ) : (
     <FormikTextField
       name="values"
+      margin="none"
       label={type.charAt(0).toUpperCase() + type.slice(1)}
       placeholder={`Enter ${type.charAt(0).toUpperCase() + type.slice(1)}`}
       type={type === "string" ? "text" : type}
@@ -96,6 +100,7 @@ export function DynamicInputFilterFields(props: { type: InputType }) {
         >
           <FormikTextField
             name={`values[${index}]`}
+            margin="none"
             label={`${type.charAt(0).toUpperCase() + type.slice(1)} ${
               index + 1
             }`}

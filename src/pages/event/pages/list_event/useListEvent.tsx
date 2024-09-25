@@ -5,7 +5,7 @@ import { ColumnType } from "@/components/table/types/ColumnModel";
 import { PostQuery } from "@/types/PostQuery";
 import { formatDateString } from "@/utility/dateFormat";
 import TableEventAction from "../../components/TableEventAction";
-import ImagePreview from "@/components/image/ImagePreview";
+import ImagePreview from "@/components/media/ImagePreview";
 
 const useListEvent = () => {
   const uniqKey = "event";
@@ -19,7 +19,7 @@ const useListEvent = () => {
       renderCell: (data: EventModel) => {
         return (
           <ImagePreview
-            imageStyle={{ width: '120px', height: '120px' }}
+            imageStyle={{ width: "120px", height: "120px" }}
             src={`${import.meta.env.VITE_BASE_URL}/${data.filePath}`}
             alt="event"
           />

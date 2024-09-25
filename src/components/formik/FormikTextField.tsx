@@ -9,6 +9,7 @@ interface FormikTextFieldProps {
   margin?: "none" | "dense" | "normal";
   multiline?: boolean;
   rows?: number;
+  disabled?: boolean;
   type?: React.HTMLInputTypeAttribute;
   InputProps?: InputProps;
   placeholder?: string;
@@ -18,6 +19,7 @@ interface FormikTextFieldProps {
 
 const FormikTextField = <T,>({
   name,
+  disabled = false,
   label = "Label",
   variant = "outlined",
   fullWidth = true,
@@ -35,34 +37,38 @@ const FormikTextField = <T,>({
   const helperText = touched[name as keyof T] && errors[name as keyof T];
 
   return (
-    <Field name={name}>
-      {({ field }: { field: any; form: any }) => (
-        <TextField
-          {...field}
-          label={label}
-          type={type}
-          variant={variant}
-          fullWidth={fullWidth}
-          margin={margin}
-          multiline={multiline}
-          rows={rows}
-          InputProps={InputProps}
-          inputProps={inputProps}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          error={error}
-          helperText={helperText}
-          placeholder={placeholder}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setFieldValue(name, event.target.value);
-            if (onChange) {
-              onChange(event);
-            }
-          }}
-        />
-      )}
-    </Field>
+    <>
+      <Field name={name}>
+        {({ field }: { field: any; form: any }) => (
+          <TextField
+            {...field}
+            label={label}
+            type={type}
+            variant={variant}
+            fullWidth={fullWidth}
+            margin={margin}
+            multiline={multiline}
+            rows={rows}
+            disabled={disabled}
+           
+            InputProps={InputProps}
+            inputProps={inputProps}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            error={error}
+            helperText={helperText}
+            placeholder={placeholder}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setFieldValue(name, event.target.value);
+              if (onChange) {
+                onChange(event);
+              }
+            }}
+          />
+        )}
+      </Field>
+    </>
   );
 };
 

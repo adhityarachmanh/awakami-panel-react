@@ -20,6 +20,7 @@ interface FormikTimeFieldProps {
   displayFormat?: string;
   dataFormat?: string;
   is24HourFormat?: boolean;
+  disabled?: boolean;
 }
 
 const FormikTimeField = <T,>({
@@ -29,6 +30,7 @@ const FormikTimeField = <T,>({
   displayFormat = "HH:mm",
   dataFormat = "HH:mm",
   is24HourFormat = true,
+  disabled = false,
 }: FormikTimeFieldProps) => {
   const { values, initialValues, setFieldValue } = useFormikContext<T>();
   const [open, setOpen] = useState(false);
@@ -40,9 +42,7 @@ const FormikTimeField = <T,>({
   }, [(values as any)[name]]);
   const initialMemoizedValue = React.useMemo(() => {
     const initialValue = (initialValues as any)[name];
-    return initialValue
-      ? moment(initialValue, dataFormat)
-      : null;
+    return initialValue ? moment(initialValue, dataFormat) : null;
   }, [(initialValues as any)[name]]);
 
   const handleOpen = () => {
@@ -53,8 +53,6 @@ const FormikTimeField = <T,>({
     setOpen(false);
     setSelectedTime(null);
   };
-
-
 
   const handleTimeConfirm = () => {
     if (selectedTime) {
@@ -70,6 +68,7 @@ const FormikTimeField = <T,>({
           <div>
             <TextField
               {...field}
+              disabled={disabled}
               label={label}
               placeholder={placeholder}
               defaultValue={initialMemoizedValue?.format(displayFormat) || ""}
@@ -83,6 +82,7 @@ const FormikTimeField = <T,>({
               InputProps={{
                 endAdornment: (
                   <IconButton
+                    disabled={disabled}
                     onClick={handleOpen}
                     style={{ position: "absolute", right: 0 }}
                   >
@@ -100,7 +100,6 @@ const FormikTimeField = <T,>({
                   onChange={(value) => setSelectedTime(value)}
                   ampm={!is24HourFormat}
                 />
-              
               </DialogContent>
               <DialogActions>
                 <Button onClick={handleTimeConfirm}>Confirm</Button>

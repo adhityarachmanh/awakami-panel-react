@@ -17,9 +17,7 @@ const LineChart: React.FC<LineChartProps> = ({
   style,
 }) => {
   const option = {
-    title: {
-      text: title || "Line Chart",
-    },
+   
     tooltip: {
       trigger: "axis",
     },

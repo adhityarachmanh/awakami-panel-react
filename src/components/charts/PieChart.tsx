@@ -9,10 +9,7 @@ interface PieChartProps {
 
 const PieChart: React.FC<PieChartProps> = ({ title, data, style }) => {
   const option = {
-    title: {
-      text: title,
-      left: 'center',
-    },
+   
     tooltip: {
       trigger: 'item',
     },

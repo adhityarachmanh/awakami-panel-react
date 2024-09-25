@@ -2,17 +2,13 @@ import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import { useFormikContext, Field, ErrorMessage } from "formik";
 import moment from "moment";
 import React, { useState } from "react";
-import {
-  TextField,
-  IconButton,
-  Dialog,
-  DialogContent,
-} from "@mui/material";
+import { TextField, IconButton, Dialog, DialogContent } from "@mui/material";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 
 interface FormikDateFieldProps {
   name: string;
   label: string;
+  disabled?: boolean;
   displayFormat?: string;
   dataFormat?: string;
   placeholder?: string;
@@ -24,6 +20,7 @@ const FormikDateField = <T,>({
   displayFormat = "DD/MM/YYYY",
   dataFormat = "YYYY-MM-DD",
   placeholder = "Pilih tanggal",
+  disabled = false,
 }: FormikDateFieldProps) => {
   const { values, initialValues, setFieldValue } = useFormikContext<T>();
   const [open, setOpen] = useState(false);
@@ -54,12 +51,14 @@ const FormikDateField = <T,>({
               variant="outlined"
               fullWidth
               margin="none"
+              disabled={disabled}
               InputLabelProps={{
                 shrink: true,
               }}
               InputProps={{
                 endAdornment: (
                   <IconButton
+                    disabled={disabled}
                     onClick={handleOpen}
                     style={{ position: "absolute", right: 0 }}
                   >
@@ -68,13 +67,8 @@ const FormikDateField = <T,>({
                 ),
               }}
             />
-            <Dialog
-             
-              open={open}
-              onClose={handleClose}
-            
-            >
-              <DialogContent  style={{ padding: 0, margin: 0 }}>
+            <Dialog open={open} onClose={handleClose}>
+              <DialogContent style={{ padding: 0, margin: 0 }}>
                 <StaticDatePicker
                   displayStaticWrapperAs="mobile"
                   defaultValue={initialMemoizedValue}

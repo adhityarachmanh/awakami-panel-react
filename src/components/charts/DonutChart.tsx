@@ -9,10 +9,7 @@ interface DonutChartProps {
 
 const DonutChart: React.FC<DonutChartProps> = ({ data, title, style }) => {
   const option = {
-    title: {
-      text: title || "Donut Chart",
-      left: 'center'
-    },
+   
     tooltip: {
       trigger: 'item'
     },

@@ -4,14 +4,18 @@ import { useFormikContext, Field, ErrorMessage } from "formik";
 interface FormikSwitchFieldProps {
   name: string;
   label?: string;
+  disabled?: boolean;
   switchProps?: SwitchProps;
+  valueToString?: boolean;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const FormikSwitchField = <T,>({
   name,
+  disabled = false,
   label,
   switchProps,
+  valueToString = false,
   onChange,
 }: FormikSwitchFieldProps) => {
   const { setFieldValue } = useFormikContext<T>();
@@ -24,10 +28,13 @@ const FormikSwitchField = <T,>({
             control={
               <Switch
                 {...field}
-                checked={field.value === "true" || field.value === true}
+                disabled={disabled}
+                checked={valueToString ? field.value === "true" : field.value}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  const newValue = event.target.checked;
-                  setFieldValue(name, newValue.toString());
+                  const newValue = valueToString
+                    ? event.target.checked.toString()
+                    : event.target.checked;
+                  setFieldValue(name, newValue);
                   if (onChange) {
                     onChange(event);
                   }

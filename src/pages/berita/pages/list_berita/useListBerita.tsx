@@ -5,7 +5,7 @@ import { ColumnType } from "@/components/table/types/ColumnModel";
 import { PostQuery } from "@/types/PostQuery";
 import { formatDateString } from "@/utility/dateFormat";
 import TableBeritaAction from "../../components/TableBeritaAction";
-import ImagePreview from "@/components/image/ImagePreview";
+import ImagePreview from "@/components/media/ImagePreview"; 
 
 const useListBerita = () => {
   const uniqKey = "berita";

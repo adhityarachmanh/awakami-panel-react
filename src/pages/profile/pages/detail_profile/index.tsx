@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import useDetailProfile from "./useDetailProfile";
-import ImagePreview from "@/components/image/ImagePreview";
+import ImagePreview from "@/components/media/ImagePreview";
 const DetailProfile = () => {
   const { query, navigate } = useDetailProfile();
 
